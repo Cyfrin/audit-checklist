@@ -1,0 +1,537 @@
+[
+    {
+      "category": "Version Issues",
+      "issues": [
+        {
+          "Issue": "Solidity 0.8.13",
+          "Details": "Use of Solidity 0.8.13 with known issues in ABI encoding and memory side effects",
+          "Reference": "https://github.com/code-423n4/2022-06-putty-findings/issues/348"
+        },
+        {
+          "Issue": "Solidity 0.8.17",
+          "Details": "abi.encodePacked allows hash collision in Solidity 0.8.17",
+          "Reference": "https://github.com/sherlock-audit/2022-10-nftport-judging/issues/118"
+        },
+        {
+          "Issue": "Solidity 0.5.8 ~ 0.8.15",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "OpenZeppelin < 4.7.3",
+          "Details": "OpenZeppelin has a vulnerability in versions lower than 4.7.3",
+          "Reference": "https://github.com/sherlock-audit/2022-09-harpie-judging/blob/main/010-M/010-h.md"
+        },
+        {
+          "Issue": "selfdestruct()",
+          "Details": "After EIP-4758, selfdestruct won't work",
+          "Reference": "https://github.com/code-423n4/2022-07-axelar-findings/issues/20"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Upgradability",
+          "Details": "Make sure to inherit the correct branch of OpenZepplin library",
+          "Reference": "https://solodit.xyz/issues/912"
+        },
+        {
+          "Issue": "Initializable inheritance",
+          "Details": "Inheritable/Upgradable contracts should use initializer modifier carefully",
+          "Reference": "https://solodit.xyz/issues/1684"
+        },
+        {
+          "Issue": "Interface implementation",
+          "Details": "Check if all functions are implemented from the interface",
+          "Reference": "https://solodit.xyz/issues/1322"
+        },
+        {
+          "Issue": "Ownable - ownership transfer",
+          "Details": "Use two-step process and make sure the protocol works while transfer ",
+          "Reference": "https://solodit.xyz/issues/3525"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "State variables initialization",
+          "Details": "Check if important variables are initialized correctly",
+          "Reference": "https://solodit.xyz/issues/2594"
+        },
+        {
+          "Issue": "Initialization arguments validation",
+          "Details": "Check if important variables are validated on initialization",
+          "Reference": "https://solodit.xyz/issues/3537"
+        },
+        {
+          "Issue": "Domain Separator",
+          "Details": "Check if DOMAIN_SEPARATOR is set correctly",
+          "Reference": "https://solodit.xyz/issues/2507"
+        },
+        {
+          "Issue": "Set critical params in constructor",
+          "Details": "",
+          "Reference": "https://github.com/code-423n4/2022-05-backd-findings/issues/99"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Min/Max validation",
+          "Details": "Check if parameters are capped correctly",
+          "Reference": "https://solodit.xyz/issues/3591"
+        },
+        {
+          "Issue": "Time validation",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Zero input, double call validation",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Calling multiple times",
+          "Details": "Calling a function X times with value Y == Calling it once with value XY",
+          "Reference": ""
+        },
+        {
+          "Issue": "src==dst",
+          "Details": "Check what happens if an action is done to itself",
+          "Reference": ""
+        },
+        {
+          "Issue": "don't check min threshold during withdrawal",
+          "Details": "Users wouldn't withdraw dust",
+          "Reference": "https://solodit.xyz/issues/5912"
+        },
+        {
+          "Issue": "Don't use Address.isContract() for EOA checking",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/5925"
+        },
+        {
+          "Issue": "OnlyEOA modifier using tx.origin",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6662"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Rescue tokens from contract(2 addresses token)",
+          "Details": "Shouldn't allow to withdraw user's funds",
+          "Reference": ""
+        },
+        {
+          "Issue": "Change active orders",
+          "Details": "Admin can change price/fee at any time for existing orders",
+          "Reference": "https://github.com/code-423n4/2022-06-putty-findings/issues/422"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Withdraw check",
+          "Details": "Follow Withdraw-Pattern for best practice",
+          "Reference": "https://solodit.xyz/issues/2939"
+        },
+        {
+          "Issue": "External contracts interaction",
+          "Details": "Make sure the protocol is not affected when the external dependencies do not work",
+          "Reference": "https://solodit.xyz/issues/2967"
+        },
+        {
+          "Issue": "Minimum transaction amount",
+          "Details": "Disallow zero amount transactions to prevent attackers putting enormous requests",
+          "Reference": "https://solodit.xyz/issues/1516"
+        },
+        {
+          "Issue": "Tokens with blacklisting",
+          "Details": "USDC",
+          "Reference": ""
+        },
+        {
+          "Issue": "Forcing protocol to go through a list ",
+          "Details": "e.g. queue of dust withdrawals",
+          "Reference": ""
+        },
+        {
+          "Issue": "Possible DOS with low decimal tokens",
+          "Details": "The process wouldn't work because token amount is 0 when it should work",
+          "Reference": "https://solodit.xyz/issues/6998"
+        },
+        {
+          "Issue": "Check overflow during multiply",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6854"
+        },
+        {
+          "Issue": "Use unchecked for TickMath, FullMath from uniswap",
+          "Details": "These libraries of uniswap use version 0.7.6",
+          "Reference": "https://solodit.xyz/issues/6879"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Active draining gas",
+          "Details": "An attacker can drains gas and leaves very little to prevent future processing",
+          "Reference": "https://solodit.xyz/issues/3709"
+        },
+        {
+          "Issue": "Long loop",
+          "Details": "Loop without start index",
+          "Reference": "https://github.com/sherlock-audit/2022-11-isomorph-judging/issues/69"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Failed TXs are open to replay attacks",
+          "Details": "",
+          "Reference": "https://github.com/code-423n4/2022-03-rolla-findings/issues/45"
+        },
+        {
+          "Issue": "Replay signature attack on another chain",
+          "Details": "",
+          "Reference": "https://github.com/sherlock-audit/2022-09-harpie-judging/blob/main/004-M/004-m.md"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Users can't cancel/withdraw when paused",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Users can't avoid to pay penalty(interest) when paused",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "CEI pattern check",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/3560"
+        },
+        {
+          "Issue": "Complicated path exploit",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/3383"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Get or Create ",
+          "Details": "This kind of work is very likely to have vulnerability to frontrunning",
+          "Reference": ""
+        },
+        {
+          "Issue": "Two-transaction actions should be safe from frontrunning",
+          "Details": "A good example is when the protocol depends on the user's approval to take the token",
+          "Reference": "https://github.com/sherlock-audit/2022-11-isomorph-judging/issues/47"
+        },
+        {
+          "Issue": "Make other's call revert by calling first with dust",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/5920"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Transaction while reassignment",
+          "Details": "Best practice - do not require index as a parameter",
+          "Reference": ""
+        },
+        {
+          "Issue": "Summing vs separate calculation",
+          "Details": "Calculation against the sum is often more than the sum of each one calculated",
+          "Reference": "https://github.com/sherlock-audit/2022-11-isomorph-judging/issues/174"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Oracle: Usage of deprecated chainlink functions",
+          "Details": "latestRoundData() might return stale or incorrect results",
+          "Reference": "https://github.com/code-423n4/2022-04-backd-findings/issues/17"
+        },
+        {
+          "Issue": "Oracle: twap period",
+          "Details": "Oracle's period is very low allowing the twap price to be manipulated",
+          "Reference": "https://github.com/code-423n4/2022-06-canto-v2-findings/issues/124"
+        },
+        {
+          "Issue": "Hard-coded slippage",
+          "Details": "Hard-coded slippage may freeze user funds during market turbulence",
+          "Reference": "https://github.com/code-423n4/2022-05-sturdy-findings/issues/133"
+        },
+        {
+          "Issue": "Validate reserve",
+          "Details": "Protocol reserve can be lent out",
+          "Reference": "https://github.com/sherlock-audit/2022-08-sentiment-judging/blob/main/122-M/1-report.md"
+        },
+        {
+          "Issue": "ETH 2.0 reward slashing",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/5924"
+        },
+        {
+          "Issue": "Check flashloan attack during stake/unstake",
+          "Details": "Attackers can steal staking rewards using via flashloan",
+          "Reference": ""
+        },
+        {
+          "Issue": "Check deadline during trading",
+          "Details": "Recommend checking deadline",
+          "Reference": "https://solodit.xyz/issues/6297"
+        },
+        {
+          "Issue": "Should add an interest during LTV calculation",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6644"
+        },
+        {
+          "Issue": "Use twap instead of raw value",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6647"
+        },
+        {
+          "Issue": "Liquidation/repaying should be enabled/disabled together",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6649"
+        },
+        {
+          "Issue": "Liquidation should work after frontrunning by borrower",
+          "Details": "liqAmount might be decreased by borrower using frontrunning",
+          "Reference": "https://solodit.xyz/issues/7364"
+        },
+        {
+          "Issue": "Defi functions should have deadline like uniswap",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6687"
+        },
+        {
+          "Issue": "0x requires ETH as fee",
+          "Details": "https://0x.org/docs/0x-swap-api/guides/use-0x-api-liquidity-in-your-smart-contracts",
+          "Reference": "https://solodit.xyz/issues/8722"
+        },
+        {
+          "Issue": "Chainlink price in L2 chains",
+          "Details": "https://docs.chain.link/data-feeds/l2-sequencer-feeds#example-code",
+          "Reference": "https://solodit.xyz/issues/6689"
+        },
+        {
+          "Issue": "Dangerous reward distribution",
+          "Details": "A user can prevent other's reward distribution by reverting himself",
+          "Reference": "https://solodit.xyz/issues/7263"
+        },
+        {
+          "Issue": "Constant ratio is dangerous during depegging",
+          "Details": "Should use oracle to get price",
+          "Reference": "https://solodit.xyz/issues/9793"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Checkpoint faking",
+          "Details": "OpenZepplin checkpoint works with block number that can be faked with flashloan",
+          "Reference": ""
+        },
+        {
+          "Issue": "Disable withdraw in the same block",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "ERC4626 flashloan manipulation",
+          "Details": "",
+          "Reference": "https://github.com/code-423n4/2022-01-behodler-findings/issues/304"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Fee-on-transfer token",
+          "Details": "Best practice - check before/after balance",
+          "Reference": "https://solodit.xyz/issues/3630"
+        },
+        {
+          "Issue": "ERC777 - tokens with hooks",
+          "Details": "Best practice - Check Effect Interaction pattern",
+          "Reference": "https://solodit.xyz/issues/3627"
+        },
+        {
+          "Issue": "Multi-addresses token",
+          "Details": "Best practice - check before/after balance of that address, no compare address",
+          "Reference": ""
+        },
+        {
+          "Issue": "Return value of transfer/approve",
+          "Details": "Best practice - safeERC20 of OpenZepplin",
+          "Reference": ""
+        },
+        {
+          "Issue": "Revert on zero transfer",
+          "Details": "",
+          "Reference": "https://github.com/code-423n4/2022-05-sturdy-findings/issues/79"
+        },
+        {
+          "Issue": "Revert to address(0)",
+          "Details": "",
+          "Reference": "https://github.com/code-423n4/2022-07-yield-findings/issues/116"
+        },
+        {
+          "Issue": "solmate's SafeTransferLib",
+          "Details": "solmate's SafeTransferLib doesn't check if the token is a contract",
+          "Reference": "https://github.com/code-423n4/2022-05-cally-findings/issues/225"
+        },
+        {
+          "Issue": "safeapprove()",
+          "Details": "safeapprove() must first be approved by zero",
+          "Reference": "https://github.com/code-423n4/2022-04-backd-findings/issues/180"
+        },
+        {
+          "Issue": "should approve before swap",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Revert on Approve Max",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/3521"
+        },
+        {
+          "Issue": "transferfrom() shouldn't decrease allowance if from = caller",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6704"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Make sure supportsInterface succeeds",
+          "Details": "Contract should return true for supportsInterface call ",
+          "Reference": "https://solodit.xyz/issues/703"
+        },
+        {
+          "Issue": "Support both ERC721 and ERC1155",
+          "Details": "Use supportsInterface in order of 1155/721 to support both",
+          "Reference": "https://solodit.xyz/issues/2772"
+        },
+        {
+          "Issue": "Free NFT ownership is dangerous for airdrop",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6102"
+        },
+        {
+          "Issue": "Allowance logic for CryptoPunks are frontrunable",
+          "Details": "Should check the owner for CryptoPunks",
+          "Reference": "https://solodit.xyz/issues/6289"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "Initial Deposit Issue",
+          "Details": "Mint some initial tokens and save the initial shares as a permanent reserve",
+          "Reference": "https://solodit.xyz/issues/3474"
+        },
+        {
+          "Issue": "First Depositor Issue",
+          "Details": "First depositor can break minting of shares",
+          "Reference": "https://github.com/code-423n4/2022-04-jpegd-findings/issues/12"
+        },
+        {
+          "Issue": "EIP4626 decimals",
+          "Details": "EIP4626 can have different decimals from the underlying token",
+          "Reference": "https://github.com/sherlock-audit/2022-08-sentiment-judging/blob/main/025-H/025-h.md"
+        },
+        {
+          "Issue": "",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "block.number is inconsistent in Ethereum/Optimism/Arbitrum",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/6345"
+        },
+        {
+          "Issue": "There should be some delay to activate proposal",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/3213"
+        },
+        {
+          "Issue": "Check code asymmetries",
+          "Details": "Check create/delete, deposit/withdraw patterns",
+          "Reference": ""
+        },
+        {
+          "Issue": "LibClone's clone function generates ETH receive() automatically",
+          "Details": "",
+          "Reference": ""
+        },
+        {
+          "Issue": "There should be a removal logic for bad controllers",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/7157"
+        },
+        {
+          "Issue": "The contract should be able to withdraw airdrops if any",
+          "Details": "",
+          "Reference": "https://solodit.xyz/issues/9624"
+        }
+      ]
+    }
+  ]

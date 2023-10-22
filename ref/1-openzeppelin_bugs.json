@@ -1,0 +1,82 @@
+[
+    {
+        "version": ">=4.0.0 <4.9.3",
+        "vulnerability": "Improper Encoding or Escaping of Output"
+    },
+    {
+        "version": ">=4.7.0 <4.9.2",
+        "vulnerability": "Improper Input Validation"
+    },
+    {
+        "version": ">=4.3.0 <4.9.1",
+        "vulnerability": "Missing Authorization"
+    },
+    {
+        "version": ">=3.2.0 <4.8.3",
+        "vulnerability": "Denial of Service (DoS)"
+    },
+    {
+        "version": ">=4.3.0 <4.8.3",
+        "vulnerability": "Improper Input Validation"
+    },
+    {
+        "version": ">=4.8.0 <4.8.2",
+        "vulnerability": "Incorrect Calculation"
+    },
+    {
+        "version": ">=4.8.0 <4.8.2",
+        "vulnerability": "Incorrect Calculation"
+    },
+    {
+        "version": "<4.7.3",
+        "vulnerability": "Improper Verification of Cryptographic Signature"
+    },
+    {
+        "version": ">=2.3.0 <4.7.2",
+        "vulnerability": "Denial of Service (DoS)"
+    },
+    {
+        "version": ">=4.6.0 <4.7.2",
+        "vulnerability": "Incorrect Resource Transfer Between Spheres"
+    },
+    {
+        "version": ">=4.3.0 <4.7.2",
+        "vulnerability": "Incorrect Calculation"
+    },
+    {
+        "version": ">=4.1.0 <4.7.1",
+        "vulnerability": "Information Exposure"
+    },
+    {
+        "version": ">=4.0.0 <4.7.1",
+        "vulnerability": "Information Exposure"
+    },
+    {
+        "version": ">=4.3.0 <4.4.2",
+        "vulnerability": "Function Call With Incorrect Argument"
+    },
+    {
+        "version": ">=3.2.0 <4.4.1",
+        "vulnerability": "Deserialization of Untrusted Data"
+    },
+    {
+        "version": ">=4.2.0 <4.3.3",
+        "vulnerability": "Numeric Errors"
+    },
+    {
+        "version": ">=4.1.0 <4.3.2",
+        "vulnerability": "Improper Initialization"
+    },
+    {
+        "version": ">=4.1.0 <4.3.2",
+        "vulnerability": "Improper Input Validation"
+    },
+    {
+        "version": ">=4.0.0-beta.0 <4.3.1<3.4.2",
+        "vulnerability": "Privilege Escalation"
+    },
+    {
+        "version": "<3.4.0-rc.0",
+        "vulnerability": "Improper Synchronization"
+    }
+]

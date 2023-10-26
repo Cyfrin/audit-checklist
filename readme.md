@@ -22,15 +22,26 @@ Solodit aims to address this by introducing a comprehensive aggregation of vario
 - **Promote Collaboration**: Encourage auditors, developers, and blockchain enthusiasts to contribute, ensuring a rich and comprehensive checklist.
 - **Advance Security Maturity**: As the blockchain ecosystem matures, it's paramount that the security protocols around it mature as well. This checklist is a step in that direction.
 
+## Usage
+We show the checklist on Solodit's website in a user-friendly format and allow you to check off items as you go through the audit process.
+
+However, you can also view the checklist in a raw JSON format [here](./checklist.json).
+
+The checklist is divided into multiple categories, each containing a list of items to check for. Each item consists of an ID, an imperative statement, a question, a description, a remediation, and a list of references.
+
+- **ID**: A unique identifier for the check item.
+- **Question**: A question that can be used to help the auditor in the review process.
+- **Description**: A detailed description of the item.
+- **Remediation**: A list of steps to take to remediate the item.
+- **References**: A list of references to learn more about the item.
+
 ## Contribution
 
-Solodit welcomes contributions from the community. If you've conducted a smart contract audit or are aware of a potential vulnerability or best practice that's not included in our checklist, please submit a pull request or open an issue.
+Please check out our [contribution guidelines](./CONTRIBUTING.md) for more details.
 
-1. **Fork** the repository.
-2. **Modify or Add** to the checklist.
-3. **Submit a Pull Request** with a clear description of your changes.
+## Acknowledgements
+The checklist is heavily inspired by the following resources:
 
-## Resources
 - [Beirao's Checklist](./ref/beirao.md)
 - [Hans's Checklist](./ref/hans.md)
 - [Jonas's Checklist](./ref/jonas.md)

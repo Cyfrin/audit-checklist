@@ -10,7 +10,7 @@
 
 ## Checklist
 
-1.  **Data**
+1. **Data**
 
     a. Calculations
 
@@ -33,7 +33,7 @@
     - [ ] Uninitialised Local/State variables
     - [ ] Uninitialised Storage variables
 
-2.  **Description**
+2. **Description**
 
     **a. Output**
 
@@ -42,14 +42,14 @@
     - [ ] Check for events in admin changes
     - [ ] NatSpec incomplete
 
-3.  **Environment**
+3. **Environment**
 
     **a. Supporting Software**
 
     - [ ] Delete Dynamic Array Elements
     - [ ] Using continue-statements in do-while-statements
 
-4.  **Interaction**
+4. **Interaction**
 
     **a. Contract call**
 
@@ -70,7 +70,7 @@
 
     - [ ] Check for special ERC20 cases
 
-5.  **Interface**
+5. **Interface**
 
     **a. Parameter**
 
@@ -83,7 +83,7 @@
 
     - [ ] Non-standard token interface
 
-6.  **Logic**
+6. **Logic**
 
     **a.Assemble code**
 
@@ -106,7 +106,7 @@
     - [ ] Block.timestamp Manipulation
     - [ ] Long time to execute might be a problem
 
-7.  **Performance**
+7. **Performance**
 
     **a. Gas**
 
@@ -115,7 +115,7 @@
     - [ ] Invariant state variable are not declared constant
     - [ ] Unused public function within the contract should be declared as external
 
-8.  **Security**
+8. **Security**
 
     **a. Authority control**
 
@@ -130,7 +130,7 @@
 
     - [ ] Public data
 
-9.  **Standard**
+9. **Standard**
 
     **a. Maintainability**
 

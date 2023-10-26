@@ -1,664 +1,1241 @@
 [
   {
-    "category": "Version Issues",
+    "category": "Attacker's Mindset",
+    "description": "",
     "data": [
       {
-        "category": "Solidity Version Issues",
+        "category": "Reentrancy",
+        "description": "",
         "data": [
           {
-            "id": "SOL-encodepacked",
-            "question": "Does the contract use `abi.encodePacked`, especially in hash generation? (version >= 0.8.17)",
-            "description": "If you use `keccak256(abi.encodePacked(a, b))` and both `a` and `b` are dynamic types, it is easy to craft collisions in the hash value by moving parts of `a` into `b` and vice-versa. More specifically, `abi.encodePacked(\"a\", \"bc\") == abi.encodePacked(\"ab\", \"c\").",
-            "remediation": "Use `abi.encode` instead of `abi.encodePacked`.",
-            "references": [
-              "https://solodit.xyz/issues/m-1-abiencodepacked-allows-hash-collision-sherlock-nftport-nftport-git",
-              "https://docs.soliditylang.org/en/v0.8.17/abi-spec.html?highlight=collisions#non-standard-packed-mode"
-            ]
-          },
-          {
-            "id": "SOL-2023-2",
-            "question": "BUILD: Is the contract optimized using sequences containing FullInliner with non-expression-split code? (version 0.6.7~0.8.20)",
-            "description": "Optimizer sequences containing FullInliner do not preserve the evaluation order of arguments of inlined function calls in code that is not in expression-split form.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2023/07/19/full-inliner-non-expression-split-argument-evaluation-order-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2023-1",
-            "question": "Is the `.selector` member accessed on complex expressions? (version 0.6.2~0.8.20)",
-            "description": "Accessing the ``.selector`` member on complex expressions leaves the expression unevaluated in the legacy code generation.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2023/07/19/missing-side-effects-on-selector-access-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2022-7",
-            "question": "Are there any functions that conditionally terminate inside an inline assembly? (version 0.8.13~0.8.16)",
-            "description": "Calling functions that conditionally terminate the external EVM call using the assembly statements ``return(...)`` or ``stop()`` may result in incorrect removals of prior storage writes.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/09/08/storage-write-removal-before-conditional-termination/"
-            ]
-          },
-          {
-            "id": "SOL-2022-6",
-            "question": "Are tuples containing a statically-sized calldata array at the end being ABI-encoded? (version 0.5.8~0.8.15)",
-            "description": "ABI-encoding a tuple with a statically-sized calldata array in the last component would corrupt 32 leading bytes of its first dynamically encoded component.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/08/08/calldata-tuple-reencoding-head-overflow-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2022-5",
-            "question": "Does the contract have functions that copy `bytes` arrays from memory or calldata directly to storage? (version 0.0.1~0.8.14)",
-            "description": "Copying ``bytes`` arrays from memory or calldata to storage may result in dirty storage values.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/06/15/dirty-bytes-array-to-storage-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2022-4",
-            "question": "Is there a function with multiple inline assembly blocks? (version 0.8.13~0.8.14)",
-            "description": "The Yul optimizer may incorrectly remove memory writes from inline assembly blocks, that do not access solidity variables.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/06/15/inline-assembly-memory-side-effects-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2022-3",
-            "question": "Is there any inconsistence (`memory` vs `calldata`) in the param type during inheritance? (version 0.6.9~0.8.13)",
-            "description": "It was possible to change the data location of the parameters or return variables from ``calldata`` to ``memory`` and vice-versa while overriding internal and public functions. This caused invalid code to be generated when calling such a function internally through virtual function calls.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/05/17/data-location-inheritance-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2022-2",
-            "question": "Is a nested array being ABI-encoded or passed directly to an external function? (version 0.5.8~0.8.13)",
-            "description": "ABI-reencoding of nested dynamic calldata arrays did not always perform proper size checks against the size of calldata and could read beyond ``calldatasize()``.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/05/17/calldata-reencode-size-check-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2022-1",
-            "question": "Is `abi.encodeCall` used together with fixed-length bytes literals? (version 0.8.11~0.8.12)",
-            "description": "Literals used for a fixed length bytes parameter in ``abi.encodeCall`` were encoded incorrectly.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2022/03/16/encodecall-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2021-4",
-            "question": "Is there any user defined types based on types shorter than 32 bytes? (version =0.8.8)",
-            "description": "User defined value types with underlying type shorter than 32 bytes used incorrect storage layout and wasted storage",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2021/09/29/user-defined-value-types-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2021-3",
-            "question": "Is there an immutable variable of signed integer type shorter than 256 bits? (version 0.6.5~0.8.8)",
-            "description": "Immutable variables of signed integer type shorter than 256 bits can lead to values with invalid higher order bits if inline assembly is used.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2021/09/29/signed-immutables-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2021-2",
-            "question": "Is there any use of `abi.encode` on memory with multi-dimensional array or structs? (version 0.4.16~0.8.3)",
-            "description": "If used on memory byte arrays, result of the function ``abi.decode`` can depend on the contents of memory outside of the actual byte array that is decoded.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2021/04/21/decoding-from-memory-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2021-1",
-            "question": "Is there an inline assembly block with `keccak256` inside? (version ~0.8.2)",
-            "description": "The bytecode optimizer incorrectly re-used previously evaluated Keccak-256 hashes. You are unlikely to be affected if you do not compute Keccak-256 hashes in inline assembly.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2021/03/23/keccak-optimizer-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2020-11",
-            "question": "Is there a copy of an empty `bytes` or `string` from `memory` or `calldata` to `storage`? (version ~0.7.3)",
-            "description": "Copying an empty byte array (or string) from memory or calldata to storage can result in data corruption if the target array's length is increased subsequently without storing new data.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2020/10/19/empty-byte-array-copy-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2020-10",
-            "question": "Is there a dynamically-sized storage-array with types of size at most 16 bytes? (version ~0.7.2)",
-            "description": "When assigning a dynamically-sized array with types of size at most 16 bytes in storage causing the assigned array to shrink, some parts of deleted slots were not zeroed out.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2020/10/07/solidity-dynamic-array-cleanup-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2020-9",
-            "question": "Are there any functions with the same name and parameter type inside the same contract? (version =0.7.1)",
-            "description": "The compiler does not flag an error when two or more free functions with the same name and parameter types are defined in a source unit or when an imported free function alias shadows another free function with a different name but identical parameter types.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-8",
-            "question": "Does the contract use internal library functions with calldata parameters via `using for`? (version =0.6.9)",
-            "description": "Function calls to internal library functions with calldata parameters called via ``using for`` can result in invalid data being read.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-7",
-            "question": "Are string literals with double backslashes passed directly to external or encoding functions with ABIEncoderV2 enabled? (version 0.5.14~0.6.7)",
-            "description": "String literals containing double backslash characters passed directly to external or encoding function calls can lead to a different string being used when ABIEncoderV2 is enabled.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-6",
-            "question": "Does the contract access slices of dynamic arrays, especially multi-dimensional ones? (version 0.6.0~0.6.7)",
-            "description": "Accessing array slices of arrays with dynamically encoded base types (e.g. multi-dimensional arrays) can result in invalid data being read.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-5",
-            "question": "Is there a contract with creation code, no constructor, but a base with a constructor that accepts non-zero values? (version 0.4.5~0.6.7)",
-            "description": "The creation code of a contract that does not define a constructor but has a base that does define a constructor did not revert for calls with non-zero value.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-4",
-            "question": "Does the contract use tuple assignments with multi-stack-slot components, like nested tuples or dynamic calldata references? (version 0.1.6~0.6.5)",
-            "description": "Tuple assignments with components that occupy several stack slots, i.e. nested tuples, pointers to external functions or references to dynamically sized calldata arrays, can result in invalid values.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-3",
-            "question": "Does the contract create extremely large memory arrays? (version 0.2.0~0.6.4)",
-            "description": "The creation of very large memory arrays can result in overlapping memory regions and thus memory corruption.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2020/04/06/memory-creation-overflow-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2020-1",
-            "question": "Does the contract's inline assembly with Yul optimizer use assignments inside for loops combined with continue or break? (version =0.6.0)",
-            "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-2",
-            "question": "Does the contract allow private methods to be overridden by inheriting contracts? (version 0.3.0~0.5.16)",
-            "description": "Private methods can be overridden by inheriting contracts.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2020-1",
-            "question": "Is there any Yul's continue or break statement inside the loop?? (version 0.5.8~0.5.15)",
-            "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-10",
-            "question": "Are both experimental ABIEncoderV2 and Yul optimizer activated? (version =0.5.14)",
-            "description": "If both the experimental ABIEncoderV2 and the experimental Yul optimizer are activated, one component of the Yul optimizer may reuse data in memory that has been changed in the meantime.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-9",
-            "question": "Does the contract read from calldata structs with dynamic yet statically-sized members? (version 0.5.6~0.5.10)",
-            "description": "Reading from calldata structs that contain dynamically encoded, but statically-sized members can result in incorrect values.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-8",
-            "question": "Does the contract assign arrays of signed integers to differently typed storage arrays? (version 0.4.7~0.5.9)",
-            "description": "Assigning an array of signed integers to a storage array of different type can lead to data corruption in that array.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2019/06/25/solidity-storage-array-bugs/"
-            ]
-          },
-          {
-            "id": "SOL-2019-7",
-            "question": "Does the contract directly encode storage arrays with structs or static arrays in external calls or abi.encode*? (version 0.4.16~0.5.9)",
-            "description": "Storage arrays containing structs or other statically-sized arrays are not read properly when directly encoded in external function calls or in abi.encode*.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2019/06/25/solidity-storage-array-bugs/"
-            ]
-          },
-          {
-            "id": "SOL-2019-6",
-            "question": "Does the contract's constructor accept structs or arrays with dynamic arrays? (version 0.4.16~0.5.8)",
-            "description": "A contract's constructor that takes structs or arrays that contain dynamically-sized arrays reverts or decodes to invalid data.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-5-1",
-            "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.5.0~0.5.7)",
-            "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-5-2",
-            "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.4.5~0.4.25)",
-            "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-4-1",
-            "question": "Does the library use contract types in events? (version 0.5.0~0.5.7)",
-            "description": "Contract types used in events in libraries cause an incorrect event signature hash",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-4-2",
-            "question": "Does the library use contract types in events? (version 0.3.0~0.4.25)",
-            "description": "Contract types used in events in libraries cause an incorrect event signature hash",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2019-3-1",
-            "question": "Does the contract encode storage structs or arrays with types under 32 bytes directly using experimental ABIEncoderV2? (version 0.5.0~0.5.6)",
-            "description": "Storage structs and arrays with types shorter than 32 bytes can cause data corruption if encoded directly from storage using the experimental ABIEncoderV2.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2019-3-2",
-            "question": "Does the contract encode storage structs or arrays with types under 32 bytes directly using experimental ABIEncoderV2? (version 0.4.19~0.4.25)",
-            "description": "Storage structs and arrays with types shorter than 32 bytes can cause data corruption if encoded directly from storage using the experimental ABIEncoderV2.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2019-2",
-            "question": "Does the contract's optimizer handle byte opcodes with a second argument of 31 or an equivalent constant expression? (version 0.5.5~0.5.6)",
-            "description": "The optimizer incorrectly handles byte opcodes whose second argument is 31 or a constant expression that evaluates to 31. This can result in unexpected values.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2019-1",
-            "question": "Are there double bitwise shifts with large constants that might sum up to overflow 256 bits? (version =0.5.5)",
-            "description": "Double bitwise shifts by large constants whose sum overflows 256 bits can result in unexpected values.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
-            ]
-          },
-          {
-            "id": "SOL-2018-4",
-            "question": "Is the ** operator used with an exponent type shorter than 256 bits? (version ~0.4.24)",
-            "description": "Using the ** operator with an exponent of type shorter than 256 bits can result in unexpected values.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
-            ]
-          },
-          {
-            "id": "SOL-2018-3",
-            "question": "Are structs used in the logged events? (version 0.4.17~0.4.24)",
-            "description": "Using structs in events logged wrong data.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
-            ]
-          },
-          {
-            "id": "SOL-2018-2",
-            "question": "Are functions returning multi-dimensional fixed-size arrays called? (version 0.1.4~0.4.21)",
-            "description": "Calling functions that return multi-dimensional fixed-size arrays can result in memory corruption.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
-            ]
-          },
-          {
-            "id": "SOL-2018-1",
-            "question": "Does the contract use both new-style and old-style constructors simultaneously? (version =0.4.22)",
-            "description": "If a contract has both a new-style constructor (using the constructor keyword) and an old-style constructor (a function with the same name as the contract) at the same time, one of them will be ignored.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2017-5",
-            "question": "Is there a function name crafted to potentially override the fallback function execution? (version ~0.4.17)",
-            "description": "It is possible to craft the name of a function such that it is executed instead of the fallback function in very specific circumstances.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2017-4",
-            "question": "Is the low-level .delegatecall() used without checking the actual execution outcome? (version 0.3.0~0.4.14)",
-            "description": "The low-level .delegatecall() does not return the execution outcome, but converts the value returned by the functioned called to a boolean instead.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2017-3",
-            "question": "Is the ecrecover() function used without validating its input? (version ~0.4.13)",
-            "description": "The ecrecover() builtin can return garbage for malformed input.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2017-2",
-            "question": "Are there any instances where empty strings (\"\") are directly passed to function calls? (version ~0.4.11)",
-            "description": "If \"\" is used in a function call, the following function arguments will not be correctly passed to the function.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              null
-            ]
-          },
-          {
-            "id": "SOL-2017-1",
-            "question": "Does the optimizer replace specific constants with alternative computations? (version ~0.4.10)",
-            "description": "In some situations, the optimizer replaces certain numbers in the code with routines that compute different numbers.",
-            "remediation": "Use the latest Solidity version.",
-            "references": [
-              "https://blog.soliditylang.org/2017/05/03/solidity-optimizer-bug/"
-            ]
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
           }
         ]
       },
       {
-        "category": "EIP Adoption Issues",
+        "category": "Denial-Of-Service / Griefing",
+        "description": "",
         "data": [
           {
-            "id": "EIP-selfdestruct",
-            "question": "Does the contract use `selfdestruct()`?",
-            "description": "`selfdestruct` will not be available after EIP-4758. This EIP will rename the SELFDESTRUCT opcode and replace its functionality.",
-            "remediation": "Do not use `selfdestruct` to ensure the contract works in the future.",
-            "references": [
-              "https://eips.ethereum.org/EIPS/eip-4758",
-              "https://solodit.xyz/issues/m-09-selfdestruct-will-not-be-available-after-eip-4758-code4rena-escher-escher-contest-git",
-              "https://solodit.xyz/issues/m-03-system-will-not-work-anymore-after-eip-4758-code4rena-axelar-network-axelar-network-git"
-            ]
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
           }
         ]
       },
       {
-        "category": "OpenZeppelin Version Issues",
+        "category": "Replay Attack",
+        "description": "",
         "data": [
           {
-            "id": "OZ-V-0001",
-            "question": "Does the contract use `ERC2771Context`? (version >=4.0.0 <4.9.3)",
-            "description": "`ERC2771Context._msgData()` reverts if `msg.data.length < 20`. The correct behavior is not specified in ERC-2771, but based on the specified behavior of `_msgSender` we assume the full `msg.data` should be returned in this case.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5838352",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts",
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/4484"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Price Manipulation Attack",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0002",
-            "question": "Does the contract use OpenZeppelin's `MerkleProof`? (version >=4.7.0 <4.9.2)",
-            "description": "When the `verifyMultiProof`, `verifyMultiProofCalldata`, `processMultiProof`, or `processMultiProofCalldata` functions are in use, it is possible to construct merkle trees that allow forging a valid multiproof for an arbitrary set of leaves.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/advisories/GHSA-wprv-93r4-jj2p",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5711902",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Donation Attack",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0003",
-            "question": "Does the contract use OpenZeppelin's Governer or GovernorCompatibilityBravo? (version >=4.3.0 <4.9.1)",
-            "description": "Governor proposal creation may be blocked by frontrunning. By frontrunning the creation of a proposal, an attacker can become the proposer and gain the ability to cancel it. The attacker can do this repeatedly to try to prevent a proposal from being proposed at all. This impacts the Governor contract in v4.9.0 only, and the GovernorCompatibilityBravo contract since v4.3.0.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5h3x-9wvq-w4m2",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5672116",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Sandwich Attack",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0004",
-            "question": "Does the contract use OpenZeppelin's TransparentUpgradeableProxy? (version >=3.2.0 <4.8.3)",
-            "description": "Transparency is broken in case of selector clash with non-decodable calldata. The TransparentUpgradeableProxy uses the ifAdmin modifier to achieve transparency. If a non-admin address calls the proxy the call should be frowarded transparently. This works well in most cases, but the forwarding of some functions can fail if there is a selector conflict and decoding issue.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-mx2q-35m2-x2rh",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5425827",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Front-running Attack",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0005",
-            "question": "Does the contract use OpenZeppelin's GovernorCompatibilityBravo? (version >=4.3.0 <4.8.3)",
-            "description": "GovernorCompatibilityBravo may trim proposal calldata. The proposal creation entrypoint (propose) in GovernorCompatibilityBravo allows the creation of proposals with a signatures array shorter than the calldatas array. This causes the additional elements of the latter to be ignored, and if the proposal succeeds the corresponding actions would eventually execute without any calldata. The ProposalCreated event correctly represents what will eventually execute, but the proposal parameters as queried through getActions appear to respect the original intended calldata.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-93hq-5wgc-jc82",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5425051",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Basics",
+    "description": "",
+    "data": [
+        {
+          "category": "Version Issues",
+          "description": "Vulnerabilities related to versions.",
+          "data": [
+            {
+              "category": "Solidity Version Issues",
+              "description": "Vulnerabilities related to specific Solidity versions.",
+              "data": [
+                {
+                  "id": "SOL-encodepacked",
+                  "question": "Does the contract use `abi.encodePacked`, especially in hash generation? (version >= 0.8.17)",
+                  "description": "If you use `keccak256(abi.encodePacked(a, b))` and both `a` and `b` are dynamic types, it is easy to craft collisions in the hash value by moving parts of `a` into `b` and vice-versa. More specifically, `abi.encodePacked(\"a\", \"bc\") == abi.encodePacked(\"ab\", \"c\").",
+                  "remediation": "Use `abi.encode` instead of `abi.encodePacked`.",
+                  "references": [
+                    "https://solodit.xyz/issues/m-1-abiencodepacked-allows-hash-collision-sherlock-nftport-nftport-git",
+                    "https://docs.soliditylang.org/en/v0.8.17/abi-spec.html?highlight=collisions#non-standard-packed-mode"
+                  ]
+                },
+                {
+                  "id": "SOL-2023-2",
+                  "question": "BUILD: Is the contract optimized using sequences containing FullInliner with non-expression-split code? (version 0.6.7~0.8.20)",
+                  "description": "Optimizer sequences containing FullInliner do not preserve the evaluation order of arguments of inlined function calls in code that is not in expression-split form.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2023/07/19/full-inliner-non-expression-split-argument-evaluation-order-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2023-1",
+                  "question": "Is the `.selector` member accessed on complex expressions? (version 0.6.2~0.8.20)",
+                  "description": "Accessing the ``.selector`` member on complex expressions leaves the expression unevaluated in the legacy code generation.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2023/07/19/missing-side-effects-on-selector-access-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-7",
+                  "question": "Are there any functions that conditionally terminate inside an inline assembly? (version 0.8.13~0.8.16)",
+                  "description": "Calling functions that conditionally terminate the external EVM call using the assembly statements ``return(...)`` or ``stop()`` may result in incorrect removals of prior storage writes.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/09/08/storage-write-removal-before-conditional-termination/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-6",
+                  "question": "Are tuples containing a statically-sized calldata array at the end being ABI-encoded? (version 0.5.8~0.8.15)",
+                  "description": "ABI-encoding a tuple with a statically-sized calldata array in the last component would corrupt 32 leading bytes of its first dynamically encoded component.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/08/08/calldata-tuple-reencoding-head-overflow-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-5",
+                  "question": "Does the contract have functions that copy `bytes` arrays from memory or calldata directly to storage? (version 0.0.1~0.8.14)",
+                  "description": "Copying ``bytes`` arrays from memory or calldata to storage may result in dirty storage values.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/06/15/dirty-bytes-array-to-storage-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-4",
+                  "question": "Is there a function with multiple inline assembly blocks? (version 0.8.13~0.8.14)",
+                  "description": "The Yul optimizer may incorrectly remove memory writes from inline assembly blocks, that do not access solidity variables.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/06/15/inline-assembly-memory-side-effects-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-3",
+                  "question": "Is there any inconsistence (`memory` vs `calldata`) in the param type during inheritance? (version 0.6.9~0.8.13)",
+                  "description": "It was possible to change the data location of the parameters or return variables from ``calldata`` to ``memory`` and vice-versa while overriding internal and public functions. This caused invalid code to be generated when calling such a function internally through virtual function calls.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/05/17/data-location-inheritance-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-2",
+                  "question": "Is a nested array being ABI-encoded or passed directly to an external function? (version 0.5.8~0.8.13)",
+                  "description": "ABI-reencoding of nested dynamic calldata arrays did not always perform proper size checks against the size of calldata and could read beyond ``calldatasize()``.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/05/17/calldata-reencode-size-check-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2022-1",
+                  "question": "Is `abi.encodeCall` used together with fixed-length bytes literals? (version 0.8.11~0.8.12)",
+                  "description": "Literals used for a fixed length bytes parameter in ``abi.encodeCall`` were encoded incorrectly.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2022/03/16/encodecall-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2021-4",
+                  "question": "Is there any user defined types based on types shorter than 32 bytes? (version =0.8.8)",
+                  "description": "User defined value types with underlying type shorter than 32 bytes used incorrect storage layout and wasted storage",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2021/09/29/user-defined-value-types-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2021-3",
+                  "question": "Is there an immutable variable of signed integer type shorter than 256 bits? (version 0.6.5~0.8.8)",
+                  "description": "Immutable variables of signed integer type shorter than 256 bits can lead to values with invalid higher order bits if inline assembly is used.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2021/09/29/signed-immutables-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2021-2",
+                  "question": "Is there any use of `abi.encode` on memory with multi-dimensional array or structs? (version 0.4.16~0.8.3)",
+                  "description": "If used on memory byte arrays, result of the function ``abi.decode`` can depend on the contents of memory outside of the actual byte array that is decoded.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2021/04/21/decoding-from-memory-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2021-1",
+                  "question": "Is there an inline assembly block with `keccak256` inside? (version ~0.8.2)",
+                  "description": "The bytecode optimizer incorrectly re-used previously evaluated Keccak-256 hashes. You are unlikely to be affected if you do not compute Keccak-256 hashes in inline assembly.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2021/03/23/keccak-optimizer-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2020-11",
+                  "question": "Is there a copy of an empty `bytes` or `string` from `memory` or `calldata` to `storage`? (version ~0.7.3)",
+                  "description": "Copying an empty byte array (or string) from memory or calldata to storage can result in data corruption if the target array's length is increased subsequently without storing new data.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2020/10/19/empty-byte-array-copy-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2020-10",
+                  "question": "Is there a dynamically-sized storage-array with types of size at most 16 bytes? (version ~0.7.2)",
+                  "description": "When assigning a dynamically-sized array with types of size at most 16 bytes in storage causing the assigned array to shrink, some parts of deleted slots were not zeroed out.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2020/10/07/solidity-dynamic-array-cleanup-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2020-9",
+                  "question": "Are there any functions with the same name and parameter type inside the same contract? (version =0.7.1)",
+                  "description": "The compiler does not flag an error when two or more free functions with the same name and parameter types are defined in a source unit or when an imported free function alias shadows another free function with a different name but identical parameter types.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-8",
+                  "question": "Does the contract use internal library functions with calldata parameters via `using for`? (version =0.6.9)",
+                  "description": "Function calls to internal library functions with calldata parameters called via ``using for`` can result in invalid data being read.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-7",
+                  "question": "Are string literals with double backslashes passed directly to external or encoding functions with ABIEncoderV2 enabled? (version 0.5.14~0.6.7)",
+                  "description": "String literals containing double backslash characters passed directly to external or encoding function calls can lead to a different string being used when ABIEncoderV2 is enabled.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-6",
+                  "question": "Does the contract access slices of dynamic arrays, especially multi-dimensional ones? (version 0.6.0~0.6.7)",
+                  "description": "Accessing array slices of arrays with dynamically encoded base types (e.g. multi-dimensional arrays) can result in invalid data being read.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-5",
+                  "question": "Is there a contract with creation code, no constructor, but a base with a constructor that accepts non-zero values? (version 0.4.5~0.6.7)",
+                  "description": "The creation code of a contract that does not define a constructor but has a base that does define a constructor did not revert for calls with non-zero value.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-4",
+                  "question": "Does the contract use tuple assignments with multi-stack-slot components, like nested tuples or dynamic calldata references? (version 0.1.6~0.6.5)",
+                  "description": "Tuple assignments with components that occupy several stack slots, i.e. nested tuples, pointers to external functions or references to dynamically sized calldata arrays, can result in invalid values.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-3",
+                  "question": "Does the contract create extremely large memory arrays? (version 0.2.0~0.6.4)",
+                  "description": "The creation of very large memory arrays can result in overlapping memory regions and thus memory corruption.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2020/04/06/memory-creation-overflow-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2020-1",
+                  "question": "Does the contract's inline assembly with Yul optimizer use assignments inside for loops combined with continue or break? (version =0.6.0)",
+                  "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-2",
+                  "question": "Does the contract allow private methods to be overridden by inheriting contracts? (version 0.3.0~0.5.16)",
+                  "description": "Private methods can be overridden by inheriting contracts.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2020-1",
+                  "question": "Is there any Yul's continue or break statement inside the loop?? (version 0.5.8~0.5.15)",
+                  "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-10",
+                  "question": "Are both experimental ABIEncoderV2 and Yul optimizer activated? (version =0.5.14)",
+                  "description": "If both the experimental ABIEncoderV2 and the experimental Yul optimizer are activated, one component of the Yul optimizer may reuse data in memory that has been changed in the meantime.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-9",
+                  "question": "Does the contract read from calldata structs with dynamic yet statically-sized members? (version 0.5.6~0.5.10)",
+                  "description": "Reading from calldata structs that contain dynamically encoded, but statically-sized members can result in incorrect values.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-8",
+                  "question": "Does the contract assign arrays of signed integers to differently typed storage arrays? (version 0.4.7~0.5.9)",
+                  "description": "Assigning an array of signed integers to a storage array of different type can lead to data corruption in that array.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2019/06/25/solidity-storage-array-bugs/"
+                  ]
+                },
+                {
+                  "id": "SOL-2019-7",
+                  "question": "Does the contract directly encode storage arrays with structs or static arrays in external calls or abi.encode*? (version 0.4.16~0.5.9)",
+                  "description": "Storage arrays containing structs or other statically-sized arrays are not read properly when directly encoded in external function calls or in abi.encode*.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2019/06/25/solidity-storage-array-bugs/"
+                  ]
+                },
+                {
+                  "id": "SOL-2019-6",
+                  "question": "Does the contract's constructor accept structs or arrays with dynamic arrays? (version 0.4.16~0.5.8)",
+                  "description": "A contract's constructor that takes structs or arrays that contain dynamically-sized arrays reverts or decodes to invalid data.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-5-1",
+                  "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.5.0~0.5.7)",
+                  "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-5-2",
+                  "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.4.5~0.4.25)",
+                  "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-4-1",
+                  "question": "Does the library use contract types in events? (version 0.5.0~0.5.7)",
+                  "description": "Contract types used in events in libraries cause an incorrect event signature hash",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-4-2",
+                  "question": "Does the library use contract types in events? (version 0.3.0~0.4.25)",
+                  "description": "Contract types used in events in libraries cause an incorrect event signature hash",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2019-3-1",
+                  "question": "Does the contract encode storage structs or arrays with types under 32 bytes directly using experimental ABIEncoderV2? (version 0.5.0~0.5.6)",
+                  "description": "Storage structs and arrays with types shorter than 32 bytes can cause data corruption if encoded directly from storage using the experimental ABIEncoderV2.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2019-3-2",
+                  "question": "Does the contract encode storage structs or arrays with types under 32 bytes directly using experimental ABIEncoderV2? (version 0.4.19~0.4.25)",
+                  "description": "Storage structs and arrays with types shorter than 32 bytes can cause data corruption if encoded directly from storage using the experimental ABIEncoderV2.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2019-2",
+                  "question": "Does the contract's optimizer handle byte opcodes with a second argument of 31 or an equivalent constant expression? (version 0.5.5~0.5.6)",
+                  "description": "The optimizer incorrectly handles byte opcodes whose second argument is 31 or a constant expression that evaluates to 31. This can result in unexpected values.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2019-1",
+                  "question": "Are there double bitwise shifts with large constants that might sum up to overflow 256 bits? (version =0.5.5)",
+                  "description": "Double bitwise shifts by large constants whose sum overflows 256 bits can result in unexpected values.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
+                  ]
+                },
+                {
+                  "id": "SOL-2018-4",
+                  "question": "Is the ** operator used with an exponent type shorter than 256 bits? (version ~0.4.24)",
+                  "description": "Using the ** operator with an exponent of type shorter than 256 bits can result in unexpected values.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
+                  ]
+                },
+                {
+                  "id": "SOL-2018-3",
+                  "question": "Are structs used in the logged events? (version 0.4.17~0.4.24)",
+                  "description": "Using structs in events logged wrong data.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
+                  ]
+                },
+                {
+                  "id": "SOL-2018-2",
+                  "question": "Are functions returning multi-dimensional fixed-size arrays called? (version 0.1.4~0.4.21)",
+                  "description": "Calling functions that return multi-dimensional fixed-size arrays can result in memory corruption.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
+                  ]
+                },
+                {
+                  "id": "SOL-2018-1",
+                  "question": "Does the contract use both new-style and old-style constructors simultaneously? (version =0.4.22)",
+                  "description": "If a contract has both a new-style constructor (using the constructor keyword) and an old-style constructor (a function with the same name as the contract) at the same time, one of them will be ignored.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2017-5",
+                  "question": "Is there a function name crafted to potentially override the fallback function execution? (version ~0.4.17)",
+                  "description": "It is possible to craft the name of a function such that it is executed instead of the fallback function in very specific circumstances.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2017-4",
+                  "question": "Is the low-level .delegatecall() used without checking the actual execution outcome? (version 0.3.0~0.4.14)",
+                  "description": "The low-level .delegatecall() does not return the execution outcome, but converts the value returned by the functioned called to a boolean instead.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2017-3",
+                  "question": "Is the ecrecover() function used without validating its input? (version ~0.4.13)",
+                  "description": "The ecrecover() builtin can return garbage for malformed input.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2017-2",
+                  "question": "Are there any instances where empty strings (\"\") are directly passed to function calls? (version ~0.4.11)",
+                  "description": "If \"\" is used in a function call, the following function arguments will not be correctly passed to the function.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    null
+                  ]
+                },
+                {
+                  "id": "SOL-2017-1",
+                  "question": "Does the optimizer replace specific constants with alternative computations? (version ~0.4.10)",
+                  "description": "In some situations, the optimizer replaces certain numbers in the code with routines that compute different numbers.",
+                  "remediation": "Use the latest Solidity version.",
+                  "references": [
+                    "https://blog.soliditylang.org/2017/05/03/solidity-optimizer-bug/"
+                  ]
+                }
+              ]
+            },
+            {
+              "category": "EIP Adoption Issues",
+              "description": "Vulnerabilities related to specific EIP.",
+              "data": [
+                {
+                  "id": "EIP-selfdestruct",
+                  "question": "Does the contract use `selfdestruct()`?",
+                  "description": "`selfdestruct` will not be available after EIP-4758. This EIP will rename the SELFDESTRUCT opcode and replace its functionality.",
+                  "remediation": "Do not use `selfdestruct` to ensure the contract works in the future.",
+                  "references": [
+                    "https://eips.ethereum.org/EIPS/eip-4758",
+                    "https://solodit.xyz/issues/m-09-selfdestruct-will-not-be-available-after-eip-4758-code4rena-escher-escher-contest-git",
+                    "https://solodit.xyz/issues/m-03-system-will-not-work-anymore-after-eip-4758-code4rena-axelar-network-axelar-network-git"
+                  ]
+                }
+              ]
+            },
+            {
+              "category": "OpenZeppelin Version Issues",
+              "description": "Vulnerabilities related to specific OpenZeppelin versions.",
+              "data": [
+                {
+                  "id": "OZ-V-0001",
+                  "question": "Does the contract use `ERC2771Context`? (version >=4.0.0 <4.9.3)",
+                  "description": "`ERC2771Context._msgData()` reverts if `msg.data.length < 20`. The correct behavior is not specified in ERC-2771, but based on the specified behavior of `_msgSender` we assume the full `msg.data` should be returned in this case.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5838352",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts",
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/4484"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0002",
+                  "question": "Does the contract use OpenZeppelin's `MerkleProof`? (version >=4.7.0 <4.9.2)",
+                  "description": "When the `verifyMultiProof`, `verifyMultiProofCalldata`, `processMultiProof`, or `processMultiProofCalldata` functions are in use, it is possible to construct merkle trees that allow forging a valid multiproof for an arbitrary set of leaves.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/advisories/GHSA-wprv-93r4-jj2p",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5711902",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0003",
+                  "question": "Does the contract use OpenZeppelin's Governer or GovernorCompatibilityBravo? (version >=4.3.0 <4.9.1)",
+                  "description": "Governor proposal creation may be blocked by frontrunning. By frontrunning the creation of a proposal, an attacker can become the proposer and gain the ability to cancel it. The attacker can do this repeatedly to try to prevent a proposal from being proposed at all. This impacts the Governor contract in v4.9.0 only, and the GovernorCompatibilityBravo contract since v4.3.0.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5h3x-9wvq-w4m2",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5672116",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0004",
+                  "question": "Does the contract use OpenZeppelin's TransparentUpgradeableProxy? (version >=3.2.0 <4.8.3)",
+                  "description": "Transparency is broken in case of selector clash with non-decodable calldata. The TransparentUpgradeableProxy uses the ifAdmin modifier to achieve transparency. If a non-admin address calls the proxy the call should be frowarded transparently. This works well in most cases, but the forwarding of some functions can fail if there is a selector conflict and decoding issue.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-mx2q-35m2-x2rh",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5425827",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0005",
+                  "question": "Does the contract use OpenZeppelin's GovernorCompatibilityBravo? (version >=4.3.0 <4.8.3)",
+                  "description": "GovernorCompatibilityBravo may trim proposal calldata. The proposal creation entrypoint (propose) in GovernorCompatibilityBravo allows the creation of proposals with a signatures array shorter than the calldatas array. This causes the additional elements of the latter to be ignored, and if the proposal succeeds the corresponding actions would eventually execute without any calldata. The ProposalCreated event correctly represents what will eventually execute, but the proposal parameters as queried through getActions appear to respect the original intended calldata.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-93hq-5wgc-jc82",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5425051",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0006",
+                  "question": "Does the contract use OpenZeppelin's ERC721Consecutive?(version >=4.8.0 <4.8.2)",
+                  "description": "The ERC721Consecutive contract designed for minting NFTs in batches does not update balances when a batch has size 1 and consists of a single token. Subsequent transfers from the receiver of that token may overflow the balance as reported by balanceOf. The issue exclusively presents with batches of size 1.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-878m-3g6q-594q",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-3339527",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0007",
+                  "question": "Does the contract use OpenZeppelin's ECDSA.recover or ECDSA.tryRecover? (version <4.7.3)",
+                  "description": "ECDSA signature malleability. The functions ECDSA.recover and ECDSA.tryRecover are vulnerable to a kind of signature malleability due to accepting EIP-2098 compact signatures in addition to the traditional 65 byte signature format. This is only an issue for the functions that take a single bytes argument, and not the functions that take r, v, s or r, vs as separate arguments. The potentially affected contracts are those that implement signature reuse or replay protection by marking the signature itself as used rather than the signed message or a nonce included in it. A user may take a signature that has already been submitted, submit it again in a different form, and bypass this protection.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-4h98-2769-gh6h",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2980279",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0008",
+                  "question": "Does the contract use OpenZeppelin's ERC165Checker or ERC165CheckerUpgradeable? (version >=2.3.0 <4.7.2)",
+                  "description": "Denial of Service (DoS) in the `supportsERC165InterfaceUnchecked()` function in `ERC165Checker.sol` and `ERC165CheckerUpgradeable.sol`, which can consume excessive resources when processing a large amount of data via an EIP-165 supportsInterface query.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3587",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2965798",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0009",
+                  "question": "Does the contract use OpenZeppelin's LibArbitrumL2 or CrossChainEnabledArbitrumL2? (version >=4.6.0 <4.7.2)",
+                  "description": "Incorrect resource transfer between spheres via contracts using the cross-chain utilities for Arbitrum L2: `CrossChainEnabledArbitrumL2` or `LibArbitrumL2`. Calls from EOAs would be classified as cross-chain calls. The vulnerability will classify direct interactions of externally owned accounts (EOAs) as cross-chain calls, even though they are not started on L1.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3578/files",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2965580",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0010",
+                  "question": "Does the contract use OpenZeppelin's GovernorVotesQuorumFraction? (version >=4.3.0 <4.7.2)",
+                  "description": "Checkpointing quorum was missing and past proposals that failed due to lack of quorum could pass later. It is necessary to avoid quorum changes making old, failed because of quorum, proposals suddenly successful.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3561",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2964946",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0011",
+                  "question": "Does the contract use OpenZeppelin's SignatureChecker? (version >=4.1.0 <4.7.1)",
+                  "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. SignatureChecker.isValidSignatureNow is not expected to revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-1271 as expected. The contracts that may be affected are those that use SignatureChecker to check the validity of a signature and handle invalid signatures in a way other than reverting.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3552",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2958050",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0012",
+                  "question": "Does the contract use OpenZeppelin's ERC165Checker? (version >=4.0.0 <4.7.1)",
+                  "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. ERC165Checker.supportsInterface is designed to always successfully return a boolean, and under no circumstance revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-165 as expected, specifically if it returns a value other than 0 or 1. The contracts that may be affected are those that use ERC165Checker to check for support for an interface and then handle the lack of support in a way other than reverting.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3552",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2958047",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0013",
+                  "question": "Does the contract use OpenZeppelin's GovernorCompatibilityBravo? (version >=4.3.0 <4.4.2)",
+                  "description": "GovernorCompatibilityBravo incorrect ABI encoding may lead to unexpected behavior",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-m6w8-fq7v-ph4m",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2336323",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0014",
+                  "question": "Does the contract use OpenZeppelin's Initializable? (version >=3.2.0 <4.4.1)",
+                  "description": "It is possible for `initializer()`-protected functions to be executed twice, if this happens in the same transaction. For this to happen, either one call has to be a subcall the other, or both call have to be subcalls of a common initializer()-protected function. This can particularly be dangerous is the initialization is not part of the proxy construction, and reentrancy is possible by executing an external call to an untrusted address.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3006",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2320176",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0015",
+                  "question": "Does the contract use OpenZeppelin's ERC1155? (version >=4.2.0 <4.3.3)",
+                  "description": "Possible inconsistency in the value returned by totalSupply DURING a mint. If you mint a token, the receiver is a smart contract, and the receiver implements onERC1155Receive, then this receiver is called with the balance already updated, but with the totalsupply not yet updated.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/2956",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1921095",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0016",
+                  "question": "Does the contract use OpenZeppelin's UUPSUpgradeable? (version >=4.1.0 <4.3.2)",
+                  "description": "Upgradeable contracts using UUPSUpgradeable may be vulnerable to an attack affecting uninitialized implementation contracts.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5vp3-v4hc-gx76",
+                    "https://forum.openzeppelin.com/t/security-advisory-initialize-uups-implementation-contracts/15301",
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/commit/024cc50df478d2e8f78539819749e94d6df60592",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1920946",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0017",
+                  "question": "Does the contract use OpenZeppelin's TimelockController? (version >=4.0.0-beta.0 <4.3.1\\n<3.4.2)",
+                  "description": "A vulnerability in TimelockController allowed an actor with the executor role to take immediate control of the timelock, by resetting the delay to 0 and escalating privileges, thus gaining unrestricted access to assets held in the contract. Instances with the executor role set to 'open' allow anyone to use the executor role, thus leaving the timelock at risk of being taken over by an attacker.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-fg47-3c2x-m2wr",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1570170",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                },
+                {
+                  "id": "OZ-V-0018",
+                  "question": "Does the contract use OpenZeppelin's ERC777? (version <3.4.0-rc.0)",
+                  "description": "Extending this contract with a custom _beforeTokenTransfer function could allow a reentrancy attack to happen. More specifically, when burning tokens, _beforeTokenTransfer is invoked before the send hook is externally called on the sender while token balances are adjusted afterwards. At the moment of the call to the sender, which can result in reentrancy, state managed by _beforeTokenTransfer may not correspond to the actual token balances or total supply.",
+                  "remediation": "Use the latest stable OpenZeppelin version",
+                  "reference": [
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/2483",
+                    "https://github.com/OpenZeppelin/openzeppelin-contracts/commit/3b4c951838ddf82f4d2b44ae7c967f0573039f28",
+                    "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1065254",
+                    "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Inheritance",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Initialization",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Access Control",
+          "description": "Vulnerabilities related to access control.",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "B-F-001",
+                  "question": "Should the visibility be `external`/`public`?",
+                  "description": "`external`/`public` functions can be called by anyone and MUST be used carefully.",
+                  "remediation": "Limit the visibility of the function.",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Function",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Input/Output Validation",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Upgradable",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Proxy",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Array",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Map",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "category": "Math",
+          "description": "",
+          "data": [
+            {
+              "category": "",
+              "description": "",
+              "data": [
+                {
+                  "id": "",
+                  "question": "",
+                  "description": "",
+                  "remediation": "",
+                  "references": []
+                }
+              ]
+            }
+          ]
+        }
+    ]
+  },
+  {
+    "category": "External Call",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0006",
-            "question": "Does the contract use OpenZeppelin's ERC721Consecutive?(version >=4.8.0 <4.8.2)",
-            "description": "The ERC721Consecutive contract designed for minting NFTs in batches does not update balances when a batch has size 1 and consists of a single token. Subsequent transfers from the receiver of that token may overflow the balance as reported by balanceOf. The issue exclusively presents with batches of size 1.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-878m-3g6q-594q",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-3339527",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Token",
+    "description": "",
+    "data": [
+      {
+        "category": "Fungible : ERC20",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0007",
-            "question": "Does the contract use OpenZeppelin's ECDSA.recover or ECDSA.tryRecover? (version <4.7.3)",
-            "description": "ECDSA signature malleability. The functions ECDSA.recover and ECDSA.tryRecover are vulnerable to a kind of signature malleability due to accepting EIP-2098 compact signatures in addition to the traditional 65 byte signature format. This is only an issue for the functions that take a single bytes argument, and not the functions that take r, v, s or r, vs as separate arguments. The potentially affected contracts are those that implement signature reuse or replay protection by marking the signature itself as used rather than the signed message or a nonce included in it. A user may take a signature that has already been submitted, submit it again in a different form, and bypass this protection.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-4h98-2769-gh6h",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2980279",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Non-fungible : ERC721/1155",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0008",
-            "question": "Does the contract use OpenZeppelin's ERC165Checker or ERC165CheckerUpgradeable? (version >=2.3.0 <4.7.2)",
-            "description": "Denial of Service (DoS) in the `supportsERC165InterfaceUnchecked()` function in `ERC165Checker.sol` and `ERC165CheckerUpgradeable.sol`, which can consume excessive resources when processing a large amount of data via an EIP-165 supportsInterface query.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3587",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2965798",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Defi",
+    "description": "",
+    "data": [
+      {
+        "category": "AMM",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0009",
-            "question": "Does the contract use OpenZeppelin's LibArbitrumL2 or CrossChainEnabledArbitrumL2? (version >=4.6.0 <4.7.2)",
-            "description": "Incorrect resource transfer between spheres via contracts using the cross-chain utilities for Arbitrum L2: `CrossChainEnabledArbitrumL2` or `LibArbitrumL2`. Calls from EOAs would be classified as cross-chain calls. The vulnerability will classify direct interactions of externally owned accounts (EOAs) as cross-chain calls, even though they are not started on L1.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3578/files",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2965580",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Lending",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0010",
-            "question": "Does the contract use OpenZeppelin's GovernorVotesQuorumFraction? (version >=4.3.0 <4.7.2)",
-            "description": "Checkpointing quorum was missing and past proposals that failed due to lack of quorum could pass later. It is necessary to avoid quorum changes making old, failed because of quorum, proposals suddenly successful.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3561",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2964946",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "FlashLoan",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0011",
-            "question": "Does the contract use OpenZeppelin's SignatureChecker? (version >=4.1.0 <4.7.1)",
-            "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. SignatureChecker.isValidSignatureNow is not expected to revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-1271 as expected. The contracts that may be affected are those that use SignatureChecker to check the validity of a signature and handle invalid signatures in a way other than reverting.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3552",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2958050",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Staking",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0012",
-            "question": "Does the contract use OpenZeppelin's ERC165Checker? (version >=4.0.0 <4.7.1)",
-            "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. ERC165Checker.supportsInterface is designed to always successfully return a boolean, and under no circumstance revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-165 as expected, specifically if it returns a value other than 0 or 1. The contracts that may be affected are those that use ERC165Checker to check for support for an interface and then handle the lack of support in a way other than reverting.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3552",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2958047",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Account Abstract",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0013",
-            "question": "Does the contract use OpenZeppelin's GovernorCompatibilityBravo? (version >=4.3.0 <4.4.2)",
-            "description": "GovernorCompatibilityBravo incorrect ABI encoding may lead to unexpected behavior",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-m6w8-fq7v-ph4m",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2336323",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Timelock",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0014",
-            "question": "Does the contract use OpenZeppelin's Initializable? (version >=3.2.0 <4.4.1)",
-            "description": "It is possible for `initializer()`-protected functions to be executed twice, if this happens in the same transaction. For this to happen, either one call has to be a subcall the other, or both call have to be subcalls of a common initializer()-protected function. This can particularly be dangerous is the initialization is not part of the proxy construction, and reentrancy is possible by executing an external call to an untrusted address.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3006",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2320176",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Hash",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0015",
-            "question": "Does the contract use OpenZeppelin's ERC1155? (version >=4.2.0 <4.3.3)",
-            "description": "Possible inconsistency in the value returned by totalSupply DURING a mint. If you mint a token, the receiver is a smart contract, and the receiver implements onERC1155Receive, then this receiver is called with the balance already updated, but with the totalsupply not yet updated.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/2956",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1921095",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Signature",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0016",
-            "question": "Does the contract use OpenZeppelin's UUPSUpgradeable? (version >=4.1.0 <4.3.2)",
-            "description": "Upgradeable contracts using UUPSUpgradeable may be vulnerable to an attack affecting uninitialized implementation contracts.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5vp3-v4hc-gx76",
-              "https://forum.openzeppelin.com/t/security-advisory-initialize-uups-implementation-contracts/15301",
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/commit/024cc50df478d2e8f78539819749e94d6df60592",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1920946",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "DAO",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0017",
-            "question": "Does the contract use OpenZeppelin's TimelockController? (version >=4.0.0-beta.0 <4.3.1\\n<3.4.2)",
-            "description": "A vulnerability in TimelockController allowed an actor with the executor role to take immediate control of the timelock, by resetting the delay to 0 and escalating privileges, thus gaining unrestricted access to assets held in the contract. Instances with the executor role set to 'open' allow anyone to use the executor role, thus leaving the timelock at risk of being taken over by an attacker.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-fg47-3c2x-m2wr",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1570170",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Centralization Risk",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
           {
-            "id": "OZ-V-0018",
-            "question": "Does the contract use OpenZeppelin's ERC777? (version <3.4.0-rc.0)",
-            "description": "Extending this contract with a custom _beforeTokenTransfer function could allow a reentrancy attack to happen. More specifically, when burning tokens, _beforeTokenTransfer is invoked before the send hook is externally called on the sender while token balances are adjusted afterwards. At the moment of the call to the sender, which can result in reentrancy, state managed by _beforeTokenTransfer may not correspond to the actual token balances or total supply.",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/2483",
-              "https://github.com/OpenZeppelin/openzeppelin-contracts/commit/3b4c951838ddf82f4d2b44ae7c967f0573039f28",
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1065254",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Multi-chain/Cross-chain",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Integrations",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "category": "Heuristics",
+    "description": "",
+    "data": [
+      {
+        "category": "",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "",
+            "description": "",
+            "remediation": "",
+            "references": []
           }
         ]
       }

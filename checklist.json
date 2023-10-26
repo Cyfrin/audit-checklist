@@ -461,200 +461,201 @@
         "data": [
           {
             "id": "OZ-V-0001",
-            "question": "(version >=4.0.0 <4.9.3)",
-            "description": "",
+            "question": "Does the contract use `ERC2771Context`? (version >=4.0.0 <4.9.3)",
+            "description": "`ERC2771Context._msgData()` reverts if `msg.data.length < 20`. The correct behavior is not specified in ERC-2771, but based on the specified behavior of `_msgSender` we assume the full `msg.data` should be returned in this case.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5838352",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
+              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts",
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/4484"
             ]
           },
           {
             "id": "OZ-V-0002",
-            "question": "(version >=4.7.0 <4.9.2)",
-            "description": "",
+            "question": "Does the contract use OpenZeppelin's `MerkleProof`? (version >=4.7.0 <4.9.2)",
+            "description": "When the `verifyMultiProof`, `verifyMultiProofCalldata`, `processMultiProof`, or `processMultiProofCalldata` functions are in use, it is possible to construct merkle trees that allow forging a valid multiproof for an arbitrary set of leaves.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/advisories/GHSA-wprv-93r4-jj2p",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5711902",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
             "id": "OZ-V-0003",
-            "question": "(version >=4.3.0 <4.9.1)",
-            "description": "",
+            "question": "Does the contract use OpenZeppelin's Governer or GovernorCompatibilityBravo? (version >=4.3.0 <4.9.1)",
+            "description": "Governor proposal creation may be blocked by frontrunning. By frontrunning the creation of a proposal, an attacker can become the proposer and gain the ability to cancel it. The attacker can do this repeatedly to try to prevent a proposal from being proposed at all. This impacts the Governor contract in v4.9.0 only, and the GovernorCompatibilityBravo contract since v4.3.0.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5h3x-9wvq-w4m2",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5672116",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
             "id": "OZ-V-0004",
-            "question": "(version >=3.2.0 <4.8.3)",
-            "description": "",
+            "question": "Does the contract use OpenZeppelin's TransparentUpgradeableProxy? (version >=3.2.0 <4.8.3)",
+            "description": "Transparency is broken in case of selector clash with non-decodable calldata. The TransparentUpgradeableProxy uses the ifAdmin modifier to achieve transparency. If a non-admin address calls the proxy the call should be frowarded transparently. This works well in most cases, but the forwarding of some functions can fail if there is a selector conflict and decoding issue.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-mx2q-35m2-x2rh",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5425827",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
             "id": "OZ-V-0005",
-            "question": "(version >=4.3.0 <4.8.3)",
-            "description": "",
+            "question": "Does the contract use OpenZeppelin's GovernorCompatibilityBravo? (version >=4.3.0 <4.8.3)",
+            "description": "GovernorCompatibilityBravo may trim proposal calldata. The proposal creation entrypoint (propose) in GovernorCompatibilityBravo allows the creation of proposals with a signatures array shorter than the calldatas array. This causes the additional elements of the latter to be ignored, and if the proposal succeeds the corresponding actions would eventually execute without any calldata. The ProposalCreated event correctly represents what will eventually execute, but the proposal parameters as queried through getActions appear to respect the original intended calldata.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-93hq-5wgc-jc82",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-5425051",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
             "id": "OZ-V-0006",
-            "question": "(version >=4.8.0 <4.8.2)",
-            "description": "",
+            "question": "Does the contract use OpenZeppelin's ERC721Consecutive?(version >=4.8.0 <4.8.2)",
+            "description": "The ERC721Consecutive contract designed for minting NFTs in batches does not update balances when a batch has size 1 and consists of a single token. Subsequent transfers from the receiver of that token may overflow the balance as reported by balanceOf. The issue exclusively presents with batches of size 1.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-878m-3g6q-594q",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-3339527",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
             "id": "OZ-V-0007",
-            "question": "(version >=4.8.0 <4.8.2)",
-            "description": "",
+            "question": "Does the contract use OpenZeppelin's ECDSA.recover or ECDSA.tryRecover? (version <4.7.3)",
+            "description": "ECDSA signature malleability. The functions ECDSA.recover and ECDSA.tryRecover are vulnerable to a kind of signature malleability due to accepting EIP-2098 compact signatures in addition to the traditional 65 byte signature format. This is only an issue for the functions that take a single bytes argument, and not the functions that take r, v, s or r, vs as separate arguments. The potentially affected contracts are those that implement signature reuse or replay protection by marking the signature itself as used rather than the signed message or a nonce included in it. A user may take a signature that has already been submitted, submit it again in a different form, and bypass this protection.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-3339525",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
-          {
-            "id": "OZ-V-0008",
-            "question": "(version <4.7.3)",
-            "description": "",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-4h98-2769-gh6h",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2980279",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0009",
-            "question": "(version >=2.3.0 <4.7.2)",
-            "description": "",
+            "id": "OZ-V-0008",
+            "question": "Does the contract use OpenZeppelin's ERC165Checker or ERC165CheckerUpgradeable? (version >=2.3.0 <4.7.2)",
+            "description": "Denial of Service (DoS) in the `supportsERC165InterfaceUnchecked()` function in `ERC165Checker.sol` and `ERC165CheckerUpgradeable.sol`, which can consume excessive resources when processing a large amount of data via an EIP-165 supportsInterface query.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3587",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2965798",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0010",
-            "question": "(version >=4.6.0 <4.7.2)",
-            "description": "",
+            "id": "OZ-V-0009",
+            "question": "Does the contract use OpenZeppelin's LibArbitrumL2 or CrossChainEnabledArbitrumL2? (version >=4.6.0 <4.7.2)",
+            "description": "Incorrect resource transfer between spheres via contracts using the cross-chain utilities for Arbitrum L2: `CrossChainEnabledArbitrumL2` or `LibArbitrumL2`. Calls from EOAs would be classified as cross-chain calls. The vulnerability will classify direct interactions of externally owned accounts (EOAs) as cross-chain calls, even though they are not started on L1.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3578/files",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2965580",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0011",
-            "question": "(version >=4.3.0 <4.7.2)",
-            "description": "",
+            "id": "OZ-V-0010",
+            "question": "Does the contract use OpenZeppelin's GovernorVotesQuorumFraction? (version >=4.3.0 <4.7.2)",
+            "description": "Checkpointing quorum was missing and past proposals that failed due to lack of quorum could pass later. It is necessary to avoid quorum changes making old, failed because of quorum, proposals suddenly successful.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3561",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2964946",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0012",
-            "question": "(version >=4.1.0 <4.7.1)",
-            "description": "",
+            "id": "OZ-V-0011",
+            "question": "Does the contract use OpenZeppelin's SignatureChecker? (version >=4.1.0 <4.7.1)",
+            "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. SignatureChecker.isValidSignatureNow is not expected to revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-1271 as expected. The contracts that may be affected are those that use SignatureChecker to check the validity of a signature and handle invalid signatures in a way other than reverting.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3552",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2958050",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0013",
-            "question": "(version >=4.0.0 <4.7.1)",
-            "description": "",
+            "id": "OZ-V-0012",
+            "question": "Does the contract use OpenZeppelin's ERC165Checker? (version >=4.0.0 <4.7.1)",
+            "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. ERC165Checker.supportsInterface is designed to always successfully return a boolean, and under no circumstance revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-165 as expected, specifically if it returns a value other than 0 or 1. The contracts that may be affected are those that use ERC165Checker to check for support for an interface and then handle the lack of support in a way other than reverting.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3552",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2958047",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0014",
-            "question": "(version >=4.3.0 <4.4.2)",
-            "description": "",
+            "id": "OZ-V-0013",
+            "question": "Does the contract use OpenZeppelin's GovernorCompatibilityBravo? (version >=4.3.0 <4.4.2)",
+            "description": "GovernorCompatibilityBravo incorrect ABI encoding may lead to unexpected behavior",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-m6w8-fq7v-ph4m",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2336323",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0015",
-            "question": "(version >=3.2.0 <4.4.1)",
-            "description": "",
+            "id": "OZ-V-0014",
+            "question": "Does the contract use OpenZeppelin's Initializable? (version >=3.2.0 <4.4.1)",
+            "description": "It is possible for `initializer()`-protected functions to be executed twice, if this happens in the same transaction. For this to happen, either one call has to be a subcall the other, or both call have to be subcalls of a common initializer()-protected function. This can particularly be dangerous is the initialization is not part of the proxy construction, and reentrancy is possible by executing an external call to an untrusted address.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3006",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-2320176",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0016",
-            "question": "(version >=4.2.0 <4.3.3)",
-            "description": "",
+            "id": "OZ-V-0015",
+            "question": "Does the contract use OpenZeppelin's ERC1155? (version >=4.2.0 <4.3.3)",
+            "description": "Possible inconsistency in the value returned by totalSupply DURING a mint. If you mint a token, the receiver is a smart contract, and the receiver implements onERC1155Receive, then this receiver is called with the balance already updated, but with the totalsupply not yet updated.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/2956",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1921095",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0017",
-            "question": "(version >=4.1.0 <4.3.2)",
-            "description": "",
+            "id": "OZ-V-0016",
+            "question": "Does the contract use OpenZeppelin's UUPSUpgradeable? (version >=4.1.0 <4.3.2)",
+            "description": "Upgradeable contracts using UUPSUpgradeable may be vulnerable to an attack affecting uninitialized implementation contracts.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5vp3-v4hc-gx76",
+              "https://forum.openzeppelin.com/t/security-advisory-initialize-uups-implementation-contracts/15301",
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/commit/024cc50df478d2e8f78539819749e94d6df60592",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1920946",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0018",
-            "question": "(version >=4.1.0 <4.3.2)",
-            "description": "",
+            "id": "OZ-V-0017",
+            "question": "Does the contract use OpenZeppelin's TimelockController? (version >=4.0.0-beta.0 <4.3.1\\n<3.4.2)",
+            "description": "A vulnerability in TimelockController allowed an actor with the executor role to take immediate control of the timelock, by resetting the delay to 0 and escalating privileges, thus gaining unrestricted access to assets held in the contract. Instances with the executor role set to 'open' allow anyone to use the executor role, thus leaving the timelock at risk of being taken over by an attacker.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
-              "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1585627",
-              "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
-            ]
-          },
-          {
-            "id": "OZ-V-0019",
-            "question": "(version >=4.0.0-beta.0 <4.3.1\\n<3.4.2)",
-            "description": "",
-            "remediation": "Use the latest stable OpenZeppelin version",
-            "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-fg47-3c2x-m2wr",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1570170",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]
           },
           {
-            "id": "OZ-V-0020",
-            "question": "(version <3.4.0-rc.0)",
-            "description": "",
+            "id": "OZ-V-0018",
+            "question": "Does the contract use OpenZeppelin's ERC777? (version <3.4.0-rc.0)",
+            "description": "Extending this contract with a custom _beforeTokenTransfer function could allow a reentrancy attack to happen. More specifically, when burning tokens, _beforeTokenTransfer is invoked before the send hook is externally called on the sender while token balances are adjusted afterwards. At the moment of the call to the sender, which can result in reentrancy, state managed by _beforeTokenTransfer may not correspond to the actual token balances or total supply.",
             "remediation": "Use the latest stable OpenZeppelin version",
             "reference": [
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/pull/2483",
+              "https://github.com/OpenZeppelin/openzeppelin-contracts/commit/3b4c951838ddf82f4d2b44ae7c967f0573039f28",
               "https://security.snyk.io/vuln/SNYK-JS-OPENZEPPELINCONTRACTS-1065254",
               "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts"
             ]

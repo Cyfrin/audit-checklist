@@ -1134,6 +1134,15 @@
             "references": [
 
             ]
+          },
+          {
+            "id": "",
+            "question": "Does the function gets the payment amount as a parameter?",
+            "description": "For ETH deposits, `msg.value` must be checked if it is not less than the amount specified.",
+            "remediation": "Require `msg.value==amount`.",
+            "references": [
+
+            ]
           }
         ]
       },
@@ -1199,7 +1208,18 @@
         "description": "Specifying fixed gas amounts can lead to out-of-gas vulnerabilities.",
         "remediation": "Use dynamic gas estimation or ensure sufficient gas is available before the call.",
         "references": [
-          "https://solodit.xyz/issues/m-02-fixed-amount-of-gas-sent-in-call-may-be-insufficient-code4rena-joyn-joyn-contest-git"
+          "https://solodit.xyz/issues/m-02-fixed-amount-of-gas-sent-in-call-may-be-insufficient-code4rena-joyn-joyn-contest-git",
+          "https://solodit.xyz/issues/a-malicious-fee-receiver-can-cause-a-denial-of-service-trailofbits-nftx-protocol-v2-pdf"
+        ]
+      },
+      {
+        "id": "",
+        "question": "What happens if the call consumes all provided gas?",
+        "description": "Calls that consume all available gas can halt subsequent actions.",
+        "remediation": "Ensure enough gas is reserved for post-call tasks or use dynamic gas estimation.",
+        "references": [
+          "https://solodit.xyz/issues/a-malicious-fee-receiver-can-cause-a-denial-of-service-trailofbits-nftx-protocol-v2-pdf",
+          "https://solodit.xyz/issues/poison-order-that-consumes-gas-can-block-market-trades-wont-fix-consensys-0x-v3-exchange-markdown"
         ]
       },
       {
@@ -1209,6 +1229,15 @@
         "remediation": "Limit data passed or employ inline assembly to manage data transfer.",
         "references": [
           "https://solodit.xyz/issues/h-2-malicious-user-can-use-an-excessively-large-_toaddress-in-oftcoresendfrom-to-break-layerzero-communication-sherlock-uxd-uxd-protocol-git"
+        ]
+      },
+      {
+        "id": "",
+        "question": "What happens if the call returns vast data?",
+        "description": "External calls returning vast data can deplete available gas.",
+        "remediation": "Limit or verify data size returned from external sources.",
+        "references": [
+
         ]
       },
       {
@@ -1242,11 +1271,21 @@
       },
       {
         "id": "",
-        "question": "Can the external call, if manipulated or returning large data, exhaust gas and result in a DoS?",
-        "description": "External calls returning vast data can deplete available gas.",
-        "remediation": "Limit or verify data size returned from external sources.",
+        "question": "What are the implications if the call reenters a different function?",
+        "description": "Reentrant calls to different functions can unpredictably alter contract states. Note that view functions should be checked as well to prevent the Readonly Reentrancy.",
+        "remediation": "Ensure the contract state is maintained reasonably during the external interactions.",
         "references": [
-          "https://solodit.xyz/issues/m-01-delegate-call-in-vault_execute-can-alter-vaults-ownership-code4rena-fractional-fractional-v2-contest-git"
+          "https://medium.com/@zokyo.io/read-only-reentrancy-attacks-understanding-the-threat-to-your-smart-contracts-99444c0a7334",
+          "https://solodit.xyz/issues/m-03-read-only-reentrancy-is-possible-code4rena-angle-protocol-angle-protocol-invitational-git"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Is there a multi-call?",
+        "description": "Mismanagement of `msg.value` across multiple calls can lead to vulnerabilities.",
+        "remediation": "Do not use ETH in multicall.",
+        "references": [
+          "https://solodit.xyz/issues/m-08-passing-multiple-eth-deposits-in-orders-array-will-use-the-same-msgvalue-many-times-code4rena-nested-finance-nested-finance-contest-git"
         ]
       }
     ]

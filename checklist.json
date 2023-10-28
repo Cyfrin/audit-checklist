@@ -21,7 +21,7 @@
           {
             "id": "",
             "question": "Is there a view function that can return a stale value during interactions?",
-            "description": "Read-only reentrancy. The read-only reentrancy is a reentrancy scenario where a view function is reentered, which in most cases is unguarded as it does not modify the contract’s state. However, if the state is inconsistent, wrong values could be reported. Other protocols relying on a return value can be tricked into reading the wrong state to perform unwanted actions..",
+            "description": "Read-only reentrancy. The read-only reentrancy is a reentrancy scenario where a view function is reentered, which in most cases is unguarded as it does not modify the contract's state. However, if the state is inconsistent, wrong values could be reported. Other protocols relying on a return value can be tricked into reading the wrong state to perform unwanted actions..",
             "remediation": "Extend the reentrancy guard to the view functions as well.",
             "references": [
               "https://medium.com/@zokyo.io/read-only-reentrancy-attacks-understanding-the-threat-to-your-smart-contracts-99444c0a7334",
@@ -917,17 +917,46 @@
         "description": "Vulnerabilities related to access control.",
         "data": [
           {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "B-F-001",
-                "question": "Should the visibility be `external`/`public`?",
-                "description": "`external`/`public` functions can be called by anyone and MUST be used carefully.",
-                "remediation": "Limit the visibility of the function.",
-                "references": []
-              }
-            ]
+            "id": "",
+            "question": "Did you clarify all the actors and their allowed interactions in the protocol?",
+            "description": "This is a general check item. Having a clear understanding of all relevant actors and interactions in the protocol is critical for security.",
+            "remediation": "List down all the actors and interactions and draw a diagram.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are there functions lacking proper access controls?",
+            "description": "Access controls determine who can use certain functions of a contract. If these are missing or improperly implemented, it can expose the contract to unauthorized changes or withdrawals.",
+            "remediation": "Implement and rigorously test access controls like `onlyOwner` or role-based permissions to ensure only authorized users can access certain functions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Do certain addresses require whitelisting?",
+            "description": "Whitelisting allows only a specific set of addresses to interact with the contract, offering an additional layer of security against malicious actors.",
+            "remediation": "Establish a whitelisting mechanism and ensure that only trusted addresses can execute sensitive or restricted operations.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol allow transfer of privileges?",
+            "description": "Transfer of critical privileges must be done in two-step process. A two-step transfer process, usually involving a request followed by a confirmation, adds an extra layer of security against unintentional or malicious owner changes.",
+            "remediation": "Implement a two-step transfer mechanism that requires the new actor to accept the transfer, ensuring better security and intentional ownership changes.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens during the transfer of privileges?",
+            "description": "The protocol needs to work consistently and reasonably even during the transfer of privileges.",
+            "remediation": "Double check how the protocol works during the transfer of privileges.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the contract inherit others?",
+            "description": "If you do not override a parent contract's function explicitly, the parent's one will be exposed with its visibility and probably a wrong accessibiliy.",
+            "remediation": "Make sure you check the accessibility to the parent's external/public functions.",
+            "references": []
           }
         ]
       },
@@ -937,7 +966,7 @@
         "data": [
           {
             "id": "",
-            "question": "Should it be `external`/`public`?",
+            "question": "Should it be `external`/`public`?",
             "description": "Ensure the visibility modifier is appropriate for the function's use, preventing unnecessary exposure.",
             "remediation": "Limit function visibility to the strictest level possible (`private` or `internal`).",
             "references": []
@@ -994,6 +1023,13 @@
               "https://solodit.xyz/issues/lack-of-validation-openzeppelin-bancor-compounding-rewards-audit-markdown",
               "https://solodit.xyz/issues/p1-m07-lack-of-input-validation-openzeppelin-eco-contracts-audit-markdown"
             ]
+          },
+          {
+            "id": "",
+            "question": "Does the function allow arbitrary user input?",
+            "description": "Implementing a function that accepts arbitrary user input and makes low-level calls based on this data introduces a significant security risk. Low-level calls in Solidity, such as call(), are powerful and can lead to unintended contract behavior if not used cautiously. With the ability for users to supply arbitrary data, they can potentially trigger unexpected paths in the contract logic, exploit reentrancy vulnerabilities, or even interact with other contracts in a malicious manner.",
+            "remediation": "Restrict the usage of low-level calls, especially when combined with arbitrary user input. Ensure that any data used in these calls is thoroughly validated and sanitized.",
+            "references": []
           }
         ]
       },
@@ -1017,26 +1053,78 @@
         ]
       },
       {
-        "category": "Upgradable",
+        "category": "Proxy/Upgradable",
         "description": "",
         "data": [
           {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": []
-              }
+            "id": "",
+            "question": "Is there a constructor in the proxied contract?",
+            "description": "Proxied contract can't have a constructor and it's common to move constructor logic to an external initializer function, usually called initialize",
+            "remediation": "Use initializer functions for initialization of proxied contracts.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the `initializer` modifier applied to the `initialization()` function?",
+            "description": "Without the `initializer` modifier, there is a risk that the initialization function can be called multiple times.",
+            "remediation": "Always use the `initializer` modifier for initialization functions in proxied contracts and ensure they're called once during deployment.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the upgradable version used for initialization?",
+            "description": "Upgradable contracts must use the upgradable versions of parent initializer functions. (e.g. Pausable vs PausableUpgradable)",
+            "remediation": "Use upgradable versions of parent initializer functions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the `authorizeUpgrade()` function properly secured in a UUPS setup?",
+            "description": "Inadequate security on the `authorizeUpgrade()` function can allow unauthorized upgrades.",
+            "remediation": "Ensure proper access controls and checks are in place for the `authorizeUpgrade()` function.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Could an upgrade of the contract result in storage collision?",
+            "description": "Storage collisions can occur when storage layouts between contract versions conflict, leading to data corruption and unpredictable behavior.",
+            "remediation": "Maintain a consistent storage layout between upgrades, and when using inheritance, set storage gaps to avoid potential collisions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the contract initialized on deployment?",
+            "description": "An uninitialized contract can be taken over by an attacker. This applies to both a proxy and its implementation contract, which may impact the proxy.",
+            "remediation": "To prevent the implementation contract from being used, invoke the `_disableInitializers` function in the constructor to automatically lock it when it is deployed.",
+            "references": [
+              "https://docs.openzeppelin.com/contracts/4.x/api/proxy#Initializable"
             ]
+          },
+          {
+            "id": "",
+            "question": "Are `selfdestruct` and `delegatecall` used within the implementation contracts?",
+            "description": "Using `selfdestruct` and `delegatecall` in implementation contracts can introduce vulnerabilities and unexpected behavior in a proxy setup.",
+            "remediation": "Avoid using `selfdestruct` and `delegatecall` in implementation contracts to ensure contract stability and security.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are values in immutable variables preserved between upgrades?",
+            "description": "Immutable variables are stored in the bytecode, not in the proxy storage. So using immutable variable is not recommended in proxy setup. If used, make sure all immutables stay consistent across implementations during upgrades.",
+            "remediation": "Avoid using immutable variables in upgradable contracts.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are the order and types of storage variables consistent between upgrades?",
+            "description": "Changing the order or type of storage variables between upgrades can lead to storage collisions.",
+            "remediation": "Maintain a consistent order and type for storage variables across contract versions to avoid storage collisions.",
+            "references": []
           }
         ]
       },
       {
-        "category": "Proxy",
+        "category": "Array / Loop",
         "description": "",
         "data": [
           {
@@ -1045,28 +1133,58 @@
             "data": [
               {
                 "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
+                "question": "How does the protocol remove an item from an array?",
+                "description": "`delete` does not rearrange the array but just resets the element.",
+                "remediation": "Copy the last element to the index of the element to be removed and decrease the length of an array.",
                 "references": []
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "category": "Array",
-        "description": "",
-        "data": [
-          {
-            "category": "",
-            "description": "",
-            "data": [
+              },
               {
                 "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
+                "question": "Does any function gets an index of an array as an argument?",
+                "description": "If an array is supposed to be updated (removal in the middle), the indexs will change.",
+                "remediation": "Do not use an index of an array that is supposed to be updated as a parameter of a function.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is it fine to have duplicate items in the array?",
+                "description": "In most cases, an array (especially an input array by users) is supposed to be unique.",
+                "remediation": "Add a validation to check the array is unique.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is there any issue with the first and the last iteration?",
+                "description": "The first and the last iteration in loops can sometimes have edge cases that differ from other iterations, possibly leading to vulnerabilities.",
+                "remediation": "Always test the initial and the last iteration separately and ensure consistent behavior throughout all iterations.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is there possibility of iteration of a huge array?",
+                "description": "Due to the block gas limit, there is a clear limitation in the amount of operation that can be handled in a transaction.",
+                "remediation": "Ensure the number of iterations is properly bounded.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is there a potential for a Denial-of-Service (DoS) attack in the loop?",
+                "description": "Loops that contain external calls or are dependent on user-controlled input can be exploited to halt the contract's functions.",
+                "remediation": "Ensure a failure of a single iteration does not revert the whole operation.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is `msg.value` used within a loop?",
+                "description": "`msg.value` is consistent for the whole transaction. If it is used in the for loop, it is likely there is a mistake in accounting.",
+                "remediation": "Avoid using `msg.value` inside loops. Refer to multi-call vulneratbility.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is there a loop to handle batch fund transfer?",
+                "description": "If there is a mechanism to transfer funds out based on some kind of shares, it is likely that there is a problem of 'dust' funds not handled correctly.",
+                "remediation": "Make sure the last transfer handles all residual.",
                 "references": []
               }
             ]
@@ -1097,17 +1215,88 @@
         "description": "",
         "data": [
           {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": []
-              }
-            ]
+            "id": "",
+            "question": "Is the mathematical calculation accurate?",
+            "description": "Ensure that the logic behind any mathematical operation is correctly implemented.",
+            "remediation": "Verify calculations against established mathematical rules in the document or the commments.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there any loss of precision in time calculations?",
+            "description": "Loss of precision can lead to significant errors over time or frequent calculations.",
+            "remediation": "Use appropriate data types and ensure rounding methods are correctly applied.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are you aware that expressions like `1 day` are cast to `uint24`, potentially causing overflows?",
+            "description": "Operations with certain expressions might lead to unintended data type conversions.",
+            "remediation": "Always be explicit with data types and avoid relying on implicit type conversions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there any case where dividing is done before multiplification?",
+            "description": "Multiplying before division is generally better to keep the precision.",
+            "remediation": "To avoid loss of precision, always multiply first and then divide.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the rounding direction matter?",
+            "description": "Rounding direction often matters when the accounting relies on user's shares.",
+            "remediation": "Use the proper rounding direction in favor of the protocol",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there a possibility of division by zero?",
+            "description": "Division by zero will revert the transaction.",
+            "remediation": "Always check denominators before division.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Even in versions like `>0.8.0`, have you ensured variables won't underflow or overflow leading to reverts?",
+            "description": "Variables can sometimes exceed their bounds, causing reverts.",
+            "remediation": "Use checks to prevent variable underflows and overflows.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are you aware that assigning a negative value to an unsigned integer causes a revert?",
+            "description": "Unsigned integers cannot hold negative values.",
+            "remediation": "Always ensure that only non-negative values are assigned to unsigned integers.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Have you properly reviewed all usages of `unchecked{}`?",
+            "description": "Arithmetics do not overflow inside the `unchecked{}` block.",
+            "remediation": "Use `unchecked{}` only when it is strictly guaranteed that no overflow/underflow happens.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "In comparisons using < or >, should you instead be using ≤ or ≥?",
+            "description": "Usage of incorrect inequality can cause unexpected behavior for the edge values.",
+            "remediation": "Review the logic and ensure the appropriate comparison operators are used.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Have you taken into consideration mathematical operations in inline assembly?",
+            "description": "Inline assembly can behave differently than high-level language constructs. (division by zero, overflow/underflow do not revert!)",
+            "remediation": "Ensure mathematical operations in inline assembly are properly tested and verified.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens for the minimum/maximum values included in the calculation?",
+            "description": "If the calculation includes numerious terms, you need to confirm all edge cases where each term has the possible min/max values.",
+            "remediation": "Ensure the edge cases do not lead to unexpected outcome.",
+            "references": []
           }
         ]
       },
@@ -1131,18 +1320,14 @@
             "question": "Is it possible for the receiver to revert?",
             "description": "There are cases where a receiver contract can deny the transaction. For example, a malicious receiver can have a fallback to revert. If a caller tried to send funds using `transfer` or `send`, the whole transaction will revert. (Meanwhile, `call()` does not revert but returns a boolean)",
             "remediation": "Make sure that the receiver can not deny the payment or add a backup handler with a try-catch.",
-            "references": [
-
-            ]
+            "references": []
           },
           {
             "id": "",
             "question": "Does the function gets the payment amount as a parameter?",
             "description": "For ETH deposits, `msg.value` must be checked if it is not less than the amount specified.",
             "remediation": "Require `msg.value==amount`.",
-            "references": [
-
-            ]
+            "references": []
           }
         ]
       },
@@ -1181,7 +1366,7 @@
       {
         "id": "",
         "question": "Is the address's existence verified?",
-        "description": "Calling non-existent addresses can lead to unintended behaviors. Low level calls (call, delegate call and static call) return success if the called contract doesn’t exist (not deployed or destructed)",
+        "description": "Calling non-existent addresses can lead to unintended behaviors. Low level calls (call, delegate call and static call) return success if the called contract doesn't exist (not deployed or destructed)",
         "remediation": "Verify the existence of an address before making a call.",
         "references": [
           "https://solodit.xyz/issues/h-02-non-existing-revenue-contract-can-be-passed-to-claimrevenue-to-send-all-tokens-to-treasury-code4rena-debt-dao-debt-dao-contest-git",
@@ -1236,9 +1421,7 @@
         "question": "What happens if the call returns vast data?",
         "description": "External calls returning vast data can deplete available gas.",
         "remediation": "Limit or verify data size returned from external sources.",
-        "references": [
-
-        ]
+        "references": []
       },
       {
         "id": "",
@@ -1256,9 +1439,7 @@
         "question": "Are there any delegate calls to non-library contracts?",
         "description": "Non-library delegate calls can alter the state of the calling contract.",
         "remediation": "Thoroughly review and verify such delegate calls so that the delegate calls do not change the caller's state unexpectedly.",
-        "references": [
-
-        ]
+        "references": []
       },
       {
         "id": "",
@@ -1300,9 +1481,90 @@
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "Are safe transfer functions used throughout the contract?",
+            "description": "Not all ERC20 tokens are compliant to the EIP20 standard. Some do not return boolean flag, some do not revert on failure.",
+            "remediation": "Use OpenZeppelin's SafeERC20 where the safeTransfer and safeTransferFrom functions handle the return value check as well as non-standard-compliant tokens.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there potential for a race condition for approvals?",
+            "description": "Race condition for approvals can cause an unexpected loss of funds to the signer.",
+            "remediation": "Use OpenZeppelin's safeIncreaseAllowance and safeDecreaseAllowance functions.",
+            "references": [
+              "https://solodit.xyz/issues/m01-approval-process-can-be-front-run-openzeppelin-notional-governance-contracts-v2-audit-markdown"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Could a difference in decimals between ERC20 tokens cause issues?",
+            "description": "Different decimals in ERC20 tokens can cause incorrect calculations or interpretations.",
+            "remediation": "Always check and handle the decimals of ERC20 tokens to prevent potential issues.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the token implement any form of address whitelisting, blacklisting, or checks?",
+            "description": "Tokens that have address checks can lead to various problems.",
+            "remediation": "Ensure the token's own blacklisting mechanism does not affect the protocol's functionality.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Could the use of multiple addresses for a single token lead to complications?",
+            "description": "Some tokens have multiple addresses and this can introduce vulnerabilities.",
+            "remediation": "Do not rely on the token address in the accounting.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the token charge fee on transfer?",
+            "description": "Some tokens charge fee on transfer and the receiver gets less amount than specified.",
+            "remediation": "If the protocol intends to support this kind of token, ensure the accounting logic is correct.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Can the token be ERC777?",
+            "description": "ERC777 tokens have hooks that execute code before and after transfers, which might lead to reentrancy.",
+            "remediation": "Be cautious when integrating with ERC777 and be aware of the hook implications.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol use Solmates's `ERC20.safeTransferLib`?",
+            "description": "Solmate `ERC20.safeTransferLib` do not check the contract existence and this opens up a possibility for a honeypot attack.",
+            "remediation": "Use OpenZeppelin's SafeERC20.",
+            "references": [
+              "https://solodit.xyz/issues/m-02-solmates-erc20-does-not-check-for-token-contracts-existence-which-opens-up-possibility-for-a-honeypot-attack-code4rena-size-size-contest-git"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Is there a flash-mint functionality?",
+            "description": "Flash mints can drastically increase token supply temporarily, leading to potential abuse.",
+            "remediation": "Implement strict controls and checks around any flash mint functionality.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens on zero amount transfer?",
+            "description": "Some tokens revert on transfer of zero amount and can cause issues in certain integrations and operations.",
+            "remediation": "Transfer only when the amount is positive.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the token an ERC2612 implementation?",
+            "description": "Missing `DOMAIN_SEPARATOR()` can lead to vulnerabilities in the ERC2612 permit functionality.",
+            "remediation": "Ensure complete and correct implementation of ERC2612, including the `DOMAIN_SEPARATOR()` function.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Can the token be sent to any address?",
+            "description": "Certain addresses might be blocked or restricted to receive tokens (e.g. LUSD).",
+            "remediation": "Ensure the receiver blacklisting does not affect the protocol's functionality.",
             "references": []
           }
         ]
@@ -1313,9 +1575,30 @@
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "How are the minting and transfer implemented?",
+            "description": "According to the ERC721 standard, a wallet/broker/auction application MUST implement the wallet interface if it will accept safe transfers. Use safe version of mint and transfer functions to prevent NFT being lost. (the similar applies to ERC1155)",
+            "remediation": "Use OpenZeppelin's safe mint/transfer functions for ERC721/1155.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the contract safe from reentrancy attack?",
+            "description": "By standard, the token receiver contracts implement onERC721Received and onERC1155Received and this can potentially be a source of reentrancy attacks if not correctly handled.",
+            "remediation": "Double check the potential reentrancy attack.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the OpenZeppelin implementation of ERC721 and ERC1155 safeguarded against reentrancy attacks, especially in the `safeTransferFrom` functions?",
+            "description": "The `safeTransferFrom` functions in OpenZeppelin's ERC721 and ERC1155 can expose the contract to reentrancy attacks due to external calls to user addresses.",
+            "remediation": "Use the checks-effects-interactions pattern and implement reentrancy guards to prevent potential reentrancy attacks when making external calls.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is it possible to steal NFT abusing his approval?",
+            "description": "Most of the time the `from` parameter of `transferFrom()` should be `msg.sender`. Otherwise an attacker can take advantage of other user's appovals and steal.",
+            "remediation": "Ensure that the contract verifies the `msg.sender` is actually the owner.",
             "references": []
           }
         ]
@@ -1326,6 +1609,56 @@
     "category": "Defi",
     "description": "",
     "data": [
+      {
+        "category": "General",
+        "description": "Common vulnerabilities of general Defi protocols",
+        "data": [
+          {
+            "id": "",
+            "question": "Could direct transfers of funds introduce vulnerabilities?",
+            "description": "Direct transfers of assets without usign the protocol's logic can lead to various problems in accounting especially if the accounting relies on `balanceOf` (or `address.balance`).",
+            "remediation": "Implement the internal accounting so that it is not be affected by direct transfers.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Could the initial deposit introduce any issues?",
+            "description": "The first deposit can set certain parameters or conditions that subsequent deposits rely on.",
+            "remediation": "Test and ensure that the first deposit initializes and sets all necessary parameters correctly.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Can the protocol handle ERC20 tokens with decimals other than 18?",
+            "description": "Not all ERC20 tokens use 18 decimals. Overlooking this can lead to computation errors.",
+            "remediation": "Always check and adjust for the decimal count of the ERC20 tokens being handled.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What would happen if only 1 wei remains in the pool?",
+            "description": "Leaving residual amounts can lead to discrepancies in accounting or locked funds.",
+            "remediation": "Implement logic to handle minimal residual amounts in the pool.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is it possible to withdraw in the same transaction of deposit?",
+            "description": "Protocols often provide various benefits to the depositors based on the deposit amount. This can lead to flashloan-deposit-harvest-withdraw attack cycle.",
+            "remediation": "Ensure the withdrawal is protected for some blocks after deposit.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol aim to support ALL kinds of ERC20 tokens?",
+            "description": "Not all ERC20 tokens are compliant to the ERC20 standard and there are several weird ERC20 tokens (e.g. Fee-On-Transfer tokens, rebasing tokens, tokens with blacklisting).",
+            "remediation": "Clarify what kind of tokens are supported and whitelist the ERC20 tokens that the protocol would accept.",
+            "references": [
+              "https://github.com/d-xo/weird-erc20"
+            ]
+          }
+        ]
+      },
       {
         "category": "AMM",
         "description": "",

@@ -141,9 +141,9 @@
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "Is `block.timestamp` used judiciously, especially for longer intervals?",
+            "description": "`block.timestamp` can be manipulated by miners to a small extent, so relying on it for precise timing might be risky.",
+            "remediation": "Use `block.timestamp` only where a slight inaccuracy is acceptable, such as for longer intervals.",
             "references": []
           }
         ]
@@ -1093,7 +1093,7 @@
           },
           {
             "id": "",
-            "question": "Is the contract initialized on deployment?",
+            "question": "Is the contract initialized?",
             "description": "An uninitialized contract can be taken over by an attacker. This applies to both a proxy and its implementation contract, which may impact the proxy.",
             "remediation": "To prevent the implementation contract from being used, invoke the `_disableInitializers` function in the constructor to automatically lock it when it is deployed.",
             "references": [
@@ -1169,7 +1169,7 @@
               {
                 "id": "",
                 "question": "Is there a potential for a Denial-of-Service (DoS) attack in the loop?",
-                "description": "Loops that contain external calls or are dependent on user-controlled input can be exploited to halt the contract's functions.",
+                "description": "Loops that contain external calls or are dependent on user-controlled input can be exploited to halt the contract's functions. (e.g. sending ETH to multiple users)",
                 "remediation": "Ensure a failure of a single iteration does not revert the whole operation.",
                 "references": []
               },
@@ -1327,6 +1327,22 @@
             "question": "Does the function gets the payment amount as a parameter?",
             "description": "For ETH deposits, `msg.value` must be checked if it is not less than the amount specified.",
             "remediation": "Require `msg.value==amount`.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are there vulnerabilities related to force-feeding?",
+            "description": "Certain actions like self-destruct, deterministic address feeding, and coinbase transactions can be used to force-feed contracts.",
+            "remediation": "Ensure the contract behaves as expected when receiving unexpected funds.",
+            "references": [
+              "https://scsfg.io/hackers/unexpected-ether/"
+            ]
+          },
+          {
+            "id": "",
+            "question": "How is the withdrawal handled?",
+            "description": "The best practice in withdrawal process is to implement pull-based approach. Track the accounting and let users pull the payments instead of sending funds proactively.",
+            "remediation": "Implement pull-based approach in withdrawals.",
             "references": []
           }
         ]
@@ -1660,14 +1676,48 @@
         ]
       },
       {
+        "category": "Oracle",
+        "description": "Price oracle related vulnerabilities",
+        "data": [
+          {
+            "id": "",
+            "question": "Is the contract vulnerable to oracle manipulation, especially using spot prices from AMMs?",
+            "description": "Reliance on AMM spot prices as oracles can be manipulated via flashloan.",
+            "remediation": "Choose reliable and tamper-resistant oracle sources. Avoid using spot prices from AMMs directly without additional checks.",
+            "references": []
+          }
+        ]
+      },
+      {
         "category": "AMM",
         "description": "",
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "Is there a mechanism in place to protect against excessive slippage?",
+            "description": "Without slippage protection, traders might experience unexpected losses due to large price deviations during a trade.",
+            "remediation": "Incorporate a slippage parameter that users can set to limit their maximum acceptable slippage.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the AMM properly handle tokens of varying decimal configurations and token types?",
+            "description": "If the AMM doesn't support tokens with varying decimals or types, it might lead to incorrect calculations and potential losses.",
+            "remediation": "Ensure compatibility with tokens of varying decimal places and validate token types before processing them.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the AMM support the fee-on-transfer tokens?",
+            "description": "Fee-on-transfer tokens can cause problems because the sending amount and the received amount do not match.",
+            "remediation": "Ensure the fee-on-transfer tokens are handled correctly if they are supposed to be supported.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the AMM support the rebasing tokens?",
+            "description": "Rebasing tokens can change the actual balance.",
+            "remediation": "Ensure the rebasing tokens are handled correctly if they are supposed to be supported.",
             "references": []
           }
         ]
@@ -1678,9 +1728,58 @@
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "Can a position be liquidated if the loan remains unpaid or if the collateral falls below the required threshold?",
+            "description": "If positions cannot be liquidated under these circumstances, it poses a risk to lenders who might not recover their funds.",
+            "remediation": "Ensure a reliable mechanism for liquidating under-collateralized or defaulting loans to safeguard lenders.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is it possible for a user to gain undue profit from self-liquidation?",
+            "description": "Self-liquidation profit loopholes can lead to potential system abuse and unintended financial consequences.",
+            "remediation": "Audit and test self-liquidation mechanisms to prevent any exploitative behaviors.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "If token transfers or collateral additions are temporarily paused, can a user still be liquidated, even if they intend to deposit more funds?",
+            "description": "Unexpected pauses can place users at risk of unwarranted liquidations, despite their willingness to increase collateral.",
+            "remediation": "Implement safeguards that protect users from liquidation during operational pauses or interruptions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Will the liquidation process function effectively during rapid market downturns?",
+            "description": "Failure to liquidate positions during sharp price drops can result in substantial platform losses.",
+            "remediation": "Ensure robustness during extreme market conditions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there a scenario where a liquidator might receive a lesser amount than anticipated?",
+            "description": "Discrepancies in liquidation returns can discourage liquidators and impact system stability.",
+            "remediation": "Ensure a clear and consistent calculation mechanism for liquidation rewards.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "If liquidations are temporarily suspended, what are the implications when they are resumed?",
+            "description": "Pausing liquidations can increase the solvency risk and lead to unpredictable behaviors upon resumption.",
+            "remediation": "Outline clear protocols for pausing and resuming liquidations, ensuring solvency is maintained.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is it possible for users to manipulate the system by front-running and slightly increasing their collateral to prevent liquidations?",
+            "description": "Lenders must be prevented from griefing via front-running the liquidation.",
+            "remediation": "Ensure it is not possible to prevent liquidators by any means.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are all positions, regardless of size, incentivized adequately for liquidation?",
+            "description": "Without proper incentives, small positions might be overlooked, leading to inefficiencies.",
+            "remediation": "Ensure a balanced incentive structure that motivates liquidators to address positions of all sizes.",
             "references": []
           }
         ]
@@ -1704,9 +1803,16 @@
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "Can a user amplify another user's time lock duration by stacking tokens on their behalf?",
+            "description": "If users can amplify time locks for others by stacking tokens, it may lead to unintended lock durations and potentially be exploited.",
+            "remediation": "Implement strict checks and controls to prevent users from influencing the time locks of other users through token stacking.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Can the distribution of rewards be unduly delayed or prematurely claimed?",
+            "description": "Manipulation in the timing of reward distribution can adversely affect users and the protocol's intended incentives.",
+            "remediation": "Implement time controls and constraints on reward distributions to maintain the protocol's intended behavior.",
             "references": []
           }
         ]
@@ -1723,9 +1829,9 @@
         "data": [
           {
             "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
+            "question": "Is it possible to cause DOS?",
+            "description": "Because transactions are free while using paymaster, there can be a possible DOS.",
+            "remediation": "Ensure there is no possibility of DOS attack especially using the paymaster.",
             "references": []
           }
         ]
@@ -1737,36 +1843,52 @@
     "description": "",
     "data": [
       {
-        "category": "",
-        "description": "",
-        "data": [
-          {
-            "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
-            "references": []
-          }
-        ]
+        "id": "",
+        "question": "Are timelocks implemented for important changes?",
+        "description": "Immediate changes in the protocol can affect the users.",
+        "remediation": "Implement timelocks for important changes, allowing users adequate time to respond to proposed alterations.",
+        "references": []
       }
     ]
   },
   {
-    "category": "Hash",
+    "category": "Hash / Merkle Tree",
     "description": "",
     "data": [
       {
-        "category": "",
-        "description": "",
-        "data": [
-          {
-            "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
-            "references": []
-          }
-        ]
+        "id": "",
+        "question": "Is the Merkle tree vulnerable to front-running attacks?",
+        "description": "When using a merkle tree, the new proof is calculated at a certain time and there exists a period of time between when the proof is generated and the proof is published.",
+        "remediation": "Ensure that front-running the merkle proof setting does not affect the protocol.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Are the leaves of the Merkle tree hashed with the claimable address included?",
+        "description": "Not including claimable addresses when hashing leaves can let an attacker to claim.",
+        "remediation": "Ensure that the Merkle tree construction includes the hashing of claimable addresses within the leaves.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Does the claim method validate `msg.sender`?",
+        "description": "Validation of `msg.sender` is critical in the use of Merkle tree.",
+        "remediation": "Ensure that the `msg.sender` is actually the same address included in the leave.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "What is the result when passing a zero hash to the Merkle tree functions?",
+        "description": "Passing the zero hash can lead to unintended behaviors or vulnerabilities if not properly handled.",
+        "remediation": "Implement checks to handle zero hash values appropriately and prevent potential misuse.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "What occurs if the same proof is duplicated within the Merkle tree?",
+        "description": "Duplicate proofs within a Merkle tree can lead to double-spending or other vulnerabilities.",
+        "remediation": "Ensure the Merkle tree construction and verification process detects and prevents the use of duplicate proofs.",
+        "references": []
       }
     ]
   },
@@ -1775,17 +1897,39 @@
     "description": "",
     "data": [
       {
-        "category": "",
-        "description": "",
-        "data": [
-          {
-            "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
-            "references": []
-          }
-        ]
+        "id": "",
+        "question": "Are signatures guarded against replay attacks?",
+        "description": "Lacking protection mechanisms like `nonce` and `block.chainid` can make signatures vulnerable to replay attacks. Also, EIP-712 provides a standard for creating typed and structured data to be signed, ensuring better security and user experience.",
+        "remediation": "Implement a `nonce` system and incorporate `block.chainid` in your signature scheme. Ensure adherence to EIP-712 for all signatures.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Are signatures protected against malleability issues?",
+        "description": "Signature malleability can be exploited by attackers to produce valid signatures without the private key. Using outdated versions of libraries can introduce known vulnerabilities.",
+        "remediation": "Avoid using `escrecover()` for signature verification. Instead, utilize the OpenZeppelin's latest version of ECDSA to ensure signatures are safe from malleability issues.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Does the returned public key from the signature verification match the expected public key?",
+        "description": "Mismatched public keys can indicate an incorrect or malicious signer, potentially leading to unauthorized actions.",
+        "remediation": "Implement rigorous checks to ensure the public key derived from a signature matches the expected signer's public key.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is the signature originating from the appropriate entity?",
+        "description": "If signatures aren't properly checked, malicious actors might exploit them, leading to unauthorized transactions or actions.",
+        "remediation": "Ensure strict verification mechanisms are in place to confirm that signatures originate from the expected entities.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "If the signature has a deadline, is it still valid?",
+        "description": "Signatures with expiration dates that aren't checked can be reused maliciously after they should no longer be valid.",
+        "remediation": "Always check the expiration date of signatures and ensure they're not accepted past their valid period.",
+        "references": []
       }
     ]
   },
@@ -1813,17 +1957,11 @@
     "description": "",
     "data": [
       {
-        "category": "",
-        "description": "",
-        "data": [
-          {
-            "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
-            "references": []
-          }
-        ]
+        "id": "",
+        "question": "Is there a pause mechanism?",
+        "description": "Some functionalities must work even when the whole protocol is paused. For example, users must be able to withdraw assets even while the protocol is paused.",
+        "remediation": "Review the pause mechanism thoroughly to ensure that it only affects intended functions and can't be abused by a malicious operator.",
+        "references": []
       }
     ]
   },
@@ -1832,33 +1970,566 @@
     "description": "",
     "data": [
       {
-        "category": "",
-        "description": "",
-        "data": [
-          {
-            "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
-            "references": []
-          }
+        "id": "",
+        "question": "Are there hardcoded time values dependent on the `block.number`?",
+        "description": "Block time can vary across different chains, leading to potential timing discrepancies.",
+        "remediation": "Avoid hardcoding time values based on block numbers.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is block production consistency ensured?",
+        "description": "Inconsistent block production can lead to unexpected application behaviors.",
+        "remediation": "Develop with the assumption that block production may not always be consistent.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is `PUSH0` opcode supported for Solidity version `>=0.8.20`?",
+        "description": "`PUSH0` might not be supported on all chains, leading to potential incompatibility issues.",
+        "remediation": "Ensure if `PUSH0` is supported in the target chain.",
+        "references": [
+          "https://github.com/0xJuancito/multichain-auditor#support-for-the-push0-opcode"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Are the EVM opcodes and operations used by the protocol compatible across all targeted chains?",
+        "description": "Incompatibility can arise when the protocol uses EVM operations not supported on certain chains.",
+        "remediation": "Review and ensure compatibility for chains like Arbitrum and Optimism.",
+        "references": [
+          "https://docs.arbitrum.io/solidity-support",
+          "https://community.optimism.io/docs/developers/build/differences/#transaction-costs"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Does the expected behavior of `tx.origin` and `msg.sender` remain consistent across all deployment chains?",
+        "description": "Different chains might interpret these values differently, leading to unexpected behaviors.",
+        "remediation": "Test and verify the behavior on all targeted chains.",
+        "references": [
+          "https://community.optimism.io/docs/developers/build/differences/#opcode-differences"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Is there any possibility of exploiting low gas fees to execute many transactions?",
+        "description": "Some attacks become viable with low gas costs or when a large number of transactions can be processed.",
+        "remediation": "Evaluate and mitigate potential attack vectors associated with gas fees.",
+        "references": [
+          "https://github.com/0xJuancito/multichain-auditor#gas-fees"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Is there consistency in ERC20 decimals across chains?",
+        "description": "Decimals in ERC20 tokens can differ across chains.",
+        "remediation": "Ensure consistent ERC20 decimals or implement chain-specific adjustments.",
+        "references": [
+          "https://github.com/0xJuancito/multichain-auditor#erc20-decimals"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Have contract upgradability implications been evaluated on different chains?",
+        "description": "Contracts may have different upgradability properties depending on the chain, like USDT being upgradable on Polygon but not on Ethereum.",
+        "remediation": "Verify and document upgradability characteristics for each chain.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Have cross-chain messaging implementations been thoroughly reviewed for permissions and functionality?",
+        "description": "Cross-chain messaging requires robust security checks to ensure the correct permissions and intended functionality.",
+        "remediation": "Double check the access control over cross-chain messaging components.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is there a whitelist of compatible chains?",
+        "description": "Allowing messages from an unsupported chain can lead to unpredictable results.",
+        "remediation": "Implement a whitelist to prevent messages from unsupported chains.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Have contracts been checked for compatibility when deployed to the zkSync Era?",
+        "description": "zkSync Era might have specific requirements or differences when compared to standard Ethereum deployments.",
+        "remediation": "Review and ensure compatibility before deploying contracts to zkSync Era.",
+        "references": [
+          "https://era.zksync.io/docs/reference/architecture/differences-with-ethereum.html"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Has the protocol been checked for the target chain differences?",
+        "description": "Understanding the differences between chains is vital for ensuring compatibility and preventing unexpected behaviors.",
+        "remediation": "Regularly check for chain differences and update the protocol accordingly.",
+        "references": [
+          "https://www.evmdiff.com/diff?base=1&target=10",
+          "https://github.com/0xJuancito/multichain-auditor#differences-from-ethereum"
         ]
       }
     ]
   },
   {
     "category": "Integrations",
-    "description": "",
+    "description": "Possible vulnerabilites whilel integrating popular external protocols",
     "data": [
       {
-        "category": "",
+        "category": "Gnosis Safe",
         "description": "",
         "data": [
           {
             "id": "",
-            "question": "",
+            "question": "Do your modules execute the Guard's hooks?",
+            "description": "Failing to execute the Guard's hooks  (`checkTransaction()`, `checkAfterExecution()`) can bypass critical security checks implemented in those hooks.",
+            "remediation": "Ensure that all modules correctly execute the Guard's hooks as intended.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the `execTransactionFromModule()` function increment the nonce?",
+            "description": "If the nonce is not incremented in `execTransactionFromModule()`, it can cause issues when relying on it for signatures.",
+            "remediation": "Ensure increase nonce inside the function `execTransactionFromModule()`.",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "LSD",
+        "description": "",
+        "data": [
+          {
+            "category": "stETH",
             "description": "",
-            "remediation": "",
+            "data": [
+              {
+                "id": "",
+                "question": "Is the application aware that `stETH` is a rebasing token?",
+                "description": "`stETH` rebases, which can introduce complexities when integrated with DeFi platforms. Using `wstETH` can simplify integrations as it is non-rebasing.",
+                "remediation": "Consider using `wstETH` for simpler DeFi integrations and to avoid complexities associated with rebasing tokens.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Does the application handle conversions between `stETH` and `wstETH` correctly?",
+                "description": "Converting between `stETH` and `wstETH` can be tricky due to the rebasing nature of `stETH`. It's crucial to handle these conversions correctly to avoid potential issues.",
+                "remediation": "Ensure that the rebasing characteristics of `stETH` are properly managed when converting between `stETH` and `wstETH`.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Are you aware of the overhead when withdrawing `stETH`/`wstETH`?",
+                "description": "Withdrawing `stETH` or `wstETH` can introduce overheads, due to various problems like queue time, receipt of an NFT, and withdrawal amount limits.",
+                "remediation": "Ensure account for these overheads and constraints in the protocol logic.",
+                "references": []
+              }
+            ]
+          },
+          {
+            "category": "rETH",
+            "description": "",
+            "data": [
+              {
+                "id": "",
+                "question": "How does the system handle the conversion between `ETH` and `rETH`?",
+                "description": "The conversion rate between `ETH` and `rETH` might change over time based on the rewards accrued from staking. Ensure this dynamic is properly captured.",
+                "remediation": "Integrate accurate conversion mechanisms that consider the ever-changing staking rewards when converting between `ETH` and `rETH`.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Does the application account for potential penalties or slashes?",
+                "description": "Validators on the Ethereum 2.0 Beacon Chain can be penalized or slashed for misbehavior. This can affect the value of `rETH`.",
+                "remediation": "Implement mechanisms to account for potential penalties or slashes that can impact the value of `rETH`.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "How does the system manage rewards accrued from staking?",
+                "description": "Staking on the Ethereum 2.0 Beacon Chain accrues rewards. The system should account for these rewards when dealing with `rETH`.",
+                "remediation": "Ensure proper distribution or accumulation of rewards in the system's `rETH` management.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Does the application handle potential reverts in the `burn()` function when there's insufficient ether in the `RocketDepositPool`?",
+                "description": "If there's not enough ether in the `RocketDepositPool` contract, the `burn()` function can fail. It's important for the system to handle these failures gracefully.",
+                "remediation": "Ensure there's a mechanism to either prevent calls to `burn()` when there's insufficient ether or handle the revert gracefully, informing the user appropriately.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "What measures are in place to counteract potential consensus attacks on RPL nodes?",
+                "description": "There's a risk of consensus attacks on RPL nodes where malicious nodes may submit incorrect exchange rate data, leading to discrepancies.",
+                "remediation": "Implement a system in place to quickly rectify incorrect data submissions by nodes.",
+                "references": []
+              }
+            ]
+          },
+          {
+            "category": "cbETH",
+            "description": "",
+            "data": [
+              {
+                "id": "",
+                "question": "How is the control over the `cbETH`/`ETH` rate determined? Are there specific addresses with this capability due to the `onlyOracle` modifier?",
+                "description": "The rate between `cbETH` and `ETH` being controllable by a few addresses can introduce centralization risks and potential manipulations.",
+                "remediation": "Any address with `onlyOracle` permissions should be scrutinized and their actions should be transparent to the community.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "How does the system handle potential decreases in the `cbETH`/`ETH` rate?",
+                "description": "The rate of `cbETH` to `ETH` can decrease, which can impact users who hold or interact with `cbETH`.",
+                "remediation": "Implement mechanisms to inform users about the current `cbETH`/`ETH` rate. Consider providing alerts or notifications for significant rate changes. Ensure there's a mechanism to handle or rectify situations where the rate decreases dramatically.",
+                "references": []
+              }
+            ]
+          },
+          {
+            "category": "sfrxETH",
+            "description": "",
+            "data": [
+              {
+                "id": "",
+                "question": "How does the system handle potential detachment of `sfrxETH` from `frxETH` during reward transfers?",
+                "description": "If `sfrxETH` detaches from `frxETH` during reward transfers, it could cause discrepancies in expected and actual values, especially if these transfers are controlled by a centralized entity like the Frax team's multi-sig contract.",
+                "remediation": "Ensure there's transparency around the actions of the Frax team's multi-sig contract. Consider mechanisms to alert users or stakeholders about discrepancies between `sfrxETH` and `frxETH`.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is the stability of the `sfrxETH`/`ETH` rate guaranteed or can it decrease in the future?",
+                "description": "While the `sfrxETH`/`ETH` rate might be stable now, changes in the future could impact users and stakeholders, especially if they're not forewarned.",
+                "remediation": "Provide clear documentation and alerts about potential changes to the `sfrxETH`/`ETH` rate. Ensure users are informed well in advance about any planned changes that could affect the rate.",
+                "references": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "category": "LayerZero",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "Which type of mechanism are utilized? Blocking or non-blocking?",
+            "description": "Using blocking mechanism can potentially lead to a Denial-of-Service (DoS) attack.",
+            "remediation": "Consider using non-blocking mechanism to prevent potential DoS attacks.",
+            "references": [
+              "https://solodit.xyz/issues/h-06-attacker-can-block-layerzero-channel-code4rena-velodrome-finance-velodrome-finance-contest-git"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Is gas estimated accurately for cross-chain messages?",
+            "description": "Inaccurate gas estimation can result in cross-chain message failures.",
+            "remediation": "Implement mechanisms to estimate gas accurately.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the `_debitFrom` function in ONFT properly validate token ownership and transfer permissions?",
+            "description": "It's crucial that the `_debitFrom` function verifies whether the specified owner is the actual owner of the tokenId and if the sender has the correct permissions to transfer the token.",
+            "remediation": "Ensure thorough checks and validations are performed in the `_debitFrom` function to maintain token security.",
+            "references": [
+              "https://composable-security.com/blog/secure-integration-with-layer-zero/"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Is the `_lzSend` function correctly utilized when inheriting LzApp?",
+            "description": "When inheriting LzApp, direct calls to `lzEndpoint.send` can introduce vulnerabilities. Using `_lzSend` is the recommended approach.",
+            "remediation": "Ensure that the `_lzSend` function is used instead of making direct calls to `lzEndpoint.send`.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the `ILayerZeroUserApplicationConfig` interface correctly implemented?",
+            "description": "The User Application should include the `forceResumeReceive` function to handle unexpected scenarios and unblock the message queue when needed.",
+            "remediation": "Implement the `ILayerZeroUserApplicationConfig` interface and ensure that the `forceResumeReceive` function is present and functional.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are default contracts used?",
+            "description": "Default configuration contracts are upgradeable by the LayerZero team.",
+            "remediation": "Configure the applications uniquely and avoid using default settings.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the correct number of confirmations chosen for the chain?",
+            "description": "Choosing an inappropriate number of confirmations can introduce risks, especially considering past reorg events on the chain.",
+            "remediation": "Evaluate the chain's history and potential vulnerabilities to determine the optimal number of confirmations.",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "Chainlink",
+        "description": "",
+        "data": [
+          {
+            "category": "Oracle",
+            "description": "",
+            "data": [
+              {
+                "id": "",
+                "question": "Is the returned price validated to be non-zero?",
+                "description": "Price feed might return zero and this must be handled as invalid.",
+                "remediation": "Ensure the returned price is not zero.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is the price update time validated?",
+                "description": "Price feeds might not be supported in the future. To ensure accurate price usage, it's vital to regularly check the last update timestamp against a predefined delay.",
+                "remediation": "Implement a mechanism to check the heartbeat of the price feed and compare it against a predefined maximum delay (`MAX_DELAY`). Adjust the `MAX_DELAY` variable based on the observed heartbeat.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is there a validation to check if the rollup sequencer is running?",
+                "description": "The rollup sequencer can become offline, which can lead to potential vulnerabilities due to stale price.",
+                "remediation": "Utilize the sequencer uptime feed to confirm the sequencers are up.",
+                "references": [
+                  "https://docs.chain.link/data-feeds/l2-sequencer-feeds"
+                ]
+              },
+              {
+                "id": "",
+                "question": "Is the desired price feed pair supported across all deployed chains?",
+                "description": "In multi-chain deployments, it's crucial to ensure the desired price feed pair is available and consistent across all chains.",
+                "remediation": "Review the supported price feed pairs on all chains and ensure they are consistent.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is the heartbeat of the price feed suitable for the use case?",
+                "description": "A price feed heartbeat that's too slow might not be suitable for some use cases.",
+                "remediation": "Assess the requirements of the use case and ensure the price feed heartbeat aligns with them.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Are there any inconsistencies with decimal precision when using different price feeds?",
+                "description": "Different price feeds might have varying decimal precisions, which can lead to inaccuracies.",
+                "remediation": "Ensure that the contract handles potential variations in decimal precision across different price feeds.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is the price feed address hard-coded?",
+                "description": "Hard-coded price feed addresses can be problematic, especially if they become deprecated or if they're not accurate in the first place.",
+                "remediation": "Review and verify the hardcoded price feed addresses. Consider mechanisms to update the address if required in the future.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "What happens if oracle price updates are front-run?",
+                "description": "Oracle price updates can be front-run and cause various problems.",
+                "remediation": "Ensure the protocl is not affected in the case where oracle price updates are front-run.",
+                "references": [
+                  "https://blog.angle.money/angle-research-series-part-1-oracles-and-front-running-d75184abc67"
+                ]
+              },
+              {
+                "id": "",
+                "question": "How does the system handle potential oracle reverts?",
+                "description": "Unanticipated oracle reverts can lead to Denial-Of-Service.",
+                "remediation": "Implement try/catch blocks around oracle calls and have alternative strategies ready.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Are the price feeds appropriate for the underlying assets?",
+                "description": "Using an ETH price feed for stETH or a BTC price feed for WBTC can introduce risks associated with the underlying assets deviating from their pegs.",
+                "remediation": "Ensure that the price feeds accurately represent the underlying assets to address potential depeg risks.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "How does the system address potential inaccuracies during flash crashes?",
+                "description": "During flash crashes, oracles might return inaccurate prices.",
+                "remediation": "Implement checks to ensure that the price returned by the oracle lies within an expected range to guard against potential flash crash vulnerabilities.",
+                "references": []
+              }
+            ]
+          },
+          {
+            "category": "VRF",
+            "description": "",
+            "data": [
+              {
+                "id": "",
+                "question": "Are all parameters properly verified when Chainlink VRF is called?",
+                "description": "If the parameters are not thoroughly verified when Chainlink VRF is called, the `fullfillRandomWord` function will not revert but return an incorrect value.",
+                "remediation": "Ensure that all parameters passed to Chainlink VRF are verified to ensure the correct operation of `fullfillRandomWord`.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is it guaranteed that the operator holds sufficient LINK in the subscription?",
+                "description": "Chainlink VRF can go into a pending state if there's insufficient LINK in the subscription. Once the subscription is refilled, the transaction can potentially be frontrun, introducing vulnerabilities.",
+                "remediation": "Ensure the pending subscription does not affect the protocol's functionality.",
+                "references": []
+              },
+              {
+                "id": "",
+                "question": "Is a sufficiently high request confirmation number chosen considering chain re-orgs?",
+                "description": "Not choosing a high enough request confirmation number can pose risks, especially in the context of chain re-orgs.",
+                "remediation": "Evaluate the chain's vulnerability to re-orgs and adjust the request confirmation number accordingly.",
+                "references": [
+                  "https://github.com/pashov/audits/blob/master/solo/NFTLoots-security-review.md#c-01-polygon-chain-reorgs-will-often-change-game-results"
+                ]
+              },
+              {
+                "id": "",
+                "question": "Are measures in place to prevent VRF calls from being frontrun?",
+                "description": "VRF calls can be frontrun and it's crucial to ensure that the user interactions are closed before the VRF call to prevent this.",
+                "remediation": "Ensure the implementation closes the user interaction phase before initiating the VRF call.",
+                "references": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "category": "Uniswap",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "Is hardcoded slippage used?",
+            "description": "Using hardcoded slippage can lead to poor trades and potential exploits.",
+            "remediation": "Always employ a dynamic approach to determine slippage, ensuring it's calculated based on live market conditions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there a deadline protection?",
+            "description": "Without deadline protection, user transactions are vulnerable to sandwich attacks.",
+            "remediation": "Allow a user specify the deadline of the swap.",
+            "references": [
+              "https://defihacklabs.substack.com/p/solidity-security-lesson-6-defi-slippage?utm_source=profile&utm_medium=reader2"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Is the slippage calculated on-chain?",
+            "description": "ON-chain slippage calculation can be manipulated.",
+            "remediation": "Allow a user specify the slippage in actual asset amount.",
+            "references": [
+              "https://defihacklabs.substack.com/p/solidity-security-lesson-6-defi-slippage?utm_source=profile&utm_medium=reader2"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Are there refunds after swaps?",
+            "description": "In case of failed or partially filled orders, the protocol must issue refunds to the users.",
+            "remediation": "Implement a refund mechanism to handle failed or partially filled swaps.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the order of `token0` and `token1` consistent across chains?",
+            "description": "The order of `token0` and `token1` in AMM pools may vary depending on the chain, which can lead to inconsistencies.",
+            "remediation": "Always verify the order of tokens when interacting with different chains to avoid potential issues.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are the pools that are being interacted with whitelisted?",
+            "description": "Missing verification on the interacting pools can introduce risks.",
+            "remediation": "Ensure pools are whitelisted or verify the pool's factory address before any interactions.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there a reliance on pool reserves?",
+            "description": "Relying on pool reserves can be risky, as they can be manipulated, especially using a flashloan.",
+            "remediation": "Implement alternative methods or checks without relying solely on pool reserves.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is `pool.swap()` directly used?",
+            "description": "Directly using `pool.swap()` can bypass certain security mechanisms.",
+            "remediation": "Always use the Router contract to handle swaps, providing an added layer of security and standardization.",
+            "references": []
+          }
+        ]
+      },
+      {
+        "category": "AAVE / Compound",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "What happens if the utilization rate is too high, and collateral cannot be retrieved?",
+            "description": "A high utilization rate can potentially mean that there aren't enough assets in the pool to allow users to withdraw their collateral.",
+            "remediation": "Ensure that there are mechanisms to handle user withdrawal when the utilization rate is high.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens if the protocol is paused?",
+            "description": "If the AAVE protocol is paused, the protocol can not interact with it.",
+            "remediation": "Ensure the protocol behaves as expected when the AAVE protocol is paused.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens if the pool becomes deprecated?",
+            "description": "Pools can be deprecated.",
+            "remediation": "Ensure the protocol behaves as expected when the Pools are paused.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens if assets you lend/borrow are within the same eMode category?",
+            "description": "Lending and borrowing assets within the same eMode category might have rules or limitations.",
+            "remediation": "Ensure the protocol behaves as expected when interacting with assets in the same eMode category.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Do flash loans on Aave inflate the pool index?",
+            "description": "Flash loans can influence the pool index (a maximum of 180 flashloans can be performed within a block).",
+            "remediation": "Implement mechanisms to manage the effects of flash loans on the pool index.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol properly implement AAVE/COMP reward claims?",
+            "description": "Misimplementation of reward claims can lead to users not receiving their correct rewards.",
+            "remediation": "Ensure a proper and tested implementation of AAVE/COMP reward claims.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol use cETH token?",
+            "description": "The absence of the `underlying()` function in the cETH token contract can cause integration issues.",
+            "remediation": "Double check the protocol works as expected when integrating cETH token.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does borrowing an AAVE siloed asset restrict borrowing other assets?",
+            "description": "Borrowing a siloed asset on Aave will prohibit users from borrowing other assets.",
+            "remediation": "Make use of `getSiloedBorrowing(address asset)` to prevent unexpected problems.",
+            "references": [
+              "https://docs.aave.com/developers/whats-new/siloed-borrowing"
+            ]
+          },
+          {
+            "id": "",
+            "question": "On AAVE, what happens if a user reaches the maximum debt on an isolated asset?",
+            "description": "Reaching the maximum debt on an isolated asset can result in denial-of-service or other limitations on user actions.",
+            "remediation": "Ensure that the protocol works as expected when a user reaches the maximum debt.",
             "references": []
           }
         ]
@@ -1870,17 +2541,78 @@
     "description": "",
     "data": [
       {
-        "category": "",
-        "description": "",
-        "data": [
-          {
-            "id": "",
-            "question": "",
-            "description": "",
-            "remediation": "",
-            "references": []
-          }
+        "id": "",
+        "question": "Is there any logic implemented multiple times?",
+        "description": "Inconsistent implementations of the same logic can introduce errors or vulnerabilities.",
+        "remediation": "Standardize the logic and make it as a separate function.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Does the contract use any nested structures?",
+        "description": "If a variable of nested structure is deleted, only the top-level fields are reset by default values (zero) and the nested level fields are not reset.",
+        "remediation": "Always ensure that inner fields are deleted before the outer fields of the structure.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is there any unexpected behavior when `src==dst` (or `caller==receiver`)?",
+        "description": "Overlooking the possibility of a sender and a recipient (source and destination) being the same in smart contracts can lead to unintended problems.",
+        "remediation": "Ensure the protcol behaves as expected when `src==dst`.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is the NonReentrant modifier placed before every other modifier?",
+        "description": "The order of modifiers can influence the behavior of a function. Generally,  NonReentrant must come first than other modifiers.",
+        "remediation": "Reorder modifiers so that NonReentrant is placed before other modifiers.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Does the `try/catch` block account for potential gas shortages?",
+        "description": "A `try/catch` block without adequate gas can fail, leading to unexpected behaviors.",
+        "remediation": "Ensure sufficient gas is supplied when using the `try/catch` block.",
+        "references": [
+          "https://forum.openzeppelin.com/t/a-brief-analysis-of-the-new-try-catch-functionality-in-solidity-0-6/2564"
         ]
+      },
+      {
+        "id": "",
+        "question": "Are there any code asymmetries?",
+        "description": "In many projects, there should be some symmetries for different functions. For instance, a `withdraw` function should (usually) undo all the state changes of a `deposit` function and a `delete` function should undo all the state changes of the corresponding `add` function. Asymmetries in these function pairs (e.g., forgetting to unset a field or to subtract from a value) can often lead to undesired behavior. Sometimes one side of a 'pair' is missing, like missing removing from a whitelist while there is a function to add to a whitelist.",
+        "remediation": "Review paired functions for symmetry and ensure they counteract each other's state changes appropriately.",
+        "references": [
+          "https://github.com/OpenCoreCH/smart-contract-auditing-heuristics#code-asymmetries"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Did you check the relevant EIP recommendations and security concerns?",
+        "description": "Incomplete or incorrect implementation of EIP recommendations can lead to vulnerabilities.",
+        "remediation": "Read the recommendations and security concerns and ensure all are implemented as per the official recommendations.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Are there any off-by-one errors?",
+        "description": "Off-by-one errors are not rare. Is `<=` correct in this context or should `<` be used? Should a variable be set to the length of a list or the length - 1? Should an iteration start at 1 or 0?",
+        "remediation": "Review all usages of comparison operators for correctness.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Are logical operators used correctly?",
+        "description": "Logical operators like `==`, `!=`, `&&`, `||`, `!` can be overlooked especially when the test coverage is not good.",
+        "remediation": "Review all usages of logical operators for correctness.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "What happens if the protocol's contracts are inputted as if they are normal actors?",
+        "description": "Supplying unexpected addresses can lead to unintended behaviors, especially if the address points to another contract inside the same protocol.",
+        "remediation": "Implement checks to validate receiver addresses and ensure the protocol behaves as expected.",
+        "references": []
       }
     ]
   }

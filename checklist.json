@@ -879,16 +879,12 @@
         "description": "",
         "data": [
           {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": []
-              }
+            "id": "",
+            "question": "Does the contract have a separate initializer function other than a constructor?",
+            "description": "Initializer function can be front-run right after the deployment. The impact is critical if the initializer sets the access controls.",
+            "remediation": "Use the factory pattern to allow only the factory to call the initializer or ensure it is not front-runnable in the deploy script.",
+            "references": [
+              "https://solodit.xyz/issues/initialization-functions-can-be-front-run-trailofbits-advanced-blockchain-pdf"
             ]
           }
         ]
@@ -1582,6 +1578,15 @@
             "description": "Certain addresses might be blocked or restricted to receive tokens (e.g. LUSD).",
             "remediation": "Ensure the receiver blacklisting does not affect the protocol's functionality.",
             "references": []
+          },
+          {
+            "id": "",
+            "question": "How is the approval handled?",
+            "description": "Some ERC20 tokens do not work when changing the allowance from an existing non-zero allowance value. For example Tether (USDT)'s approve() function will revert if the current approval is not zero, to protect against front-running changes of approvals.",
+            "remediation": "Set the allowance to zero before increasing the allowance and use safeApprove/safeIncreaseAllowance.",
+            "references": [
+              "https://solodit.xyz/issues/m-17-did-not-approve-to-zero-first-sherlock-notional-notional-git"
+            ]
           }
         ]
       },
@@ -2531,6 +2536,48 @@
             "description": "Reaching the maximum debt on an isolated asset can result in denial-of-service or other limitations on user actions.",
             "remediation": "Ensure that the protocol works as expected when a user reaches the maximum debt.",
             "references": []
+          }
+        ]
+      },
+      {
+        "category": "Balancer",
+        "description": "",
+        "data": [
+          {
+            "id": "",
+            "question": "Does the protcol use the Balancer's flashloan?",
+            "description": "Balancer vault does not charge any fees for flash loans at the moment. However, it is possible Balancer implements fees for flash loans in the future.",
+            "remediation": "Ensure the protocol repays the fee together with the original debt on repayment in the `receiveFlashLoan` function.",
+            "references": [
+              "https://solodit.xyz/issues/receiveflashloan-does-not-account-for-fees-trailofbits-none-lindy-labs-sandclock-pdf"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Does the protcol use Balancer vault pool liquidity status for any pricing?",
+            "description": "Balancer vault does not charge any fees for flash loans at the moment. However, it is possible Balancer implements fees for flash loans in the future.",
+            "remediation": "Balancer pools are susceptible to manipulation of their external queries, and all integrations must now take an extra step of precaution when consuming data. Via readonly reentrancy, an attacker can force token balances and BPT supply to be out of sync, creating very inaccurate BPT prices.",
+            "references": [
+              "https://solodit.xyz/issues/h-13-balancerpairoracle-can-be-manipulated-using-read-only-reentrancy-sherlock-none-blueberry-update-git"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Does the protcol use Balancer's Oracle? (getTimeWeightedAverage)",
+            "description": "The price will only be updated whenever a transaction (e.g. swap) within the Balancer pool is triggered. Due to the lack of updates, the price provided by Balancer Oracle will not reflect the true value of the assets.",
+            "remediation": "Do not use the Balancer's oracle for any pricing.",
+            "references": [
+              "https://solodit.xyz/issues/m-13-rely-on-balancer-oracle-which-is-not-updated-frequently-sherlock-notional-notional-git"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Does the protcol use Balancer's Boosted Pool?",
+            "description": "Balancer's Boosted Pool uses Phantom BPT where all pool tokens are minted at the time of pool creation and are held by the pool itself. Therefore, virtualSupply should be used instead of totalSupply to determine the amount of BPT supply in circulation.",
+            "remediation": "Ensure the protocol uses the correct function to get the total BPT supply in circulation.",
+            "references": [
+              "https://solodit.xyz/issues/h-7-totalbptsupply-will-be-excessively-inflated-sherlock-notional-notional-update-git"
+            ]
           }
         ]
       }

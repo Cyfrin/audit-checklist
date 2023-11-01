@@ -615,8 +615,8 @@
             "description": "Vulnerabilities related to specific EIP.",
             "data": [
               {
-                "id": "EIP-selfdestruct",
-                "question": "Does the contract use `selfdestruct()`?",
+                "id": "",
+                "question": "EIP-4758: Does the contract use `selfdestruct()`?",
                 "description": "`selfdestruct` will not be available after EIP-4758. This EIP will rename the SELFDESTRUCT opcode and replace its functionality.",
                 "remediation": "Do not use `selfdestruct` to ensure the contract works in the future.",
                 "references": [
@@ -837,39 +837,34 @@
         ]
       },
       {
-        "category": "EIP Standard",
-        "description": "",
-        "data": [
-          {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": []
-              }
-            ]
-          }
-        ]
-      },
-      {
         "category": "Inheritance",
         "description": "",
         "data": [
           {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": []
-              }
+            "id": "",
+            "question": "Has the contract implemented an interface?",
+            "description": "Interfaces are used by other protocols to interact with the protocol. Missing implementation will lead to unexpected cases.",
+            "remediation": "Make sure to implement all functions specified in the interface.",
+            "references": [
+
+            ]
+          },
+          {
+            "id": "",
+            "question": "Is it necessary to limit visibility of parent contract's public functions?",
+            "description": "External/Public functions of all parent contracts will be exposed with the same visibility as long as they are not overriden.",
+            "remediation": "Make sure to expose only relevant functions from parent contracts.",
+            "references": [
+
+            ]
+          },
+          {
+            "id": "",
+            "question": "Were all necessary functions implementation to fulfill inheritance purpose?",
+            "description": "Parent contracts often assume the inheriting contracts to implement public functions to utilize the parent's functionality. Sometimes developers miss implementing them and it makes the inheritance useless.",
+            "remediation": "Make sure to expose only relevant functions from parent contracts.",
+            "references": [
+              "https://solodit.xyz/issues/m-02-pauseunpause-functionalities-not-implemented-in-many-pausable-contracts-code4rena-stader-labs-stader-labs-git"
             ]
           }
         ]
@@ -878,6 +873,24 @@
         "category": "Initialization",
         "description": "",
         "data": [
+          {
+            "id": "",
+            "question": "Are important state variables initialized properly?",
+            "description": "Overlooking explicit initialization of state variables can lead to critical issues.",
+            "remediation": "Make sure to initialize all state variables correctly.",
+            "references": [
+              "https://solodit.xyz/issues/h-01-mintersolstartinflation-can-be-bypassed-code4rena-backd-backd-tokenomics-contest-git"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Has the contract inherited OpenZeppelin's Initializable?",
+            "description": "If the contract is supposed to be inherited by other contracts, `onlyInitializing` modifier MUST be used instead of `initializer`.",
+            "remediation": "Make sure to use the correct modifier for the initializer function.",
+            "references": [
+              "https://solodit.xyz/issues/h-03-wrong-implementation-of-eip712metatransaction-code4rena-rolla-rolla-contest-git"
+            ]
+          },
           {
             "id": "",
             "question": "Does the contract have a separate initializer function other than a constructor?",
@@ -953,6 +966,15 @@
             "description": "If you do not override a parent contract's function explicitly, the parent's one will be exposed with its visibility and probably a wrong accessibiliy.",
             "remediation": "Make sure you check the accessibility to the parent's external/public functions.",
             "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the contract use `tx.origin` in validation?",
+            "description": "Use of `tx.origin` for authorization may be abused by a malicious contract forwarding calls from the legitimate user. Use `msg.sender` instead. `require( tx.origin == msg.sender)` is a useful check to ensure that the `msg.sender` is an EOA(externally owned account).",
+            "remediation": "Make sure you know the difference of `tx.origin` and `msg.sender` and use properly.",
+            "references": [
+              "https://swcregistry.io/docs/SWC-115"
+            ]
           }
         ]
       },
@@ -980,13 +1002,31 @@
           },
           {
             "id": "",
+            "question": "Does this function need to be called by only EOA or only contracts?",
+            "description": "There are several edge cases regarding the caller checking mechanism, both for EOA and contracts.",
+            "remediation": "Ensure the correct access control is implemented according to the protocol's context. (read all the references)",
+            "references": [
+              "https://solodit.xyz/issues/m-15-onlyeoaex-modifier-that-ensures-call-is-from-eoa-might-not-hold-true-in-the-future-sherlock-blueberry-blueberry-git",
+              "https://solodit.xyz/issues/m-17-addressiscontract-is-not-a-reliable-way-of-checking-if-the-input-is-an-eoa-code4rena-stakehouse-protocol-lsd-network-stakehouse-contest-git"
+            ]
+          },
+          {
+            "id": "",
             "question": "Are the inputs validated?",
             "description": "Inputs to functions should be validated to prevent unexpected behavior.",
-            "remediation": "Use `require` statements to validate input conditions.",
+            "remediation": "Ensure thourougly validate. E.g. min/max for numeric values, start/end for dates, ownership of positions.",
             "references": [
               "https://solodit.xyz/issues/missing-owner-check-on-from-when-transferring-tokens-spearbit-clober-pdf",
               "https://solodit.xyz/issues/m-13-bondbasesdasetdefaults-doesnt-validate-inputs-sherlock-bond-bond-protocol-git",
               "https://solodit.xyz/issues/h-16-user-supplied-amm-pools-and-no-input-validation-allows-stealing-of-steth-protocol-fees-sherlock-swivel-illuminate-git"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Are the outputs validated?",
+            "description": "Outputs of functions should be validated to prevent unexpected behavior.",
+            "remediation": "Ensure the outputs are valid.",
+            "references": [
             ]
           },
           {
@@ -1026,25 +1066,6 @@
             "description": "Implementing a function that accepts arbitrary user input and makes low-level calls based on this data introduces a significant security risk. Low-level calls in Solidity, such as call(), are powerful and can lead to unintended contract behavior if not used cautiously. With the ability for users to supply arbitrary data, they can potentially trigger unexpected paths in the contract logic, exploit reentrancy vulnerabilities, or even interact with other contracts in a malicious manner.",
             "remediation": "Restrict the usage of low-level calls, especially when combined with arbitrary user input. Ensure that any data used in these calls is thoroughly validated and sanitized.",
             "references": []
-          }
-        ]
-      },
-      {
-        "category": "Input/Output Validation",
-        "description": "",
-        "data": [
-          {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": []
-              }
-            ]
           }
         ]
       },
@@ -1116,6 +1137,15 @@
             "description": "Changing the order or type of storage variables between upgrades can lead to storage collisions.",
             "remediation": "Maintain a consistent order and type for storage variables across contract versions to avoid storage collisions.",
             "references": []
+          },
+          {
+            "id": "",
+            "question": "Has the contract inherited the correct branch of OpenZeppelin library?",
+            "description": "Sometimes developers overlook and use an incorrect branch of OZ library, e.g. use Ownbale instead of OwnableUpgradeable.",
+            "remediation": "Make sure inherit the correct branch of OZ library according to the contract's upgradability design.",
+            "references": [
+              "https://solodit.xyz/issues/h-01-usage-of-an-incorrect-version-of-ownbale-library-can-potentially-malfunction-all-onlyowner-functions-code4rena-covalent-covalent-contest-git"
+            ]
           }
         ]
       },
@@ -1339,6 +1369,13 @@
             "question": "How is the withdrawal handled?",
             "description": "The best practice in withdrawal process is to implement pull-based approach. Track the accounting and let users pull the payments instead of sending funds proactively.",
             "remediation": "Implement pull-based approach in withdrawals.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What is the minimum deposit/withdrawal amount?",
+            "description": "Dust deposit/withdrawal often can lead to various vulnerabilities, e.g. rounding issue in accounting or Denial-Of-Service.",
+            "remediation": "Add a threshold for the deposit/withdrawal amount.",
             "references": []
           }
         ]
@@ -1587,6 +1624,13 @@
             "references": [
               "https://solodit.xyz/issues/m-17-did-not-approve-to-zero-first-sherlock-notional-notional-git"
             ]
+          },
+          {
+            "id": "",
+            "question": "Can the token be paused?",
+            "description": "Some ERC20 tokens can be paused by the contract owner.",
+            "remediation": "Ensur the protocol is not affected when the token is paused.",
+            "references": []
           }
         ]
       },
@@ -1621,6 +1665,16 @@
             "description": "Most of the time the `from` parameter of `transferFrom()` should be `msg.sender`. Otherwise an attacker can take advantage of other user's appovals and steal.",
             "remediation": "Ensure that the contract verifies the `msg.sender` is actually the owner.",
             "references": []
+          },
+          {
+            "id": "",
+            "question": "How is the transfer handled for CryptoPunks collection that doesn't support `transferFrom()`?",
+            "description": "CryptoPunks collections that do not support the `transferFrom()` function can present risks. The `offerPunkForSaleToAddress()` function in particular can be susceptible to front-running attacks, which can compromise the ownership and security of the token.",
+            "remediation": "Ensure validation is done properly to prevent malicious actors claiming the ownership.",
+            "references": [
+              "https://solodit.xyz/issues/h-3-cryptopunks-nfts-may-be-stolen-via-deposit-frontrunning-sherlock-ajna-ajna-git",
+              "https://solodit.xyz/issues/h-02-anyone-can-steal-cryptopunk-during-the-deposit-flow-to-wpunkgateway-code4rena-paraspace-paraspace-contest-git"
+            ]
           }
         ]
       }
@@ -1677,6 +1731,20 @@
             "references": [
               "https://github.com/d-xo/weird-erc20"
             ]
+          },
+          {
+            "id": "",
+            "question": "Are the protocol token pegged to any other asset?",
+            "description": "The target tokens can be depegged.",
+            "remediation": "Ensure the protocol behave as expected during the depeg.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are there unexpected rewards accruing for user deposited assets?",
+            "description": "Some protocols or platforms may provide additional rewards for staked or deposited assets. If these rewards are not properly accounted for or managed, it could lead to discrepancies in the user's expected vs actual returns.",
+            "remediation": "The protocol should have mechanisms in place to track all potential rewards for user deposited assets. Users should be provided with clear interfaces or methods to claim any unexpected rewards to ensure fairness and transparency.",
+            "references": []
           }
         ]
       },
@@ -1684,6 +1752,87 @@
         "category": "Oracle",
         "description": "Price oracle related vulnerabilities",
         "data": [
+          {
+            "id": "",
+            "question": "Is the returned price validated to be non-zero?",
+            "description": "Price feed might return zero and this must be handled as invalid.",
+            "remediation": "Ensure the returned price is not zero.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the price update time validated?",
+            "description": "Price feeds might not be supported in the future. To ensure accurate price usage, it's vital to regularly check the last update timestamp against a predefined delay.",
+            "remediation": "Implement a mechanism to check the heartbeat of the price feed and compare it against a predefined maximum delay (`MAX_DELAY`). Adjust the `MAX_DELAY` variable based on the observed heartbeat.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is there a validation to check if the rollup sequencer is running?",
+            "description": "The rollup sequencer can become offline, which can lead to potential vulnerabilities due to stale price.",
+            "remediation": "Utilize the sequencer uptime feed to confirm the sequencers are up.",
+            "references": [
+              "https://docs.chain.link/data-feeds/l2-sequencer-feeds"
+            ]
+          },
+          {
+            "id": "",
+            "question": "Is the desired price feed pair supported across all deployed chains?",
+            "description": "In multi-chain deployments, it's crucial to ensure the desired price feed pair is available and consistent across all chains.",
+            "remediation": "Review the supported price feed pairs on all chains and ensure they are consistent.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the heartbeat of the price feed suitable for the use case?",
+            "description": "A price feed heartbeat that's too slow might not be suitable for some use cases.",
+            "remediation": "Assess the requirements of the use case and ensure the price feed heartbeat aligns with them.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are there any inconsistencies with decimal precision when using different price feeds?",
+            "description": "Different price feeds might have varying decimal precisions, which can lead to inaccuracies.",
+            "remediation": "Ensure that the contract handles potential variations in decimal precision across different price feeds.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Is the price feed address hard-coded?",
+            "description": "Hard-coded price feed addresses can be problematic, especially if they become deprecated or if they're not accurate in the first place.",
+            "remediation": "Review and verify the hardcoded price feed addresses. Consider mechanisms to update the address if required in the future.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "What happens if oracle price updates are front-run?",
+            "description": "Oracle price updates can be front-run and cause various problems.",
+            "remediation": "Ensure the protocl is not affected in the case where oracle price updates are front-run.",
+            "references": [
+              "https://blog.angle.money/angle-research-series-part-1-oracles-and-front-running-d75184abc67"
+            ]
+          },
+          {
+            "id": "",
+            "question": "How does the system handle potential oracle reverts?",
+            "description": "Unanticipated oracle reverts can lead to Denial-Of-Service.",
+            "remediation": "Implement try/catch blocks around oracle calls and have alternative strategies ready.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are the price feeds appropriate for the underlying assets?",
+            "description": "Using an ETH price feed for stETH or a BTC price feed for WBTC can introduce risks associated with the underlying assets deviating from their pegs.",
+            "remediation": "Ensure that the price feeds accurately represent the underlying assets to address potential depeg risks.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "How does the system address potential inaccuracies during flash crashes?",
+            "description": "During flash crashes, oracles might return inaccurate prices.",
+            "remediation": "Implement checks to ensure that the price returned by the oracle lies within an expected range to guard against potential flash crash vulnerabilities.",
+            "references": []
+          },
           {
             "id": "",
             "question": "Is the contract vulnerable to oracle manipulation, especially using spot prices from AMMs?",
@@ -1697,6 +1846,27 @@
         "category": "AMM",
         "description": "",
         "data": [
+          {
+            "id": "",
+            "question": "Does the AMM utilize forked code?",
+            "description": "Using forked code, especially from known projects like Uniswap, can introduce known vulnerabilities if not updated or audited properly.",
+            "remediation": "Review the differences. Utilize tools such as contract-diff.xyz to compare and identify the origin of code snippets.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are there rounding issues in product constant formulas?",
+            "description": "Rounding issues in the formulas can lead to inaccuracies or imbalances in token swaps and liquidity provisions.",
+            "remediation": "Review the mathematical operations in the AMM's formulas, ensuring they handle rounding appropriately without introducing vulnerabilities.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Can arbitrary calls be made from user input?",
+            "description": "Allowing arbitrary calls based on user input can expose the contract to various vulnerabilities.",
+            "remediation": "Validate and sanitize user inputs. Avoid executing arbitrary calls based solely on input data.",
+            "references": []
+          },
           {
             "id": "",
             "question": "Is there a mechanism in place to protect against excessive slippage?",
@@ -1724,6 +1894,22 @@
             "description": "Rebasing tokens can change the actual balance.",
             "remediation": "Ensure the rebasing tokens are handled correctly if they are supposed to be supported.",
             "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the integrating contract verify the caller address in its callback functions?",
+            "description": "Callback functions can be manipulated if they don't validate the calling contract's address. This is especially crucial for functions like `swap()` that involve tokens or assets.",
+            "remediation": "Implement checks in the callback functions to validate the address of the calling contract. Additionally, review the logic for any potential bypasses to this check.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol calculate `minAmountOut` before a token swap?",
+            "description": "Protocols integrating AMMs should determine the `minAmountOut` prior to swaps to avoid unfavorable rates. The source of the rates and potential for manipulation should also be considered.",
+            "remediation": "Ensure that the protocol calculates `minAmountOut` before executing swaps. If external oracles are used, validate their trustworthiness and consider potential vulnerabilities like sandwich attacks.",
+            "references": [
+              "https://blog.chain.link/guide-to-sandwich-attacks/"
+            ]
           }
         ]
       },
@@ -1786,6 +1972,13 @@
             "description": "Without proper incentives, small positions might be overlooked, leading to inefficiencies.",
             "remediation": "Ensure a balanced incentive structure that motivates liquidators to address positions of all sizes.",
             "references": []
+          },
+          {
+            "id": "",
+            "question": "Is it possible for a user to be in a condition where they cannot repay their loan?",
+            "description": "Certain scenarios or conditions might prevent a user from repaying their loan, causing them to be perpetually in debt. This can be due to factors such as excessive collateralization, high fees, fluctuating token values, or other unforeseen events.",
+            "remediation": "Review the lending protocol's logic to ensure there are no conditions that could trap a user in perpetual debt. Implement safeguards to notify or protect users from taking actions that may lead to irrecoverable financial situations.",
+            "references": []
           }
         ]
       },
@@ -1818,6 +2011,13 @@
             "question": "Can the distribution of rewards be unduly delayed or prematurely claimed?",
             "description": "Manipulation in the timing of reward distribution can adversely affect users and the protocol's intended incentives.",
             "remediation": "Implement time controls and constraints on reward distributions to maintain the protocol's intended behavior.",
+            "references": []
+          },
+          {
+            "id": "",
+            "question": "Are rewards up-to-date in all usecases?",
+            "description": "The staking protocol often has a function to update the rewards (e.g. `updateRewards`) and sometimes it is used as a modifier. This update function MUST be called before all relevant operations.",
+            "remediation": "Ensure the update reward function is called properly in all places where the reward is relevant.",
             "references": []
           }
         ]
@@ -1966,6 +2166,41 @@
         "question": "Is there a pause mechanism?",
         "description": "Some functionalities must work even when the whole protocol is paused. For example, users must be able to withdraw assets even while the protocol is paused.",
         "remediation": "Review the pause mechanism thoroughly to ensure that it only affects intended functions and can't be abused by a malicious operator.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is there a proper validation in privileged setter functions?",
+        "description": "The validation on the protocol configuration values is often overlooked assuming the admin is trusted. But it is always recommended clarifying the range of each configuration value and validate in setter functions. (e.g. protocol fee should be limited)",
+        "remediation": "Ensure the protocol level properties are properly validated in the documented range.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is there a functionality for the admin to withdraw from the protocol?",
+        "description": "Some protocols are written to allow admin pull any amount of assets from the pool. This is a red flag and MUST be disallowed. The best practice is to track the protocol fee and only allow access to that amount.",
+        "remediation": "Ensure the admin can not steal user funds. Track the protocol earning separately.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Can the admin change critical protocol property immediately?",
+        "description": "Changes in the critical protocol properties MUST go through a cooling period to allow users react on the changes.",
+        "remediation": "Implement a timelock for the critical property changes and emit proper events.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is there any admin setter function missing events?",
+        "description": "Events are often used to monitor the protocol status. Without emission of events, users might be affected due to ignorance of the changes.",
+        "remediation": "Emit proper events on critical configuration changes.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "How is the ownership/privilege transferred??",
+        "description": "Critical privileges MUST be transferred via a two-step process and the protocol MUST behave as expected before/during/after transfer.",
+        "remediation": "Use two-step process for transferring critical privileges and ensure the protocol works properly before/during/after the transfer.",
         "references": []
       }
     ]
@@ -2278,93 +2513,6 @@
         "description": "",
         "data": [
           {
-            "category": "Oracle",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "Is the returned price validated to be non-zero?",
-                "description": "Price feed might return zero and this must be handled as invalid.",
-                "remediation": "Ensure the returned price is not zero.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "Is the price update time validated?",
-                "description": "Price feeds might not be supported in the future. To ensure accurate price usage, it's vital to regularly check the last update timestamp against a predefined delay.",
-                "remediation": "Implement a mechanism to check the heartbeat of the price feed and compare it against a predefined maximum delay (`MAX_DELAY`). Adjust the `MAX_DELAY` variable based on the observed heartbeat.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "Is there a validation to check if the rollup sequencer is running?",
-                "description": "The rollup sequencer can become offline, which can lead to potential vulnerabilities due to stale price.",
-                "remediation": "Utilize the sequencer uptime feed to confirm the sequencers are up.",
-                "references": [
-                  "https://docs.chain.link/data-feeds/l2-sequencer-feeds"
-                ]
-              },
-              {
-                "id": "",
-                "question": "Is the desired price feed pair supported across all deployed chains?",
-                "description": "In multi-chain deployments, it's crucial to ensure the desired price feed pair is available and consistent across all chains.",
-                "remediation": "Review the supported price feed pairs on all chains and ensure they are consistent.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "Is the heartbeat of the price feed suitable for the use case?",
-                "description": "A price feed heartbeat that's too slow might not be suitable for some use cases.",
-                "remediation": "Assess the requirements of the use case and ensure the price feed heartbeat aligns with them.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "Are there any inconsistencies with decimal precision when using different price feeds?",
-                "description": "Different price feeds might have varying decimal precisions, which can lead to inaccuracies.",
-                "remediation": "Ensure that the contract handles potential variations in decimal precision across different price feeds.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "Is the price feed address hard-coded?",
-                "description": "Hard-coded price feed addresses can be problematic, especially if they become deprecated or if they're not accurate in the first place.",
-                "remediation": "Review and verify the hardcoded price feed addresses. Consider mechanisms to update the address if required in the future.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "What happens if oracle price updates are front-run?",
-                "description": "Oracle price updates can be front-run and cause various problems.",
-                "remediation": "Ensure the protocl is not affected in the case where oracle price updates are front-run.",
-                "references": [
-                  "https://blog.angle.money/angle-research-series-part-1-oracles-and-front-running-d75184abc67"
-                ]
-              },
-              {
-                "id": "",
-                "question": "How does the system handle potential oracle reverts?",
-                "description": "Unanticipated oracle reverts can lead to Denial-Of-Service.",
-                "remediation": "Implement try/catch blocks around oracle calls and have alternative strategies ready.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "Are the price feeds appropriate for the underlying assets?",
-                "description": "Using an ETH price feed for stETH or a BTC price feed for WBTC can introduce risks associated with the underlying assets deviating from their pegs.",
-                "remediation": "Ensure that the price feeds accurately represent the underlying assets to address potential depeg risks.",
-                "references": []
-              },
-              {
-                "id": "",
-                "question": "How does the system address potential inaccuracies during flash crashes?",
-                "description": "During flash crashes, oracles might return inaccurate prices.",
-                "remediation": "Implement checks to ensure that the price returned by the oracle lies within an expected range to guard against potential flash crash vulnerabilities.",
-                "references": []
-              }
-            ]
-          },
-          {
             "category": "VRF",
             "description": "",
             "data": [
@@ -2659,6 +2807,50 @@
         "question": "What happens if the protocol's contracts are inputted as if they are normal actors?",
         "description": "Supplying unexpected addresses can lead to unintended behaviors, especially if the address points to another contract inside the same protocol.",
         "remediation": "Implement checks to validate receiver addresses and ensure the protocol behaves as expected.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Does calling a function multiple times with smaller amounts yield the same contract state as calling it once with the aggregate amount?",
+        "description": "Associative properties of certain financial operations suggest that performing the operation multiple times with smaller amounts should yield an equivalent outcome as performing it once with the aggregate amount. Variations might be indicative of potential issues such as rounding errors, unintended fee accumulations, or other inconsistencies.",
+        "remediation": "Implement tests to validate consistency. Where discrepancies exist, ensure they are intentional, minimal, and well-documented. If discrepancies are unintended, reevaluate the implementation to ensure precision and correctness.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Are there rounding errors that can be amplified?",
+        "description": "While minor rounding errors can be inevitable in certain operations, they can pose significant issues if they can be magnified. Amplification can occur when a function is invoked multiple times strategically or under specific conditions.",
+        "remediation": "Conduct thorough tests to identify and understand potential rounding errors. Ensure that they cannot be amplified to a level that would be detrimental to the system or its users. In cases where significant rounding errors are detected, the implementation should be revised to minimize or eliminate them.",
+        "references": [
+          "https://github.com/OpenCoreCH/smart-contract-audits/blob/main/reports/c4/rigor.md#high-significant-rounding-errors-for-interest-calculation"
+        ]
+      },
+      {
+        "id": "",
+        "question": "Is there any uninitialized state?",
+        "description": "Checking a variable against its default value might be used to detect initialization. If such defaults can also be valid state, it could lead to vulnerabilities.",
+        "remediation": "Avoid solely relying on default values to determine initialization status.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Can functions be invoked multiple times with identical parameters?",
+        "description": "Functions that should be unique per parameters set might be callable multiple times, leading to potential issues.",
+        "remediation": "Ensure functions have measures to prevent repeated calls with identical or similar parameters, especially when these calls can produce adverse effects.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is the global state updated correctly?",
+        "description": "While working with a `memory` copy for optimization, developers might overlook updating the global state.",
+        "remediation": "Always ensure the global state mirrors changes made in `memory`. Consider tools or extensions that can highlight discrepancies.",
+        "references": []
+      },
+      {
+        "id": "",
+        "question": "Is ETH/WETH handling implemented correctly?",
+        "description": "Contracts might have special logic for ETH, like wrapping to WETH. Assuming exclusivity between handling ETH and WETH without checks can introduce errors.",
+        "remediation": "Clearly differentiate the logic between ETH and WETH handling, ensuring no overlap or mutual exclusivity assumptions without validation.",
         "references": []
       }
     ]

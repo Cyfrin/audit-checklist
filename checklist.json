@@ -206,6 +206,14 @@
               "https://solodit.xyz/issues/m-12-attacker-can-grift-syndicate-staking-by-staking-a-small-amount-code4rena-stakehouse-protocol-lsd-network-stakehouse-contest-git"
             ],
             "tags": []
+          },
+          {
+            "id": "",
+            "question": "Does the protocol need a commit-reveal scheme?",
+            "description": "Without a commit-reveal scheme, actions such as votes or bids are exposed in the mempool before they are mined, allowing adversaries to see and potentially act on this information. The commit-reveal pattern maintains confidentiality until all commitments are made.",
+            "remediation": "Implement a commit-reveal scheme where users first commit a hash of their intended action and then reveal the actual action after the commitment phase is over. This protects against front-running and provides a fairer process.",
+            "references": [],
+            "tags": []
           }
         ]
       },
@@ -1024,6 +1032,13 @@
               "https://solodit.xyz/issues/m-02-pauseunpause-functionalities-not-implemented-in-many-pausable-contracts-code4rena-stader-labs-stader-labs-git"
             ],
             "tags": []
+          },
+          {
+            "title": "Does the inheritance order matter?",
+            "description": "Inheriting contracts in the wrong order can lead to unexpected behavior, e.g. storage allocation.",
+            "recommendation": "Verify the inheritance chain is ordered from 'most base-like' to 'most derived' to prevent issues like incorrect variable initialization.",
+            "link": "",
+            "tags": []
           }
         ]
       },
@@ -1417,6 +1432,14 @@
                 "remediation": "Make sure the last transfer handles all residual.",
                 "references": [],
                 "tags": []
+              },
+              {
+                "id": "",
+                "question": "Is there a break or continue inside a loop?",
+                "description": "Sometimes developers overlook the edge cases that can happend due to the break or continue in the middle of the loop.",
+                "remediation": "Make sure the break or continue inside a loop does not lead to unexpected behaviors.",
+                "references": [],
+                "tags": []
               }
             ]
           }
@@ -1427,18 +1450,12 @@
         "description": "",
         "data": [
           {
-            "category": "",
-            "description": "",
-            "data": [
-              {
-                "id": "",
-                "question": "",
-                "description": "",
-                "remediation": "",
-                "references": [],
-                "tags": []
-              }
-            ]
+            "id": "",
+            "question": "Is there need to delete the existing item from a map?",
+            "description": "If a variable of nested structure is deleted, only the top-level fields are reset by default values (zero) and the nested level fields are not reset.",
+            "remediation": "Always ensure that inner fields are deleted before the outer fields of the structure.",
+            "references": [],
+            "tags": []
           }
         ]
       },
@@ -1754,6 +1771,16 @@
           "https://solodit.xyz/issues/m-08-passing-multiple-eth-deposits-in-orders-array-will-use-the-same-msgvalue-many-times-code4rena-nested-finance-nested-finance-contest-git"
         ],
         "tags": []
+      },
+      {
+        "id": "",
+        "question": "What are the risks associated with using delegatecall in smart contracts?",
+        "description": "A delegatecall is a low-level function call that delegates the execution of a function in another contract while maintaining the original contract's context. It can lead to critical vulnerabilities if the destination address is not secure or can be altered by an unauthorized party.",
+        "remediation": "Use delegatecall only with trusted contracts, and ensure that the address to be delegated to is not changeable by unauthorized users. Implement strong access controls and audit the code for potential security issues before deployment.",
+        "references": [],
+        "tags": [
+          "SWC-112"
+        ]
       }
     ]
   },
@@ -2400,6 +2427,14 @@
             "references": [
               "https://solodit.xyz/issues/m-2-liquidations-are-enabled-when-repayments-are-disabled-causing-borrowers-to-lose-funds-without-a-chance-to-repay-sherlock-blueberry-blueberry-git"
             ],
+            "tags": []
+          },
+          {
+            "id": "",
+            "question": "Is it possible to lend and borrow the same token within a single transaction?",
+            "description": "Protocols that allow the same token to be lent and borrowed in a single transaction may be vulnerable to attacks that exploit rapid price inflation or flash loans to manipulate the system.",
+            "remediation": "Protocols should implement constraints to prohibit the same token from being used in a lend and borrow action within the same block or transaction, reducing the risk of flash-loan attacks and other manipulative practices.",
+            "references": [],
             "tags": []
           }
         ]
@@ -3380,7 +3415,15 @@
         "remediation": "Clearly differentiate the logic between ETH and WETH handling, ensuring no overlap or mutual exclusivity assumptions without validation.",
         "references": [],
         "tags": []
+      },
+      {
+        "id": "",
+        "question": "Does the protocol put any sensitive data on the blockchain?",
+        "description": "Data on the blockchain, including that marked 'private' in smart contracts, is visible to anyone who knows how to query the blockchain's state or analyze its transaction history. Private variables are not exempt from public inspection.",
+        "remediation": "Sensitive data should either be kept off-chain or encrypted before being stored on-chain. It's important to manage encryption keys securely and ensure that on-chain data does not expose private information even when encrypted, if the encryption method is weak or the keys are mishandled.",
+        "references": [],
+        "tags": []
       }
     ]
   }
-]'
+]

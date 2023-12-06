@@ -36,18 +36,26 @@ The checklist is divided into multiple categories, each containing a list of ite
 - **References**: A list of references to learn more about the item.
 
 ## Contribution
-
+We welcome contributions from the community. Issues and pull requests are encouraged.
+Contribution can be made from the Solodit website as well in a more user-friendly format.
 Please check out our [contribution guidelines](./CONTRIBUTING.md) for more details.
 
 ## Acknowledgements
 The checklist is heavily inspired by the following resources:
 
 - [Beirao's Checklist](./ref/beirao.md)
+- [Decurity's Checklist](./ref/decurity.md)
+- [ETH Devs's Checklist](./ref/ethdev.md)
 - [Hans's Checklist](./ref/hans.md)
+- [Jeffrey's Checklist](./ref/jeffrey.md)
 - [Jonas's Checklist](./ref/jonas.md)
+- [Miguel's Checklist](./ref/miguel.md)
 - [Nisedo's Checklist](./ref/nisedo.md)
 - [Owen's Checklist](./ref/owen.md)
+- [Rahul's Checklist](./ref/rahul.md)
+- [Rajeev's Resource](./ref/rajeev.md)
 - [Rareskill's Checklist](./ref/rareskill.md)
+- [Roman's Checklist](./ref/roman.md)
 
 ---
 

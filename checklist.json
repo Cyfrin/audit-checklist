@@ -278,7 +278,7 @@
               {
                 "id": "SOL-encodepacked",
                 "question": "Does the contract use `abi.encodePacked`, especially in hash generation? (version >= 0.8.17)",
-                "description": "If you use `keccak256(abi.encodePacked(a, b))` and both `a` and `b` are dynamic types, it is easy to craft collisions in the hash value by moving parts of `a` into `b` and vice-versa. More specifically, `abi.encodePacked(\\"a\\", \\"bc\\") == abi.encodePacked(\\"ab\\", \\"c\\").",
+                "description": "If you use `keccak256(abi.encodePacked(a, b))` and both `a` and `b` are dynamic types, it is easy to craft collisions in the hash value by moving parts of `a` into `b` and vice-versa. More specifically, `abi.encodePacked(\\'a\\', \\'bc\\') == abi.encodePacked(\\'ab\\', \\'c\\').",
                 "remediation": "Use `abi.encode` instead of `abi.encodePacked`.",
                 "references": [
                   "https://solodit.xyz/issues/m-1-abiencodepacked-allows-hash-collision-sherlock-nftport-nftport-git",
@@ -441,9 +441,7 @@
                 "question": "Are there any functions with the same name and parameter type inside the same contract? (version =0.7.1)",
                 "description": "The compiler does not flag an error when two or more free functions with the same name and parameter types are defined in a source unit or when an imported free function alias shadows another free function with a different name but identical parameter types.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -451,9 +449,7 @@
                 "question": "Does the contract use internal library functions with calldata parameters via `using for`? (version =0.6.9)",
                 "description": "Function calls to internal library functions with calldata parameters called via ``using for`` can result in invalid data being read.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -461,9 +457,7 @@
                 "question": "Are string literals with double backslashes passed directly to external or encoding functions with ABIEncoderV2 enabled? (version 0.5.14~0.6.7)",
                 "description": "String literals containing double backslash characters passed directly to external or encoding function calls can lead to a different string being used when ABIEncoderV2 is enabled.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -471,9 +465,7 @@
                 "question": "Does the contract access slices of dynamic arrays, especially multi-dimensional ones? (version 0.6.0~0.6.7)",
                 "description": "Accessing array slices of arrays with dynamically encoded base types (e.g. multi-dimensional arrays) can result in invalid data being read.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -481,9 +473,7 @@
                 "question": "Is there a contract with creation code, no constructor, but a base with a constructor that accepts non-zero values? (version 0.4.5~0.6.7)",
                 "description": "The creation code of a contract that does not define a constructor but has a base that does define a constructor did not revert for calls with non-zero value.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -491,9 +481,7 @@
                 "question": "Does the contract use tuple assignments with multi-stack-slot components, like nested tuples or dynamic calldata references? (version 0.1.6~0.6.5)",
                 "description": "Tuple assignments with components that occupy several stack slots, i.e. nested tuples, pointers to external functions or references to dynamically sized calldata arrays, can result in invalid values.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -511,9 +499,7 @@
                 "question": "Does the contract's inline assembly with Yul optimizer use assignments inside for loops combined with continue or break? (version =0.6.0)",
                 "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -521,9 +507,7 @@
                 "question": "Does the contract allow private methods to be overridden by inheriting contracts? (version 0.3.0~0.5.16)",
                 "description": "Private methods can be overridden by inheriting contracts.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -531,9 +515,7 @@
                 "question": "Is there any Yul's continue or break statement inside the loop?? (version 0.5.8~0.5.15)",
                 "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -541,9 +523,7 @@
                 "question": "Are both experimental ABIEncoderV2 and Yul optimizer activated? (version =0.5.14)",
                 "description": "If both the experimental ABIEncoderV2 and the experimental Yul optimizer are activated, one component of the Yul optimizer may reuse data in memory that has been changed in the meantime.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -551,9 +531,7 @@
                 "question": "Does the contract read from calldata structs with dynamic yet statically-sized members? (version 0.5.6~0.5.10)",
                 "description": "Reading from calldata structs that contain dynamically encoded, but statically-sized members can result in incorrect values.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -581,9 +559,7 @@
                 "question": "Does the contract's constructor accept structs or arrays with dynamic arrays? (version 0.4.16~0.5.8)",
                 "description": "A contract's constructor that takes structs or arrays that contain dynamically-sized arrays reverts or decodes to invalid data.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -591,9 +567,7 @@
                 "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.5.0~0.5.7)",
                 "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -601,9 +575,7 @@
                 "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.4.5~0.4.25)",
                 "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -611,9 +583,7 @@
                 "question": "Does the library use contract types in events? (version 0.5.0~0.5.7)",
                 "description": "Contract types used in events in libraries cause an incorrect event signature hash",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -621,9 +591,7 @@
                 "question": "Does the library use contract types in events? (version 0.3.0~0.4.25)",
                 "description": "Contract types used in events in libraries cause an incorrect event signature hash",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -701,9 +669,7 @@
                 "question": "Does the contract use both new-style and old-style constructors simultaneously? (version =0.4.22)",
                 "description": "If a contract has both a new-style constructor (using the constructor keyword) and an old-style constructor (a function with the same name as the contract) at the same time, one of them will be ignored.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -711,9 +677,7 @@
                 "question": "Is there a function name crafted to potentially override the fallback function execution? (version ~0.4.17)",
                 "description": "It is possible to craft the name of a function such that it is executed instead of the fallback function in very specific circumstances.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -721,9 +685,7 @@
                 "question": "Is the low-level .delegatecall() used without checking the actual execution outcome? (version 0.3.0~0.4.14)",
                 "description": "The low-level .delegatecall() does not return the execution outcome, but converts the value returned by the functioned called to a boolean instead.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -731,9 +693,7 @@
                 "question": "Is the ecrecover() function used without validating its input? (version ~0.4.13)",
                 "description": "The ecrecover() builtin can return garbage for malformed input.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {
@@ -741,9 +701,7 @@
                 "question": "Are there any instances where empty strings are directly passed to function calls? (version ~0.4.11)",
                 "description": "If an empty string is used in a function call, the following function arguments will not be correctly passed to the function.",
                 "remediation": "Use the latest Solidity version.",
-                "references": [
-                  null
-                ],
+                "references": [],
                 "tags": []
               },
               {

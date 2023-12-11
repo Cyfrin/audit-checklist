@@ -1,5 +1,19 @@
 [
     {
+        "category": "Account Abstract",
+        "description": "",
+        "data": [
+            {
+                "id": "SOL-AA-1",
+                "question": "Is it possible to cause DOS?",
+                "description": "Because transactions are free while using paymaster, there can be a possible DOS.",
+                "remediation": "Ensure there is no possibility of DOS attack especially using the paymaster.",
+                "references": [],
+                "tags": []
+            }
+        ]
+    },
+    {
         "category": "Attacker's Mindset",
         "description": "General check items for main attack types.",
         "data": [
@@ -381,6 +395,88 @@
                         "remediation": "Avoid using the index array as a key parameter of transaction data.",
                         "references": [],
                         "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-4",
+                        "question": "How does the protocol remove an item from an array?",
+                        "description": "`delete` does not rearrange the array but just resets the element.",
+                        "remediation": "Copy the last element to the index of the element to be removed and decrease the length of an array.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-5",
+                        "question": "Does any function gets an index of an array as an argument?",
+                        "description": "If an array is supposed to be updated (removal in the middle), the indexs will change.",
+                        "remediation": "Do not use an index of an array that is supposed to be updated as a parameter of a function.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-6",
+                        "question": "Is the summing of variables done accurately compared to separate calculations?",
+                        "description": "Direct calculation against a sum may yield different results than the sum of individual calculations, leading to precision issues.",
+                        "remediation": "Ensure that summation logic is thoroughly tested and verified, especially when dealing with financial calculations to maintain accuracy.",
+                        "references": [
+                            "https://github.com/sherlock-audit/2022-11-isomorph-judging/issues/174"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-7",
+                        "question": "Is it fine to have duplicate items in the array?",
+                        "description": "In most cases, an array (especially an input array by users) is supposed to be unique.",
+                        "remediation": "Add a validation to check the array is unique.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-8",
+                        "question": "Is there any issue with the first and the last iteration?",
+                        "description": "The first and the last iteration in loops can sometimes have edge cases that differ from other iterations, possibly leading to vulnerabilities.",
+                        "remediation": "Always test the initial and the last iteration separately and ensure consistent behavior throughout all iterations.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-9",
+                        "question": "Is there possibility of iteration of a huge array?",
+                        "description": "Due to the block gas limit, there is a clear limitation in the amount of operation that can be handled in a transaction.",
+                        "remediation": "Ensure the number of iterations is properly bounded.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-10",
+                        "question": "Is there a potential for a Denial-of-Service (DoS) attack in the loop?",
+                        "description": "Loops that contain external calls or are dependent on user-controlled input can be exploited to halt the contract's functions. (e.g. sending ETH to multiple users)",
+                        "remediation": "Ensure a failure of a single iteration does not revert the whole operation.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-11",
+                        "question": "Is `msg.value` used within a loop?",
+                        "description": "`msg.value` is consistent for the whole transaction. If it is used in the for loop, it is likely there is a mistake in accounting.",
+                        "remediation": "Avoid using `msg.value` inside loops. Refer to multi-call vulneratbility.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-12",
+                        "question": "Is there a loop to handle batch fund transfer?",
+                        "description": "If there is a mechanism to transfer funds out based on some kind of shares, it is likely that there is a problem of 'dust' funds not handled correctly.",
+                        "remediation": "Make sure the last transfer handles all residual.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-AL-13",
+                        "question": "Is there a break or continue inside a loop?",
+                        "description": "Sometimes developers overlook the edge cases that can happend due to the break or continue in the middle of the loop.",
+                        "remediation": "Make sure the break or continue inside a loop does not lead to unexpected behaviors.",
+                        "references": [],
+                        "tags": []
                     }
                 ]
             },
@@ -524,6 +620,14 @@
                         "question": "Has the contract implemented an interface?",
                         "description": "Interfaces are used by other protocols to interact with the protocol. Missing implementation will lead to unexpected cases.",
                         "remediation": "Make sure to implement all functions specified in the interface.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-Inheritance-4",
+                        "question": "Does the inheritance order matter?",
+                        "description": "Inheriting contracts in the wrong order can lead to unexpected behavior, e.g. storage allocation.",
+                        "remediation": "Verify the inheritance chain is ordered from 'most base-like' to 'most derived' to prevent issues like incorrect variable initialization.",
                         "references": [],
                         "tags": []
                     }
@@ -2990,6 +3094,235 @@
                 "remediation": "Implement timelocks for important changes, allowing users adequate time to respond to proposed alterations.",
                 "references": [],
                 "tags": []
+            }
+        ]
+    },
+    {
+        "category": "Token",
+        "description": "",
+        "data": [
+            {
+                "category": "Fungible : ERC20",
+                "description": "",
+                "data": [
+                    {
+                        "id": "SOL-Token-F:E-1",
+                        "question": "Are safe transfer functions used throughout the contract?",
+                        "description": "Not all ERC20 tokens are compliant to the EIP20 standard. Some do not return boolean flag, some do not revert on failure.",
+                        "remediation": "Use OpenZeppelin's SafeERC20 where the safeTransfer and safeTransferFrom functions handle the return value check as well as non-standard-compliant tokens.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-2",
+                        "question": "Is there potential for a race condition for approvals?",
+                        "description": "Race condition for approvals can cause an unexpected loss of funds to the signer.",
+                        "remediation": "Use OpenZeppelin's safeIncreaseAllowance and safeDecreaseAllowance functions.",
+                        "references": [
+                            "https://solodit.xyz/issues/m01-approval-process-can-be-front-run-openzeppelin-notional-governance-contracts-v2-audit-markdown"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-3",
+                        "question": "Could a difference in decimals between ERC20 tokens cause issues?",
+                        "description": "Different decimals in ERC20 tokens can cause incorrect calculations or interpretations.",
+                        "remediation": "Always check and handle the decimals of ERC20 tokens to prevent potential issues.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-4",
+                        "question": "Does the token implement any form of address whitelisting, blacklisting, or checks?",
+                        "description": "Tokens that have address checks can lead to various problems.",
+                        "remediation": "Ensure the token's own blacklisting mechanism does not affect the protocol's functionality.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-5",
+                        "question": "Could the use of multiple addresses for a single token lead to complications?",
+                        "description": "Some tokens have multiple addresses and this can introduce vulnerabilities.",
+                        "remediation": "Do not rely on the token address in the accounting.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-6",
+                        "question": "Does the token charge fee on transfer?",
+                        "description": "Some tokens charge fee on transfer and the receiver gets less amount than specified.",
+                        "remediation": "If the protocol intends to support this kind of token, ensure the accounting logic is correct.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-7",
+                        "question": "Can the token be ERC777?",
+                        "description": "ERC777 tokens have hooks that execute code before and after transfers, which might lead to reentrancy.",
+                        "remediation": "Be cautious when integrating with ERC777 and be aware of the hook implications.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-8",
+                        "question": "Does the protocol use Solmates's `ERC20.safeTransferLib`?",
+                        "description": "Solmate `ERC20.safeTransferLib` do not check the contract existence and this opens up a possibility for a honeypot attack.",
+                        "remediation": "Use OpenZeppelin's SafeERC20.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-02-solmates-erc20-does-not-check-for-token-contracts-existence-which-opens-up-possibility-for-a-honeypot-attack-code4rena-size-size-contest-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-9",
+                        "question": "Is there a flash-mint functionality?",
+                        "description": "Flash mints can drastically increase token supply temporarily, leading to potential abuse.",
+                        "remediation": "Implement strict controls and checks around any flash mint functionality.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-10",
+                        "question": "What happens on zero amount transfer?",
+                        "description": "Some tokens revert on transfer of zero amount and can cause issues in certain integrations and operations.",
+                        "remediation": "Transfer only when the amount is positive.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-11",
+                        "question": "Is the token an ERC2612 implementation?",
+                        "description": "Missing `DOMAIN_SEPARATOR()` can lead to vulnerabilities in the ERC2612 permit functionality.",
+                        "remediation": "Ensure complete and correct implementation of ERC2612, including the `DOMAIN_SEPARATOR()` function.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-12",
+                        "question": "Can the token be sent to any address?",
+                        "description": "Certain addresses might be blocked or restricted to receive tokens (e.g. LUSD).",
+                        "remediation": "Ensure the receiver blacklisting does not affect the protocol's functionality.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-13",
+                        "question": "Is there a direct approval to a non-zero value?",
+                        "description": "Some ERC20 tokens do not work when changing the allowance from an existing non-zero allowance value. For example Tether (USDT)'s approve() function will revert if the current approval is not zero, to protect against front-running changes of approvals.",
+                        "remediation": "Set the allowance to zero before increasing the allowance and use safeApprove/safeIncreaseAllowance.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-17-did-not-approve-to-zero-first-sherlock-notional-notional-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-14",
+                        "question": "Is there a max approval used?",
+                        "description": "Some tokens don't support approve `type(uint256).max` amount and revert.",
+                        "remediation": "Avoid approval of `type(uint256).max`.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-3-universalapprovemax-will-not-work-for-some-tokens-that-dont-support-approve-typeuint256max-amount-sherlock-dodo-dodo-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-15",
+                        "question": "Can the token be paused?",
+                        "description": "Some ERC20 tokens can be paused by the contract owner.",
+                        "remediation": "Ensur the protocol is not affected when the token is paused.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-F:E-16",
+                        "question": "Is the decrease allowance feature of transferFrom() handled correctly when the sender is the caller?",
+                        "description": "Allowance should not be decreased in a transferFrom() call if the sender is the same as the caller, to prevent incorrect balance and allowance tracking.",
+                        "remediation": "Ensure that the smart contract logic maintains correct allowance levels when transferFrom() involves the token owner themselves.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-2-transferfrom-uses-allowance-even-if-spender-from-sherlock-surge-surge-git"
+                        ],
+                        "tags": []
+                    }
+                ]
+            },
+            {
+                "category": "Non-fungible : ERC721/1155",
+                "description": "",
+                "data": [
+                    {
+                        "id": "SOL-Token-Nf:E1-1",
+                        "question": "How are the minting and transfer implemented?",
+                        "description": "According to the ERC721 standard, a wallet/broker/auction application MUST implement the wallet interface if it will accept safe transfers. Use safe version of mint and transfer functions to prevent NFT being lost. (the similar applies to ERC1155)",
+                        "remediation": "Use OpenZeppelin's safe mint/transfer functions for ERC721/1155.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-2",
+                        "question": "Is the contract safe from reentrancy attack?",
+                        "description": "By standard, the token receiver contracts implement onERC721Received and onERC1155Received and this can potentially be a source of reentrancy attacks if not correctly handled.",
+                        "remediation": "Double check the potential reentrancy attack.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-3",
+                        "question": "Is the OpenZeppelin implementation of ERC721 and ERC1155 safeguarded against reentrancy attacks, especially in the `safeTransferFrom` functions?",
+                        "description": "The `safeTransferFrom` functions in OpenZeppelin's ERC721 and ERC1155 can expose the contract to reentrancy attacks due to external calls to user addresses.",
+                        "remediation": "Use the checks-effects-interactions pattern and implement reentrancy guards to prevent potential reentrancy attacks when making external calls.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-4",
+                        "question": "Is it possible to steal NFT abusing his approval?",
+                        "description": "Most of the time the `from` parameter of `transferFrom()` should be `msg.sender`. Otherwise an attacker can take advantage of other user's appovals and steal.",
+                        "remediation": "Ensure that the contract verifies the `msg.sender` is actually the owner.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-5",
+                        "question": "Does the ERC721/1155 contract correctly implement supportsInterface?",
+                        "description": "Contracts must properly implement the supportsInterface function to ensure they comply with ERC721/1155 standards and interoperate with other contracts correctly.",
+                        "remediation": "Implement the supportsInterface function to return true for ERC721 and ERC1155 token types, ensuring accurate reporting of supported features.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-04-the-ferc1155sol-dont-respect-the-eip2981-code4rena-fractional-fractional-v2-contest-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-6",
+                        "question": "Can the contract support both ERC721 and ERC1155 standards?",
+                        "description": "To facilitate broader compatibility and usage in various applications, contracts may need to support both ERC721 and ERC1155 token standards.",
+                        "remediation": "Use the supportsInterface method to check for and support interfaces of both ERC1155 and ERC721 within the same contract.",
+                        "references": [
+                            "https://solodit.xyz/issues/h-06-some-real-world-nft-tokens-may-support-both-erc721-and-erc1155-standards-which-may-break-infinityexchange_transfernfts-code4rena-infinity-nft-marketplace-infinity-nft-marketplace-contest-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-7",
+                        "question": "What happens to the airdrops that are engaged to specific NFT?",
+                        "description": "For many NFT collections, a kind of privilege is provided in various ways, e.g. airdrop. The NFT owner must be able to claim the benefits while they lock in protocols.",
+                        "remediation": "Ensure the NFT holders can claim all benefits.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-04-its-possible-to-swap-nft-token-ids-without-fee-and-also-attacker-can-wrap-unwrap-all-the-nft-token-balance-of-the-pair-contract-and-steal-their-air-drops-for-those-token-ids-code4rena-caviar-caviar-contest-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Token-Nf:E1-8",
+                        "question": "How is the approval/transfer handled for CryptoPunks collection?",
+                        "description": "CryptoPunks collections that do not support the `transferFrom()` function can present risks. The `offerPunkForSaleToAddress()` function in particular can be susceptible to front-running attacks, which can compromise the ownership and security of the token.",
+                        "remediation": "Ensure validation is done properly to prevent malicious actors claiming the ownership.",
+                        "references": [
+                            "https://solodit.xyz/issues/h-3-cryptopunks-nfts-may-be-stolen-via-deposit-frontrunning-sherlock-ajna-ajna-git",
+                            "https://solodit.xyz/issues/h-02-anyone-can-steal-cryptopunk-during-the-deposit-flow-to-wpunkgateway-code4rena-paraspace-paraspace-contest-git"
+                        ],
+                        "tags": []
+                    }
+                ]
             }
         ]
     }

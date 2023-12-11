@@ -1,19 +1,5 @@
 [
     {
-        "category": "Account Abstract",
-        "description": "",
-        "data": [
-            {
-                "id": "SOL-AA-1",
-                "question": "Is it possible to cause DOS?",
-                "description": "Because transactions are free while using paymaster, there can be a possible DOS.",
-                "remediation": "Ensure there is no possibility of DOS attack especially using the paymaster.",
-                "references": [],
-                "tags": []
-            }
-        ]
-    },
-    {
         "category": "Attacker's Mindset",
         "description": "General check items for main attack types.",
         "data": [
@@ -381,22 +367,6 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Basics-AL-2",
-                        "question": "Is the array supposed to held unique values?",
-                        "description": "In many cases, the developer implicitly assumes an array helds only unique values but often misses the validation.",
-                        "remediation": "Ensure the uniqueness by skipping already existing items (or revert).",
-                        "references": [],
-                        "tags": []
-                    },
-                    {
-                        "id": "SOL-Basics-AL-3",
-                        "question": "What happens if the on-chain array state is changed?",
-                        "description": "If there is an interaction that uses the index in an array as a parameter, it is likely to be affected by the change of the array. (especially the due transactions that include the old array index)",
-                        "remediation": "Avoid using the index array as a key parameter of transaction data.",
-                        "references": [],
-                        "tags": []
-                    },
-                    {
                         "id": "SOL-Basics-AL-4",
                         "question": "How does the protocol remove an item from an array?",
                         "description": "`delete` does not rearrange the array but just resets the element.",
@@ -406,7 +376,7 @@
                     },
                     {
                         "id": "SOL-Basics-AL-5",
-                        "question": "Does any function gets an index of an array as an argument?",
+                        "question": "Does any function get an index of an array as an argument?",
                         "description": "If an array is supposed to be updated (removal in the middle), the indexs will change.",
                         "remediation": "Do not use an index of an array that is supposed to be updated as a parameter of a function.",
                         "references": [],
@@ -486,7 +456,7 @@
                 "data": [
                     {
                         "id": "SOL-Basics-Event-1",
-                        "question": "Is there a missing event emission in important state changes?",
+                        "question": "Does the protocol emit events on important state changes?",
                         "description": "Emitting events properly is important especially if the change is critical.",
                         "remediation": "Ensure to emit events in all important functions.",
                         "references": [],

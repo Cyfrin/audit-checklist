@@ -1,6 +1,6 @@
 # Solodit's Aggregated Smart Contract Audit Checklist
 
-_The checklist is hosted at [Solodit](https://solodit.xyz)_
+_The checklist is hosted at [Solodit]([https://solodit.xyz](https://solodit.xyz/checklist))_
 
 ## Introduction
 
@@ -37,7 +37,7 @@ The checklist is divided into multiple categories, each containing a list of ite
 
 ## Contribution
 We welcome contributions from the community. Issues and pull requests are encouraged.
-Contribution can be made from the Solodit website as well in a more user-friendly format.
+Contributions can be made from the Solodit website in a more user-friendly format as well.
 Please check out our [contribution guidelines](./CONTRIBUTING.md) for more details.
 
 ## Acknowledgements

@@ -1199,7 +1199,7 @@
                             {
                                 "id": "SOL-Basics-VI-SVI-10",
                                 "question": "Is a nested array being ABI-encoded or passed directly to an external function? (version 0.5.8~0.8.13)",
-                                "description": "ABI-reencoding of nested dynamic calldata arrays did not always perform proper size checks against the size of calldata and could read beyond ``calldatasize()``.",
+                                "description": "ABI-reencoding of nested dynamic calldata arrays did not always perform proper size checks against the size of calldata and could read beyond `calldatasize()`.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [
                                     "https://blog.soliditylang.org/2022/05/17/calldata-reencode-size-check-bug/"
@@ -2307,7 +2307,7 @@
                 "id": "SOL-Heuristics-3",
                 "question": "Is there any unexpected behavior when `src==dst` (or `caller==receiver`)?",
                 "description": "Overlooking the possibility of a sender and a recipient (source and destination) being the same in smart contracts can lead to unintended problems.",
-                "remediation": "Ensure the protcol behaves as expected when `src==dst`.",
+                "remediation": "Ensure the protocol behaves as expected when `src==dst`.",
                 "references": [],
                 "tags": []
             },
@@ -2433,7 +2433,7 @@
     },
     {
         "category": "Integrations",
-        "description": "Possible vulnerabilites whilel integrating popular external protocols",
+        "description": "Possible vulnerabilities while integrating popular external protocols",
         "data": [
             {
                 "category": "AAVE / Compound",
@@ -2521,7 +2521,7 @@
                 "data": [
                     {
                         "id": "SOL-Integrations-Balancer-1",
-                        "question": "Does the protcol use the Balancer's flashloan?",
+                        "question": "Does the protocol use the Balancer's flashloan?",
                         "description": "Balancer vault does not charge any fees for flash loans at the moment. However, it is possible Balancer implements fees for flash loans in the future.",
                         "remediation": "Ensure the protocol repays the fee together with the original debt on repayment in the `receiveFlashLoan` function.",
                         "references": [
@@ -2531,7 +2531,7 @@
                     },
                     {
                         "id": "SOL-Integrations-Balancer-2",
-                        "question": "Does the protcol use Balancer's Oracle? (getTimeWeightedAverage)",
+                        "question": "Does the protocol use Balancer's Oracle? (getTimeWeightedAverage)",
                         "description": "The price will only be updated whenever a transaction (e.g. swap) within the Balancer pool is triggered. Due to the lack of updates, the price provided by Balancer Oracle will not reflect the true value of the assets.",
                         "remediation": "Do not use the Balancer's oracle for any pricing.",
                         "references": [
@@ -2541,7 +2541,7 @@
                     },
                     {
                         "id": "SOL-Integrations-Balancer-3",
-                        "question": "Does the protcol use Balancer's Boosted Pool?",
+                        "question": "Does the protocol use Balancer's Boosted Pool?",
                         "description": "Balancer's Boosted Pool uses Phantom BPT where all pool tokens are minted at the time of pool creation and are held by the pool itself. Therefore, virtualSupply should be used instead of totalSupply to determine the amount of BPT supply in circulation.",
                         "remediation": "Ensure the protocol uses the correct function to get the total BPT supply in circulation.",
                         "references": [
@@ -2551,7 +2551,7 @@
                     },
                     {
                         "id": "SOL-Integrations-Balancer-4",
-                        "question": "Does the protcol use Balancer vault pool liquidity status for any pricing?",
+                        "question": "Does the protocol use Balancer vault pool liquidity status for any pricing?",
                         "description": "Balancer vault does not charge any fees for flash loans at the moment. However, it is possible Balancer implements fees for flash loans in the future.",
                         "remediation": "Balancer pools are susceptible to manipulation of their external queries, and all integrations must now take an extra step of precaution when consuming data. Via readonly reentrancy, an attacker can force token balances and BPT supply to be out of sync, creating very inaccurate BPT prices.",
                         "references": [
@@ -3023,7 +3023,7 @@
                 "id": "SOL-Signature-2",
                 "question": "Are signatures protected against malleability issues?",
                 "description": "Signature malleability can be exploited by attackers to produce valid signatures without the private key. Using outdated versions of libraries can introduce known vulnerabilities.",
-                "remediation": "Avoid using `escrecover()` for signature verification. Instead, utilize the OpenZeppelin's latest version of ECDSA to ensure signatures are safe from malleability issues.",
+                "remediation": "Avoid using `ecrecover()` for signature verification. Instead, utilize the OpenZeppelin's latest version of ECDSA to ensure signatures are safe from malleability issues.",
                 "references": [],
                 "tags": []
             },
@@ -3135,7 +3135,7 @@
                     },
                     {
                         "id": "SOL-Token-F:E-8",
-                        "question": "Does the protocol use Solmates's `ERC20.safeTransferLib`?",
+                        "question": "Does the protocol use Solmate's `ERC20.safeTransferLib`?",
                         "description": "Solmate `ERC20.safeTransferLib` do not check the contract existence and this opens up a possibility for a honeypot attack.",
                         "remediation": "Use OpenZeppelin's SafeERC20.",
                         "references": [
@@ -3199,7 +3199,7 @@
                         "id": "SOL-Token-F:E-15",
                         "question": "Can the token be paused?",
                         "description": "Some ERC20 tokens can be paused by the contract owner.",
-                        "remediation": "Ensur the protocol is not affected when the token is paused.",
+                        "remediation": "Ensure the protocol is not affected when the token is paused.",
                         "references": [],
                         "tags": []
                     },
@@ -3246,7 +3246,7 @@
                     {
                         "id": "SOL-Token-Nf:E1-4",
                         "question": "Is it possible to steal NFT abusing his approval?",
-                        "description": "Most of the time the `from` parameter of `transferFrom()` should be `msg.sender`. Otherwise an attacker can take advantage of other user's appovals and steal.",
+                        "description": "Most of the time the `from` parameter of `transferFrom()` should be `msg.sender`. Otherwise an attacker can take advantage of other user's approvals and steal.",
                         "remediation": "Ensure that the contract verifies the `msg.sender` is actually the owner.",
                         "references": [],
                         "tags": []

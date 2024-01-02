@@ -377,7 +377,7 @@
                     {
                         "id": "SOL-Basics-AL-5",
                         "question": "Does any function get an index of an array as an argument?",
-                        "description": "If an array is supposed to be updated (removal in the middle), the indexs will change.",
+                        "description": "If an array is supposed to be updated (removal in the middle), the indexes will change.",
                         "remediation": "Do not use an index of an array that is supposed to be updated as a parameter of a function.",
                         "references": [],
                         "tags": []
@@ -428,7 +428,7 @@
                         "id": "SOL-Basics-AL-11",
                         "question": "Is `msg.value` used within a loop?",
                         "description": "`msg.value` is consistent for the whole transaction. If it is used in the for loop, it is likely there is a mistake in accounting.",
-                        "remediation": "Avoid using `msg.value` inside loops. Refer to multi-call vulneratbility.",
+                        "remediation": "Avoid using `msg.value` inside loops. Refer to multi-call vulnerability.",
                         "references": [],
                         "tags": []
                     },
@@ -443,7 +443,7 @@
                     {
                         "id": "SOL-Basics-AL-13",
                         "question": "Is there a break or continue inside a loop?",
-                        "description": "Sometimes developers overlook the edge cases that can happend due to the break or continue in the middle of the loop.",
+                        "description": "Sometimes developers overlook the edge cases that can happened due to the break or continue in the middle of the loop.",
                         "remediation": "Make sure the break or continue inside a loop does not lead to unexpected behaviors.",
                         "references": [],
                         "tags": []
@@ -472,7 +472,7 @@
                         "id": "SOL-Basics-Function-1",
                         "question": "Are the inputs validated?",
                         "description": "Inputs to functions should be validated to prevent unexpected behavior.",
-                        "remediation": "Ensure thourougly validate. E.g. min/max for numeric values, start/end for dates, ownership of positions.",
+                        "remediation": "Ensure thorough validation. E.g. min/max for numeric values, start/end for dates, ownership of positions.",
                         "references": [
                             "https://solodit.xyz/issues/missing-owner-check-on-from-when-transferring-tokens-spearbit-clober-pdf",
                             "https://solodit.xyz/issues/m-13-bondbasesdasetdefaults-doesnt-validate-inputs-sherlock-bond-bond-protocol-git",
@@ -570,7 +570,7 @@
                     {
                         "id": "SOL-Basics-Inheritance-1",
                         "question": "Is it necessary to limit visibility of parent contract's public functions?",
-                        "description": "External/Public functions of all parent contracts will be exposed with the same visibility as long as they are not overriden.",
+                        "description": "External/Public functions of all parent contracts will be exposed with the same visibility as long as they are not overridden.",
                         "remediation": "Make sure to expose only relevant functions from parent contracts.",
                         "references": [],
                         "tags": []
@@ -661,7 +661,7 @@
                         "id": "SOL-Basics-Math-1",
                         "question": "Is the mathematical calculation accurate?",
                         "description": "Ensure that the logic behind any mathematical operation is correctly implemented.",
-                        "remediation": "Verify calculations against established mathematical rules in the document or the commments.",
+                        "remediation": "Verify calculations against established mathematical rules in the document or the comments.",
                         "references": [],
                         "tags": []
                     },
@@ -683,7 +683,7 @@
                     },
                     {
                         "id": "SOL-Basics-Math-4",
-                        "question": "Is there any case where dividing is done before multiplification?",
+                        "question": "Is there any case where dividing is done before multiplication?",
                         "description": "Multiplying before division is generally better to keep the precision.",
                         "remediation": "To avoid loss of precision, always multiply first and then divide.",
                         "references": [],
@@ -748,7 +748,7 @@
                     {
                         "id": "SOL-Basics-Math-12",
                         "question": "What happens for the minimum/maximum values included in the calculation?",
-                        "description": "If the calculation includes numerious terms, you need to confirm all edge cases where each term has the possible min/max values.",
+                        "description": "If the calculation includes numerous terms, you need to confirm all edge cases where each term has the possible min/max values.",
                         "remediation": "Ensure the edge cases do not lead to unexpected outcome.",
                         "references": [],
                         "tags": []
@@ -880,8 +880,8 @@
                     {
                         "id": "SOL-Basics-PU-8",
                         "question": "Has the contract inherited the correct branch of OpenZeppelin library?",
-                        "description": "Sometimes developers overlook and use an incorrect branch of OZ library, e.g. use Ownbale instead of OwnableUpgradeable.",
-                        "remediation": "Make sure inherit the correct branch of OZ library according to the contract's upgradability design.",
+                        "description": "Sometimes developers overlook and use an incorrect branch of OZ library, e.g. use Ownable instead of OwnableUpgradeable.",
+                        "remediation": "Make sure inherit the correct branch of OZ library according to the contract's upgradeability design.",
                         "references": [
                             "https://solodit.xyz/issues/h-01-usage-of-an-incorrect-version-of-ownbale-library-can-potentially-malfunction-all-onlyowner-functions-code4rena-covalent-covalent-contest-git"
                         ],
@@ -999,7 +999,7 @@
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-6",
-                                "question": "Does the contract use OpenZeppelin's Governer or GovernorCompatibilityBravo? (version >=4.3.0 <4.9.1)",
+                                "question": "Does the contract use OpenZeppelin's Governor or GovernorCompatibilityBravo? (version >=4.3.0 <4.9.1)",
                                 "description": "Governor proposal creation may be blocked by frontrunning. By frontrunning the creation of a proposal, an attacker can become the proposer and gain the ability to cancel it. The attacker can do this repeatedly to try to prevent a proposal from being proposed at all. This impacts the Governor contract in v4.9.0 only, and the GovernorCompatibilityBravo contract since v4.3.0.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
@@ -1397,7 +1397,7 @@
                             {
                                 "id": "SOL-Basics-VI-SVI-32",
                                 "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.5.0~0.5.7)",
-                                "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
+                                "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behavior.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
                                 "tags": []
@@ -1405,7 +1405,7 @@
                             {
                                 "id": "SOL-Basics-VI-SVI-33",
                                 "question": "Are uninitialized internal function pointers created in the constructor being called? (version 0.4.5~0.4.25)",
-                                "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behaviour.",
+                                "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behavior.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
                                 "tags": []
@@ -1522,7 +1522,7 @@
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-46",
-                                "question": "Is there any inconsistence (`memory` vs `calldata`) in the param type during inheritance? (version 0.6.9~0.8.13)",
+                                "question": "Is there any inconsistency (`memory` vs `calldata`) in the param type during inheritance? (version 0.6.9~0.8.13)",
                                 "description": "It was possible to change the data location of the parameters or return variables from ``calldata`` to ``memory`` and vice-versa while overriding internal and public functions. This caused invalid code to be generated when calling such a function internally through virtual function calls.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [
@@ -1773,7 +1773,7 @@
                     {
                         "id": "SOL-Defi-General-3",
                         "question": "Could direct transfers of funds introduce vulnerabilities?",
-                        "description": "Direct transfers of assets without usign the protocol's logic can lead to various problems in accounting especially if the accounting relies on `balanceOf` (or `address.balance`).",
+                        "description": "Direct transfers of assets without using the protocol's logic can lead to various problems in accounting especially if the accounting relies on `balanceOf` (or `address.balance`).",
                         "remediation": "Implement the internal accounting so that it is not be affected by direct transfers.",
                         "references": [],
                         "tags": []
@@ -2024,7 +2024,7 @@
                         "id": "SOL-Defi-Oracle-10",
                         "question": "What happens if oracle price updates are front-run?",
                         "description": "Oracle price updates can be front-run and cause various problems.",
-                        "remediation": "Ensure the protocl is not affected in the case where oracle price updates are front-run.",
+                        "remediation": "Ensure the protocol is not affected in the case where oracle price updates are front-run.",
                         "references": [
                             "https://blog.angle.money/angle-research-series-part-1-oracles-and-front-running-d75184abc67"
                         ],
@@ -2086,7 +2086,7 @@
                     },
                     {
                         "id": "SOL-Defi-Staking-3",
-                        "question": "Are rewards up-to-date in all usecases?",
+                        "question": "Are rewards up-to-date in all use-cases?",
                         "description": "The staking protocol often has a function to update the rewards (e.g. `updateRewards`) and sometimes it is used as a modifier. This update function MUST be called before all relevant operations.",
                         "remediation": "Ensure the update reward function is called properly in all places where the reward is relevant.",
                         "references": [],

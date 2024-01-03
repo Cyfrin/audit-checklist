@@ -577,11 +577,12 @@
                     },
                     {
                         "id": "SOL-Basics-Inheritance-2",
-                        "question": "Were all necessary functions implementation to fulfill inheritance purpose?",
+                        "question": "Were all necessary functions implemented to fulfill inheritance purpose?",
                         "description": "Parent contracts often assume the inheriting contracts to implement public functions to utilize the parent's functionality. Sometimes developers miss implementing them and it makes the inheritance useless.",
-                        "remediation": "Make sure to expose only relevant functions from parent contracts.",
+                        "remediation": "Make sure to expose relevant functions from parent contracts.",
                         "references": [
-                            "https://solodit.xyz/issues/m-02-pauseunpause-functionalities-not-implemented-in-many-pausable-contracts-code4rena-stader-labs-stader-labs-git"
+                            "https://solodit.xyz/issues/m-02-pauseunpause-functionalities-not-implemented-in-many-pausable-contracts-code4rena-stader-labs-stader-labs-git",
+                            "https://twitter.com/bytes032/status/1736065591536935366"
                         ],
                         "tags": []
                     },
@@ -810,6 +811,17 @@
                             "https://solodit.xyz/issues/use-call-instead-of-transfer-cyfrin-none-woosh-deposit-vault-markdown",
                             "https://solodit.xyz/issues/m-5-call-should-be-used-instead-of-transfer-on-an-address-payable-sherlock-dodo-dodo-git",
                             "https://solodit.xyz/issues/m-10-addresscallvaluex-should-be-used-instead-of-payabletransfer-code4rena-debt-dao-debt-dao-contest-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Basics-Payment-7",
+                        "question": "Is it possible for native ETH to be locked in the contract?",
+                        "description": "If a `payable` function does not transfer all ETH passed in `msg.value` and the contract does not have a withdraw method, ETH will be locked in the contract",
+                        "remediation": "Make sure either no ETH remains in the contract at the end of `payable` functions or make sure there is a `withdraw` function.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-09-bathbuddy-locks-up-ether-it-receives-code4rena-rubicon-rubicon-contest-git",
+                            "https://solodit.xyz/issues/m-22-eth-sent-when-calling-executeassmartwallet-function-can-be-lost-code4rena-stakehouse-protocol-lsd-network-stakehouse-contest-git"
                         ],
                         "tags": []
                     }
@@ -1567,7 +1579,7 @@
             {
                 "id": "SOL-CR-2",
                 "question": "Is there a pause mechanism?",
-                "description": "Some functionalities must work even when the whole protocol is paused. For example, users must be able to withdraw assets even while the protocol is paused.",
+                "description": "Some functionalities must work even when the whole protocol is paused. For example, users must be able to withdraw (or repay) assets even while the protocol is paused.",
                 "remediation": "Review the pause mechanism thoroughly to ensure that it only affects intended functions and can't be abused by a malicious operator.",
                 "references": [],
                 "tags": []
@@ -1625,9 +1637,11 @@
                     {
                         "id": "SOL-Defi-AS-1",
                         "question": "Is hardcoded slippage used?",
-                        "description": "Using hardcoded slippage can lead to poor trades and potential exploits.",
-                        "remediation": "Always employ a dynamic approach to determine slippage, ensuring it's calculated based on live market conditions.",
-                        "references": [],
+                        "description": "Using hardcoded slippage can lead to poor trades and freezing user funds during times of high volatility.",
+                        "remediation": "Allow users to specify the slippage parameter in the actual asset amount which was calculated off-chain.",
+                        "references": [
+                            "https://dacian.me/defi-slippage-attacks#heading-on-chain-slippage-calculation-can-be-manipulated"
+                        ],
                         "tags": []
                     },
                     {
@@ -1722,6 +1736,26 @@
                         "description": "Callback functions can be manipulated if they don't validate the calling contract's address. This is especially crucial for functions like `swap()` that involve tokens or assets.",
                         "remediation": "Implement checks in the callback functions to validate the address of the calling contract. Additionally, review the logic for any potential bypasses to this check.",
                         "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-AS-13",
+                        "question": "Is the slippage calculated on-chain?",
+                        "description": "ON-chain slippage calculation can be manipulated.",
+                        "remediation": "Allow users to specify the slippage parameter in the actual asset amount which was calculated off-chain.",
+                        "references": [
+                            "https://dacian.me/defi-slippage-attacks#heading-on-chain-slippage-calculation-can-be-manipulated"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-AS-14",
+                        "question": "Is the slippage parameter enforced at the last step before transferring funds to users?",
+                        "description": "Enforcing slippage parameters for intermediate swaps but not the final step can result in users receiving less tokens than their specified minimum",
+                        "remediation": "Enforce slippage parameter as the last step before transferring funds to users",
+                        "references": [
+                            "https://dacian.me/defi-slippage-attacks#heading-mintokensout-for-intermediate-not-final-amount"
+                        ],
                         "tags": []
                     }
                 ]
@@ -2216,7 +2250,7 @@
                 "references": [
                     "https://solodit.xyz/issues/h-02-non-existing-revenue-contract-can-be-passed-to-claimrevenue-to-send-all-tokens-to-treasury-code4rena-debt-dao-debt-dao-contest-git",
                     "https://solodit.xyz/issues/m-10-call-to-non-existing-contracts-returns-success-code4rena-biconomy-biconomy-hyphen-20-contest-git",
-                    "https://solodit.xyz/issues/lack-of-contract-existence-check-on-delegatecall-will-result-in-unexpected-behavior-trailofbits-fuji-protocol-pdf",
+                    "https://solodit.xyz/issues/lack-of-contract-existence-check-on-delegatecall-will-result-in-unexpected-behavior-trailofbits-degate-pdf",
                     "https://solodit.xyz/issues/m-02-solmates-erc20-does-not-check-for-token-contracts-existence-which-opens-up-possibility-for-a-honeypot-attack-code4rena-size-size-contest-git",
                     "https://solodit.xyz/issues/m-25-vault-can-be-created-for-not-yet-existing-erc20-tokens-which-allows-attackers-to-set-traps-to-steal-nfts-from-borrowers-code4rena-astaria-astaria-git",
                     "https://solodit.xyz/issues/calls-made-to-non-existentremoved-routes-or-controllers-will-not-result-in-failure-consensys-socket-markdown"
@@ -2232,6 +2266,17 @@
                     "https://www.geeksforgeeks.org/reentrancy-attack-in-smart-contracts/",
                     "https://solodit.xyz/issues/m-09-malicious-royalty-recipient-can-steal-excess-eth-from-buy-orders-code4rena-caviar-caviar-private-pools-git",
                     "https://solodit.xyz/issues/h-01-re-entrancy-in-settleauction-allow-stealing-all-funds-code4rena-kuiper-kuiper-contest-git"
+                ],
+                "tags": []
+            },
+            {
+                "id": "SOL-EC-14",
+                "question": "How is the msg.sender handled?",
+                "description": "On interacting with external contracts, the caller becomes a new `msg.sender` instead of the original caller.",
+                "remediation": "Ensure the validation is in place to check the actor is handled correctly.",
+                "references": [
+                    "https://solodit.xyz/issues/swapinternal-shouldnt-use-msgsender-spearbit-connext-pdf",
+                    "https://solodit.xyz/issues/m-01-onlycentrifugechainorigin-cant-require-msgsender-equal-axelargateway-code4rena-centrifuge-centrifuge-git"
                 ],
                 "tags": []
             }
@@ -2829,9 +2874,9 @@
                         "id": "SOL-Integrations-Uniswap-1",
                         "question": "Is the slippage calculated on-chain?",
                         "description": "ON-chain slippage calculation can be manipulated.",
-                        "remediation": "Allow a user specify the slippage in actual asset amount.",
+                        "remediation": "Allow users to specify the slippage parameter in the actual asset amount which was calculated off-chain.",
                         "references": [
-                            "https://defihacklabs.substack.com/p/solidity-security-lesson-6-defi-slippage?utm_source=profile&utm_medium=reader2"
+                            "https://dacian.me/defi-slippage-attacks#heading-on-chain-slippage-calculation-can-be-manipulated"
                         ],
                         "tags": []
                     },
@@ -2884,8 +2929,86 @@
                             "https://solodit.xyz/issues/use-unchecked-intickmathsol-andfullmathsol-spearbit-overlay-pdf"
                         ],
                         "tags": []
+                    },
+                    {
+                        "id": "SOL-Integrations-Uniswap-8",
+                        "question": "Is the slippage parameter enforced at the last step before transferring funds to users?",
+                        "description": "Enforcing slippage parameters for intermediate swaps but not the final step can result in users receiving less tokens than their specified minimum",
+                        "remediation": "Enforce slippage parameter as the last step before transferring funds to users",
+                        "references": [
+                            "https://dacian.me/defi-slippage-attacks#heading-mintokensout-for-intermediate-not-final-amount"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Integrations-Uniswap-9",
+                        "question": "Is `pool.slot0` being used to calculate sensitive information like current price and exchange rates?",
+                        "description": "`pool.slot0` can be easily manipulated via flash loans to sandwich attack users.",
+                        "remediation": "Use UniswapV3 TWAP or Chainlink Price Oracle.",
+                        "references": [
+                            "https://solodit.xyz/issues/h-4-no-slippage-protection-during-repayment-due-to-dynamic-slippage-params-and-easily-influenced-slot0-sherlock-real-wagmi-2-git",
+                            "https://solodit.xyz/issues/h-02-use-of-slot0-to-get-sqrtpricelimitx96-can-lead-to-price-manipulation-code4rena-maia-dao-ecosystem-maia-dao-ecosystem-git",
+                            "https://docs.uniswap.org/concepts/protocol/oracle"
+                        ],
+                        "tags": []
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "category": "Low Level",
+        "description": "Vulnerabilities inherent in low-level codebases, such as contracts crafted in Huff, bytecode, and sections of inline assembly code.",
+        "data": [
+            {
+                "id": "SOL-LL-1",
+                "question": "Is there validation on the size of the input data?",
+                "description": "In low-level, data size is not checked by default and it can affect the unintended memory locations.",
+                "remediation": "Validate that inputs do not exceed the size of it's expected type and either revert or clean the unused bits depending on your use case before using that value.",
+                "references": [
+                    "https://github.com/AmadiMichael/LowLevelVulnerabilities?tab=readme-ov-file#validate-all-input-bit-size"
+                ],
+                "tags": []
+            },
+            {
+                "id": "SOL-LL-2",
+                "question": "What happens if there is no matching function signature?",
+                "description": "It is expected to revert if there is no matching function signature in the contract. Overlooking this can let the execution continue into other parts of the unintended bytecode.",
+                "remediation": "Ensure that the code reverts after comparing all supported function signatures, fallback etc and not matching any.",
+                "references": [
+                    "https://github.com/AmadiMichael/LowLevelVulnerabilities?tab=readme-ov-file#end-execution-after-function-dispatching"
+                ],
+                "tags": []
+            },
+            {
+                "id": "SOL-LL-3",
+                "question": "Is it checked if the target address of a call has the code?",
+                "description": "Calling an address without code is always successful.",
+                "remediation": "Ensure that addresses being called, static-called or delegate-called have code deployed.",
+                "references": [
+                    "https://github.com/AmadiMichael/LowLevelVulnerabilities?tab=readme-ov-file#ensure-that-addresses-being-called-static-called-or-delegate-called-have-code-deployed-to-them"
+                ],
+                "tags": []
+            },
+            {
+                "id": "SOL-LL-4",
+                "question": "Is there a check on the return data size when calling precompiled code?",
+                "description": "When calling precompiled code, the call is still successful on error or \u201dfailure\u201d. A failed precompile call simply has a return data size of 0.",
+                "remediation": "Check the return data size not the success of the call to determine if it failed.",
+                "references": [
+                    "https://github.com/AmadiMichael/LowLevelVulnerabilities?tab=readme-ov-file#when-calling-precompiles-check-the-returndatasize-not-the-success-of-the-call-to-determine-if-it-failed"
+                ],
+                "tags": []
+            },
+            {
+                "id": "SOL-LL-5",
+                "question": "Is there a non-zero check for the denominator?",
+                "description": "At the evm level and in yul/inline assembly, when dividing or modulo'ing by 0, It does not revert with Panic(18) as solidity would do, its result 0. If this behavior is not desired it should be checked. Basically, x / 0 = 0 and x % 0 = 0.",
+                "remediation": "Check if the denominator is zero before division.",
+                "references": [
+                    "https://github.com/AmadiMichael/LowLevelVulnerabilities?tab=readme-ov-file#when-dividing-or-moduloin-check-that-the-denominator-is-not-0"
+                ],
+                "tags": []
             }
         ]
     },
@@ -3076,7 +3199,7 @@
                 "description": "",
                 "data": [
                     {
-                        "id": "SOL-Token-F:E-1",
+                        "id": "SOL-Token-FE-1",
                         "question": "Are safe transfer functions used throughout the contract?",
                         "description": "Not all ERC20 tokens are compliant to the EIP20 standard. Some do not return boolean flag, some do not revert on failure.",
                         "remediation": "Use OpenZeppelin's SafeERC20 where the safeTransfer and safeTransferFrom functions handle the return value check as well as non-standard-compliant tokens.",
@@ -3084,7 +3207,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-2",
+                        "id": "SOL-Token-FE-2",
                         "question": "Is there potential for a race condition for approvals?",
                         "description": "Race condition for approvals can cause an unexpected loss of funds to the signer.",
                         "remediation": "Use OpenZeppelin's safeIncreaseAllowance and safeDecreaseAllowance functions.",
@@ -3094,7 +3217,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-3",
+                        "id": "SOL-Token-FE-3",
                         "question": "Could a difference in decimals between ERC20 tokens cause issues?",
                         "description": "Different decimals in ERC20 tokens can cause incorrect calculations or interpretations.",
                         "remediation": "Always check and handle the decimals of ERC20 tokens to prevent potential issues.",
@@ -3102,7 +3225,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-4",
+                        "id": "SOL-Token-FE-4",
                         "question": "Does the token implement any form of address whitelisting, blacklisting, or checks?",
                         "description": "Tokens that have address checks can lead to various problems.",
                         "remediation": "Ensure the token's own blacklisting mechanism does not affect the protocol's functionality.",
@@ -3110,7 +3233,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-5",
+                        "id": "SOL-Token-FE-5",
                         "question": "Could the use of multiple addresses for a single token lead to complications?",
                         "description": "Some tokens have multiple addresses and this can introduce vulnerabilities.",
                         "remediation": "Do not rely on the token address in the accounting.",
@@ -3118,7 +3241,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-6",
+                        "id": "SOL-Token-FE-6",
                         "question": "Does the token charge fee on transfer?",
                         "description": "Some tokens charge fee on transfer and the receiver gets less amount than specified.",
                         "remediation": "If the protocol intends to support this kind of token, ensure the accounting logic is correct.",
@@ -3126,7 +3249,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-7",
+                        "id": "SOL-Token-FE-7",
                         "question": "Can the token be ERC777?",
                         "description": "ERC777 tokens have hooks that execute code before and after transfers, which might lead to reentrancy.",
                         "remediation": "Be cautious when integrating with ERC777 and be aware of the hook implications.",
@@ -3134,7 +3257,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-8",
+                        "id": "SOL-Token-FE-8",
                         "question": "Does the protocol use Solmate's `ERC20.safeTransferLib`?",
                         "description": "Solmate `ERC20.safeTransferLib` do not check the contract existence and this opens up a possibility for a honeypot attack.",
                         "remediation": "Use OpenZeppelin's SafeERC20.",
@@ -3144,7 +3267,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-9",
+                        "id": "SOL-Token-FE-9",
                         "question": "Is there a flash-mint functionality?",
                         "description": "Flash mints can drastically increase token supply temporarily, leading to potential abuse.",
                         "remediation": "Implement strict controls and checks around any flash mint functionality.",
@@ -3152,7 +3275,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-10",
+                        "id": "SOL-Token-FE-10",
                         "question": "What happens on zero amount transfer?",
                         "description": "Some tokens revert on transfer of zero amount and can cause issues in certain integrations and operations.",
                         "remediation": "Transfer only when the amount is positive.",
@@ -3160,7 +3283,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-11",
+                        "id": "SOL-Token-FE-11",
                         "question": "Is the token an ERC2612 implementation?",
                         "description": "Missing `DOMAIN_SEPARATOR()` can lead to vulnerabilities in the ERC2612 permit functionality.",
                         "remediation": "Ensure complete and correct implementation of ERC2612, including the `DOMAIN_SEPARATOR()` function.",
@@ -3168,7 +3291,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-12",
+                        "id": "SOL-Token-FE-12",
                         "question": "Can the token be sent to any address?",
                         "description": "Certain addresses might be blocked or restricted to receive tokens (e.g. LUSD).",
                         "remediation": "Ensure the receiver blacklisting does not affect the protocol's functionality.",
@@ -3176,7 +3299,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-13",
+                        "id": "SOL-Token-FE-13",
                         "question": "Is there a direct approval to a non-zero value?",
                         "description": "Some ERC20 tokens do not work when changing the allowance from an existing non-zero allowance value. For example Tether (USDT)'s approve() function will revert if the current approval is not zero, to protect against front-running changes of approvals.",
                         "remediation": "Set the allowance to zero before increasing the allowance and use safeApprove/safeIncreaseAllowance.",
@@ -3186,7 +3309,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-14",
+                        "id": "SOL-Token-FE-14",
                         "question": "Is there a max approval used?",
                         "description": "Some tokens don't support approve `type(uint256).max` amount and revert.",
                         "remediation": "Avoid approval of `type(uint256).max`.",
@@ -3196,7 +3319,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-15",
+                        "id": "SOL-Token-FE-15",
                         "question": "Can the token be paused?",
                         "description": "Some ERC20 tokens can be paused by the contract owner.",
                         "remediation": "Ensure the protocol is not affected when the token is paused.",
@@ -3204,7 +3327,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-F:E-16",
+                        "id": "SOL-Token-FE-16",
                         "question": "Is the decrease allowance feature of transferFrom() handled correctly when the sender is the caller?",
                         "description": "Allowance should not be decreased in a transferFrom() call if the sender is the same as the caller, to prevent incorrect balance and allowance tracking.",
                         "remediation": "Ensure that the smart contract logic maintains correct allowance levels when transferFrom() involves the token owner themselves.",
@@ -3220,7 +3343,7 @@
                 "description": "",
                 "data": [
                     {
-                        "id": "SOL-Token-Nf:E1-1",
+                        "id": "SOL-Token-NfE1-1",
                         "question": "How are the minting and transfer implemented?",
                         "description": "According to the ERC721 standard, a wallet/broker/auction application MUST implement the wallet interface if it will accept safe transfers. Use safe version of mint and transfer functions to prevent NFT being lost. (the similar applies to ERC1155)",
                         "remediation": "Use OpenZeppelin's safe mint/transfer functions for ERC721/1155.",
@@ -3228,7 +3351,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-2",
+                        "id": "SOL-Token-NfE1-2",
                         "question": "Is the contract safe from reentrancy attack?",
                         "description": "By standard, the token receiver contracts implement onERC721Received and onERC1155Received and this can potentially be a source of reentrancy attacks if not correctly handled.",
                         "remediation": "Double check the potential reentrancy attack.",
@@ -3236,7 +3359,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-3",
+                        "id": "SOL-Token-NfE1-3",
                         "question": "Is the OpenZeppelin implementation of ERC721 and ERC1155 safeguarded against reentrancy attacks, especially in the `safeTransferFrom` functions?",
                         "description": "The `safeTransferFrom` functions in OpenZeppelin's ERC721 and ERC1155 can expose the contract to reentrancy attacks due to external calls to user addresses.",
                         "remediation": "Use the checks-effects-interactions pattern and implement reentrancy guards to prevent potential reentrancy attacks when making external calls.",
@@ -3244,7 +3367,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-4",
+                        "id": "SOL-Token-NfE1-4",
                         "question": "Is it possible to steal NFT abusing his approval?",
                         "description": "Most of the time the `from` parameter of `transferFrom()` should be `msg.sender`. Otherwise an attacker can take advantage of other user's approvals and steal.",
                         "remediation": "Ensure that the contract verifies the `msg.sender` is actually the owner.",
@@ -3252,7 +3375,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-5",
+                        "id": "SOL-Token-NfE1-5",
                         "question": "Does the ERC721/1155 contract correctly implement supportsInterface?",
                         "description": "Contracts must properly implement the supportsInterface function to ensure they comply with ERC721/1155 standards and interoperate with other contracts correctly.",
                         "remediation": "Implement the supportsInterface function to return true for ERC721 and ERC1155 token types, ensuring accurate reporting of supported features.",
@@ -3262,7 +3385,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-6",
+                        "id": "SOL-Token-NfE1-6",
                         "question": "Can the contract support both ERC721 and ERC1155 standards?",
                         "description": "To facilitate broader compatibility and usage in various applications, contracts may need to support both ERC721 and ERC1155 token standards.",
                         "remediation": "Use the supportsInterface method to check for and support interfaces of both ERC1155 and ERC721 within the same contract.",
@@ -3272,7 +3395,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-7",
+                        "id": "SOL-Token-NfE1-7",
                         "question": "What happens to the airdrops that are engaged to specific NFT?",
                         "description": "For many NFT collections, a kind of privilege is provided in various ways, e.g. airdrop. The NFT owner must be able to claim the benefits while they lock in protocols.",
                         "remediation": "Ensure the NFT holders can claim all benefits.",
@@ -3282,7 +3405,7 @@
                         "tags": []
                     },
                     {
-                        "id": "SOL-Token-Nf:E1-8",
+                        "id": "SOL-Token-NfE1-8",
                         "question": "How is the approval/transfer handled for CryptoPunks collection?",
                         "description": "CryptoPunks collections that do not support the `transferFrom()` function can present risks. The `offerPunkForSaleToAddress()` function in particular can be susceptible to front-running attacks, which can compromise the ownership and security of the token.",
                         "remediation": "Ensure validation is done properly to prevent malicious actors claiming the ownership.",

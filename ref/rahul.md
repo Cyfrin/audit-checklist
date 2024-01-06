@@ -3,7 +3,7 @@
 ## Summary
 
 **Author:**
-[Rahul](TBD)
+[Rahul](https://blog.accubits.com/perspectives/rahul/)
 
 **Source:**
 [A checklist for smart contract security](https://blog.accubits.com/a-checklist-for-smart-contract-security/)

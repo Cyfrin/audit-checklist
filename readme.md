@@ -56,6 +56,7 @@ The checklist is heavily inspired by the following resources:
 - [Rajeev's Resource](./ref/rajeev.md)
 - [Rareskill's Checklist](./ref/rareskill.md)
 - [Roman's Checklist](./ref/roman.md)
+- [Olympix's NFT Security Audit Checklist](https://olympixai.medium.com/nft-smart-contract-security-common-pitfalls-and-auditing-guidelines-4bc8824c21b5)
 
 ---
 

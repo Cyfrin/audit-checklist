@@ -3147,7 +3147,9 @@
                 "question": "Are signatures protected against malleability issues?",
                 "description": "Signature malleability can be exploited by attackers to produce valid signatures without the private key. Using outdated versions of libraries can introduce known vulnerabilities.",
                 "remediation": "Avoid using `ecrecover()` for signature verification. Instead, utilize the OpenZeppelin's latest version of ECDSA to ensure signatures are safe from malleability issues.",
-                "references": [],
+                "references": [
+    "https://github.com/sherlock-audit/2022-09-harpie-judging/blob/main/004-M/004-m.md"
+  ],
                 "tags": []
             },
             {

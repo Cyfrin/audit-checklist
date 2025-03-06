@@ -397,7 +397,9 @@
                         "question": "Is it fine to have duplicate items in the array?",
                         "description": "In most cases, an array (especially an input array by users) is supposed to be unique.",
                         "remediation": "Add a validation to check the array is unique.",
-                        "references": [],
+                        "references": [
+    "https://solodit.cyfrin.io/issues/duplicate-interactions-mixbytes-none-liquorice-markdown"
+  ],
                         "tags": []
                     },
                     {

@@ -23,7 +23,8 @@
                         "description": "Enforcing a minimum transaction amount can prevent attackers from clogging the network with zero amount or dust transactions.",
                         "remediation": "Disallow transactions below a certain threshold to maintain efficiency and prevent denial of service through dust spamming.",
                         "references": [
-                            "https://solodit.xyz/issues/h-02-denial-of-service-code4rena-hubble-hubble-contest-git"
+                            "https://solodit.xyz/issues/h-02-denial-of-service-code4rena-hubble-hubble-contest-git",
+                            "https://solodit.cyfrin.io/issues/m-16-users-can-be-griefed-due-to-lack-of-minimum-size-within-the-loan-and-offer-sherlock-debita-finance-v3-git"
                         ],
                         "tags": []
                     },
@@ -32,7 +33,9 @@
                         "question": "How does the protocol handle tokens with blacklisting functionality?",
                         "description": "Tokens with blacklisting capabilities, such as USDC, can pose unique risks and challenges to protocols.",
                         "remediation": "Account for the possibility of blacklisting within token protocols to ensure continued functionality even if certain addresses are blacklisted.",
-                        "references": [],
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/m-4-blacklisted-creditor-can-block-all-repayment-besides-emergency-closure-sherlock-real-wagmi-2-git"
+                        ],
                         "tags": []
                     },
                     {
@@ -40,7 +43,10 @@
                         "question": "Can forcing the protocol to process a queue lead to DOS?",
                         "description": "Forcing protocols to process queues, like a queue of dust withdrawals, can be exploited to cause a denial of service.",
                         "remediation": "Design queue processing in a manner that is resilient to spam and cannot be exploited to cause denial of service.",
-                        "references": [],
+                        "references": [
+                            "https://solodit.cyfrin.io/?b=false&f=&fc=gte&ff=&fn=1&i=HIGH%2CMEDIUM&p=1&pc=&r=all&s=gas+griefing&t=",
+                            "https://solodit.cyfrin.io/issues/denial-of-slashing-ottersec-none-ethos-evm-pdf"
+                        ],
                         "tags": []
                     },
                     {
@@ -87,10 +93,13 @@
                 "data": [
                     {
                         "id": "SOL-AM-FrA-1",
-                        "question": "Are there measures in place to prevent frontrunning vulnerabilities in get-or-create patterns?",
-                        "description": "Get-or-create pattern functionality is prone to frontrunning attacks.",
-                        "remediation": "Ensure the frontrunning does not cause user loss or unexpected problems.",
-                        "references": [],
+                        "question": "Are \"get-or-create\" patterns protected against front-running attacks?",
+                        "description": "Functions combining resource creation and interaction (like getOrCreateAndUse) are vulnerable to front-running attacks where attackers can create the resource with different parameters before the victim, potentially manipulating prices or conditions.",
+                        "remediation": "Separate creation and interaction into distinct transactions or implement robust protections (parameter validation, relative references instead of absolute values) to ensure safe operation regardless of creation timing.",
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/h-03-fillorder-executor-can-be-front-run-by-the-order-creator-by-changing-orders-limitprice_e36-the-executors-assets-can-be-stolen-code4rena-init-capital-init-capital-git",
+                            "https://solodit.cyfrin.io/issues/m-01-routergetorcreatepoolandaddliquidity-can-be-frontrunned-which-leads-to-price-manipulation-code4rena-maverick-maverick-git"
+                        ],
                         "tags": []
                     },
                     {
@@ -115,10 +124,13 @@
                     },
                     {
                         "id": "SOL-AM-FrA-4",
-                        "question": "Does the protocol need a commit-reveal scheme?",
-                        "description": "Without a commit-reveal scheme, actions such as votes or bids are exposed in the mempool before they are mined, allowing adversaries to see and potentially act on this information. The commit-reveal pattern maintains confidentiality until all commitments are made.",
-                        "remediation": "Implement a commit-reveal scheme where users first commit a hash of their intended action and then reveal the actual action after the commitment phase is over. This protects against front-running and provides a fairer process.",
-                        "references": [],
+                        "question": "Is the protocol using a properly user-bound commit-reveal scheme?",
+                        "description": "Sensitive on-chain actions can be exposed in the mempool, enabling frontrunning and information exploitation. Effective commit-reveal schemes must bind commitments to specific users and transactions.",
+                        "remediation": "Implement a two-phase process where users first commit a hash containing their address and all transaction parameters, then reveal actual actions after the commitment phase ends, preventing frontrunning and information leakage.",
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/h01-votes-can-be-duplicated-openzeppelin-uma-audit-phase-1-markdown",
+                            "https://solodit.cyfrin.io/issues/ethregistrarcontrollerregister-is-vulnerable-to-front-running-fixed-consensys-ens-permanent-registrar-markdown"
+                        ],
                         "tags": []
                     }
                 ]
@@ -133,7 +145,21 @@
                         "description": "Malicious actors can prevent normal user transactions by making a slight change on the on-chain states. More problematic on L2 chains where tx fee is low.",
                         "remediation": "Ensure normal user actions especially important actions like withdrawal/repayment are not disturbed by other actors.",
                         "references": [
-                            "https://solodit.xyz/issues/m-10-griefing-attack-to-block-withdraws-code4rena-mochi-mochi-contest-git"
+                            "https://solodit.xyz/issues/m-10-griefing-attack-to-block-withdraws-code4rena-mochi-mochi-contest-git",
+                            "https://solodit.cyfrin.io/issues/griefing-attack-in-group-ip-management-via-license-token-minting-halborn-story-proof-of-creativity-protocol-markdown",
+                            "https://solodit.cyfrin.io/issues/h-6-loss-of-rewards-due-to-continuous-griefing-attacks-on-l2-environment-sherlock-notional-leveraged-vaults-pendle-pt-and-vault-incentives-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-AM-GA-2",
+                        "question": "Can the contract operations be manipulated with precise gas limit specifications?",
+                        "description": "Attackers can supply carefully calculated gas amounts to force specific execution paths in the contract, manipulating its behavior in unexpected ways.",
+                        "remediation": "Implement explicit gas checks before critical operations.",
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/19573",
+                            "https://solodit.cyfrin.io/issues/2786",
+                            "https://scsfg.io/hackers/griefing/"
                         ],
                         "tags": []
                     }
@@ -145,13 +171,23 @@
                 "data": [
                     {
                         "id": "SOL-AM-MA-1",
-                        "question": "Is `block.timestamp` used judiciously, especially for longer intervals?",
-                        "description": "`block.timestamp` can be manipulated by miners to a small extent, so relying on it for precise timing might be risky.",
-                        "remediation": "Use `block.timestamp` only where a slight inaccuracy is acceptable, such as for longer intervals.",
+                        "question": "Is block.timestamp used for time-sensitive operations?",
+                        "description": "Miners can manipulate block.timestamp by several seconds, potentially affecting time-dependent contract logic.",
+                        "remediation": "Use block.number instead of timestamps for critical timing operations or ensure manipulation tolerance is acceptable.",
                         "references": [],
                         "tags": [
                             "Miner Attack"
                         ]
+                    },
+                    {
+                        "id": "SOL-AM-MA-2",
+                        "question": "Is the contract using block properties like timestamp or difficulty for randomness generation?",
+                        "description": "Block properties (timestamp, difficulty) and other predictable values should not be used for randomness as they can be influenced or predicted by miners.",
+                        "remediation": "Use a secure randomness source like Chainlink VRF, commit-reveal schemes, or a provably fair randomization mechanism instead.",
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/m-01-randomindex-is-not-truly-random-possibility-of-predictably-minting-a-specific-token-id-code4rena-larvalabs-meebits-larvalabs-meebits-contest-git"
+                        ],
+                        "tags": []
                     }
                 ]
             },
@@ -398,8 +434,8 @@
                         "description": "In most cases, an array (especially an input array by users) is supposed to be unique.",
                         "remediation": "Add a validation to check the array is unique.",
                         "references": [
-    "https://solodit.cyfrin.io/issues/duplicate-interactions-mixbytes-none-liquorice-markdown"
-  ],
+                            "https://solodit.cyfrin.io/issues/duplicate-interactions-mixbytes-none-liquorice-markdown"
+                        ],
                         "tags": []
                     },
                     {
@@ -415,7 +451,9 @@
                         "question": "Is there possibility of iteration of a huge array?",
                         "description": "Due to the block gas limit, there is a clear limitation in the amount of operation that can be handled in a transaction.",
                         "remediation": "Ensure the number of iterations is properly bounded.",
-                        "references": [],
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/m-5-users-buying-too-many-tickets-will-dos-them-and-the-protocol-if-they-are-the-winner-due-to-oog-sherlock-winnables-raffles-git"
+                        ],
                         "tags": []
                     },
                     {
@@ -448,6 +486,26 @@
                         "description": "Sometimes developers overlook the edge cases that can happened due to the break or continue in the middle of the loop.",
                         "remediation": "Make sure the break or continue inside a loop does not lead to unexpected behaviors.",
                         "references": [],
+                        "tags": []
+                    }
+                ]
+            },
+            {
+                "category": "Block Reorganization",
+                "description": "A chain reorganization, or \u201creorg,\u201d happens when validators disagree on the most accurate version of the blockchain. Reorgs occurs when multiple blocks happen to be produced at the same time, if there is a bug, or due to a malicious attack.",
+                "data": [
+                    {
+                        "id": "SOL-Basics-BR-1",
+                        "question": "Does the protocol implement a factory pattern using the CREATE opcode?",
+                        "description": "Contracts created with the CREATE opcode will be eliminated if a block reorg happens.",
+                        "remediation": "Use CREATE2 instead of CREATE.",
+                        "references": [
+                            "https://solodit.xyz/issues/m-08-factorycreate-is-vulnerable-to-reorg-attacks-code4rena-abracadabra-money-abracadabra-money-git",
+                            "https://solodit.xyz/issues/m-02-reorg-attack-on-users-vault-deployment-and-deposit-may-lead-to-theft-of-funds-code4rena-amphora-protocol-amphora-protocol-git",
+                            "https://solodit.xyz/issues/m-4-loss-of-bond-amounts-on-re-org-attacks-sherlock-optimism-fault-proofs-git",
+                            "https://solodit.xyz/issues/m-01-questfactory-is-suspicious-of-the-reorg-attack-code4rena-rabbithole-rabbithole-quest-protocol-contest-git",
+                            "https://solodit.xyz/issues/m-14-re-org-attack-in-factory-code4rena-frankencoin-frankencoin-git"
+                        ],
                         "tags": []
                     }
                 ]
@@ -1975,6 +2033,84 @@
                 ]
             },
             {
+                "category": "Liquid Staking Derivatives",
+                "description": "",
+                "data": [
+                    {
+                        "id": "SOL-Defi-LSD-1",
+                        "question": "Can a malicious validator front-run setting withdrawal credentials?",
+                        "description": "A malicious Ethereum validator can betray a liquid staking protocol by front-running to first call `DepositContract::deposit` sending 1 ETH and passing their own withdrawal credentials; after the protocol's subsequent call succeeds the withdrawal credentials are not overwritten since only the \"initial deposit\" sets the withdrawals credentials while the second deposit is treated as a \"top-up deposit\".  The malicious validator now controls 33 ether with 32 ether belonging to the protocol's users and has set their own withdrawal credentials instead of the protocol's withdrawal credentials.",
+                        "remediation": "The function which calls `DepositContract::deposit` should take as input `DepositContract.get_deposit_root` then check that the input deposit root matches the current one. This works as the current deposit root changes with every deposit.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-2",
+                        "question": "Can the exchange rate repricing update be sandwich attacked to drain ETH from the protocol?",
+                        "description": "Liquid staking protocols typically have their own liquid ERC20 token that accrues value against ETH as the protocol receives staking rewards; in the normal course of operations the exchange rate should continually be increasing as the protocol accrues rewards such that the protocol's ERC20 token can be exchanged for increasing amounts of ETH. If the protocol allows instant withdrawals, an attacker can perform a risk-free sandwich attack to drain ETH from the protocol by 1) front-running the exchange rate txn to deposit a large amount of ETH, 2) back-running to withdraw at the increased rate.",
+                        "remediation": "Don't allow instant withdrawals but use a withdrawal queue and run the repricing transaction through flashbots.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-3",
+                        "question": "Can re-entrancy when ETH is sent during rewards/withdrawals or when NFTs are minted via `_safeMint` (to represent pending withdrawals) be used to drain the protocol's ETH?",
+                        "description": "Re-entrancy vulnerabilties can often exist in the reward or withdrawal code of LSD protocols.",
+                        "remediation": "Always follow the Checks-Effects-Interactions pattern; sending ETH or minting NFTs via `_safeMint` should always happen after storage updates.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-4",
+                        "question": "Can an arbitrary exchange rate be set when processing queued withdrawals?",
+                        "description": "If an arbitrary exchange rate can be set when processing queued withdrawals this creates a subtle rug-pull vector of user withdrawals.",
+                        "remediation": "When withdrawals are processed the current exchange rate should be retrieved in the same way as when withdrawals are created.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-5",
+                        "question": "Can paused states be bypassed to perform restricted actions even when they should be paused?",
+                        "description": "LSD protocols often implement pausing of different functionality. Auditors should check if there are any gaps where for example one function is missing a pause check that other related functions contain.",
+                        "remediation": "All related functions should contain the same related pause checks.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-6",
+                        "question": "Can inter-related storage be corrupted, especially storage related to operators and validators?",
+                        "description": "To reduce the gas cost of reading from storage, protocols may use multiple inter-related data structures to store complex information like operator and validator information. Auditors should examine whether functions which update these inter-related data structures can be used to corrupt them by over-writing records which contain indexes into to another storage location.",
+                        "remediation": "Protocols can use invariant fuzz testing with invariants which validate that relationships between inter-related data structures can't be broken by functions which update them.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-7",
+                        "question": "Does the protocol iterate over the entire set of operators or validators?",
+                        "description": "LSD protocols may need to iterate over the entire set of operators or validators which can become exorbitantly expensive or lead to out of gas if the operator or validator set becomes large. In permissionless systems where anyone can create operators or validators this creates a denial of service attack vector.",
+                        "remediation": "Refactor to avoid needing to iterate over the entire operator/validator set. Alternatively only use a small and trusted set of operators/validators.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-8",
+                        "question": "If using a Proof Of Reserves Oracle, does the protocol check for stale data?",
+                        "description": "LSD protocols may use an external Proof of Reserves Oracle to fetch off-chain data for their current ETH reserves. If the protocol doesn't check how long ago the data was last updated it can process stale data as if it were fresh.",
+                        "remediation": "Check the time data was last updated against the Oracle's heartbeat and revert if the data is too old.",
+                        "references": [],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-Defi-LSD-9",
+                        "question": "Does unnecessary precision loss occur in deposit, withdrawal or reward calculations?",
+                        "description": "Mathematical calculations have to be performed in LSD protocol deposit, withdrawal and reward functions. Auditors should check for precision loss issues such as division before multiplication, rounding down to zero etc.",
+                        "remediation": "Don't perform division before multiplication, be aware of rounding down to zero, rounding direction, unsafe casting etc.",
+                        "references": [],
+                        "tags": []
+                    }
+                ]
+            },
+            {
                 "category": "Oracle",
                 "description": "Price oracle related vulnerabilities",
                 "data": [
@@ -2223,7 +2359,9 @@
                 "question": "What happens if the call returns vast data?",
                 "description": "External calls returning vast data can deplete available gas.",
                 "remediation": "Limit or verify data size returned from external sources.",
-                "references": [],
+                "references": [
+                    "https://solodit.cyfrin.io/?b=false&f=&fc=gte&ff=&fn=1&i=HIGH%2CMEDIUM&p=1&pc=&r=all&s=gas+griefing&t="
+                ],
                 "tags": []
             },
             {
@@ -2613,6 +2751,86 @@
                 "description": "",
                 "data": [
                     {
+                        "category": "CCIP",
+                        "description": "Cross-Chain Interoperability Protocol",
+                        "data": [
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-1",
+                                "question": "Does the receiver contract's `_ccipReceive` function properly validate the `sourceChainSelector` and `sender` address against an allowlist?",
+                                "description": "Receiver contracts might process messages from unintended source chains or senders if they don't validate the origin.",
+                                "remediation": "Implement checks within `_ccipReceive` to verify the `any2EvmMessage.sourceChainSelector` and decoded `any2EvmMessage.sender` against administratively controlled allowlists.",
+                                "references": [],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-2",
+                                "question": "Does the sender contract validate the `destinationChainSelector` against an allowlist before calling `ccipSend`?",
+                                "description": "Sender contracts might accidentally send messages and tokens to unintended or unsupported destination chains.",
+                                "remediation": "Implement checks in the sending function to ensure the `destinationChainSelector` corresponds to an explicitly allowlisted chain.",
+                                "references": [],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-3",
+                                "question": "Does the receiver contract properly decode data (`any2EvmMessage.data`) ?",
+                                "description": "The encoding on the source chain and decoding on the destination chain must maintain precise structural consistency. ",
+                                "remediation": "Standardize both contracts to use identical ABI encoding/decoding patterns with explicit type declarations and thorough parameter validation to ensure cross-chain message integrity.",
+                                "references": [],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-4",
+                                "question": "Does the application logic account for the potential latency introduced by waiting for source chain finality as defined by CCIP?",
+                                "description": "Applications assuming immediate cross-chain execution might behave unexpectedly due to varying finality times across blockchains which CCIP respects.",
+                                "remediation": "Design application logic to be aware of and tolerant to CCIP execution latencies, which depend on the source chain's finality mechanism (finality tag or block depth).",
+                                "references": [
+                                    "https://docs.chain.link/ccip/concepts/ccip-execution-latency#finality-by-blockchain"
+                                ],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-5",
+                                "question": "Are the correct types of token pools (e.g., `BurnMintTokenPool`, `LockReleaseTokenPool`) deployed on the source and destination chains consistent with the desired token handling mechanism?",
+                                "description": "Deploying mismatched pool types (e.g., expecting Lock & Mint but deploying Burn & Mint on the destination) will lead to failed transfers or incorrect token handling.",
+                                "remediation": "Verify that the deployed token pool contracts on each chain match the intended cross-chain mechanism (Burn & Mint requires BurnMint pools; Lock & Mint requires LockRelease on source, BurnMint on destination, etc.).",
+                                "references": [
+                                    "https://docs.chain.link/ccip/concepts/cross-chain-tokens#token-handling-mechanisms-and-token-pool-deployment"
+                                ],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-6",
+                                "question": "Is proper router address verification implemented in the ccipReceive method?",
+                                "description": "Without proper router validation, any address can spoof messages, potentially compromising contract security and asset integrity.",
+                                "remediation": "Implement a router address verification check that validates msg.sender against a trusted router address.",
+                                "references": [
+                                    "https://docs.chain.link/ccip/best-practices#verify-router-addresses"
+                                ],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-7",
+                                "question": "Are extraArgs parameters hardcoded instead of mutable in cross-chain message configurations?",
+                                "description": "Hardcoded extraArgs parameters prevent adaptation to future CCIP protocol upgrades and gas requirement changes, potentially causing cross-chain transactions to fail or become incompatible with network upgrades.",
+                                "remediation": "Implement extraArgs as mutable parameters that can be configured off-chain or via updateable contract variables rather than hardcoding them directly in the contract logic.",
+                                "references": [
+                                    "https://docs.chain.link/ccip/best-practices#using-extraargs"
+                                ],
+                                "tags": []
+                            },
+                            {
+                                "id": "SOL-Integrations-Chainlink-CCIP-8",
+                                "question": "Is there a proper failure handling mechanism for CCIP messages to prevent blocking after Smart Execution window expiration?",
+                                "description": "When a CCIP message fails and the Smart Execution time window (8 hours) expires, all subsequent messages from the same sender will be blocked until the failed message succeeds, potentially causing permanent denial of service if the message cannot be fixed.",
+                                "remediation": "Implement robust error handling in CCIPReceiver implementation with try/catch blocks and recovery mechanisms to ensure messages can be successfully processed even under unexpected conditions.",
+                                "references": [
+                                    "https://solodit.cyfrin.io/issues/m-04-price-updating-mechanism-can-break-code4rena-renzo-renzo-git"
+                                ],
+                                "tags": []
+                            }
+                        ]
+                    },
+                    {
                         "category": "VRF",
                         "description": "",
                         "data": [
@@ -2953,6 +3171,16 @@
                             "https://docs.uniswap.org/concepts/protocol/oracle"
                         ],
                         "tags": []
+                    },
+                    {
+                        "id": "SOL-Integrations-Uniswap-10",
+                        "question": "Is a hard-coded fee tier parameter being used?",
+                        "description": "In UniswapV3 liquidity can be spread across multiple fee tiers. If a function which initiates a uni v3 swap hard-codes the fee tier parameter, this can have several negative effects.",
+                        "remediation": "Functions allowing users to perform uni v3 swaps should allow users to pass in the fee tier parameter.",
+                        "references": [
+                            "https://dacian.me/defi-slippage-attacks#heading-hard-coded-fee-tier-in-uniswapv3-swap"
+                        ],
+                        "tags": []
                     }
                 ]
             }
@@ -3020,10 +3248,12 @@
         "data": [
             {
                 "id": "SOL-McCc-1",
-                "question": "Are there hardcoded time values dependent on the `block.number`?",
+                "question": "Are there assumption of consistency in the `block.number` or `block.timestamp` across chains?",
                 "description": "Block time can vary across different chains, leading to potential timing discrepancies.",
-                "remediation": "Avoid hardcoding time values based on block numbers.",
-                "references": [],
+                "remediation": "Avoid comparing timestamp or block numbers for different chains.",
+                "references": [
+                    "https://solodit.cyfrin.io/issues/m-06-l1xrenzobridge-and-l2xrenzobridge-uses-the-blocktimestamp-as-dependency-which-can-cause-issues-code4rena-renzo-renzo-git"
+                ],
                 "tags": []
             },
             {
@@ -3127,6 +3357,16 @@
                 "remediation": "Ensure if `PUSH0` is supported in the target chain.",
                 "references": [
                     "https://github.com/0xJuancito/multichain-auditor#support-for-the-push0-opcode"
+                ],
+                "tags": []
+            },
+            {
+                "id": "SOL-McCc-13",
+                "question": "Are there any attributes attached to the bridged assets?",
+                "description": "When assets (e.g. tokens) are bridged across chains, the relevant attributes (e.g. approval) must be bridged or reset accordingly.",
+                "remediation": "Ensure accounting all the relevant attributes when assets are bridged.",
+                "references": [
+                    "https://solodit.cyfrin.io/issues/not-update-rewards-in-handleincomingupdate-function-of-sdlpoolprimary-leads-to-incorrect-reward-calculations-codehawks-stakelink-git"
                 ],
                 "tags": []
             }

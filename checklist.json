@@ -142,8 +142,8 @@
                     {
                         "id": "SOL-AM-GA-1",
                         "question": "Is there an external function that relies on states that can be changed by others?",
-                        "description": "Malicious actors can prevent normal user transactions by making a slight change on the on-chain states. More problematic on L2 chains where tx fee is low.",
-                        "remediation": "Ensure normal user actions especially important actions like withdrawal/repayment are not disturbed by other actors.",
+                        "description": "Malicious actors can prevent regular user transactions by making a slight change to the on-chain states.",
+                        "remediation": "Ensure normal user actions especially important actions like withdrawal and repayment are not disturbed by other actors.",
                         "references": [
                             "https://solodit.xyz/issues/m-10-griefing-attack-to-block-withdraws-code4rena-mochi-mochi-contest-git",
                             "https://solodit.cyfrin.io/issues/griefing-attack-in-group-ip-management-via-license-token-minting-halborn-story-proof-of-creativity-protocol-markdown",
@@ -188,6 +188,16 @@
                             "https://solodit.cyfrin.io/issues/m-01-randomindex-is-not-truly-random-possibility-of-predictably-minting-a-specific-token-id-code4rena-larvalabs-meebits-larvalabs-meebits-contest-git"
                         ],
                         "tags": []
+                    },
+                    {
+                        "id": "SOL-AM-MA-3",
+                        "question": "Is contract logic sensitive to transaction ordering?",
+                        "description": "Miners control transaction ordering and can exploit this for front-running, back-running, or sandwich attacks.",
+                        "remediation": "Implement protection by allowing users to specify acceptable results that revert transactions when breached.",
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/20754"
+                        ],
+                        "tags": []
                     }
                 ]
             },
@@ -197,13 +207,24 @@
                 "data": [
                     {
                         "id": "SOL-AM-PMA-1",
-                        "question": "How does the protocol get the price of assets?",
-                        "description": "Price, or rates between assets more generally, can be manipulated if it is derived from the ratio of balance. Flash loan and donation are the well-known attack vectors used to manipulate the prices.",
-                        "remediation": "Use the Chainlink oracles for the asset prices and implement internal accounting instead of relying on `balanceOf`.",
+                        "question": "Is the price calculated by the ratio of token balances?",
+                        "description": "Price can be manipulated via flash loans or donations if it is derived from the ratio of token balances.",
+                        "remediation": "Use the Chainlink oracles for the asset prices.",
                         "references": [
                             "https://solodit.xyz/issues/h-05-flash-loan-price-manipulation-in-purchasepyroflan-code4rena-behodler-behodler-contest-git",
                             "https://solodit.xyz/issues/h-05-underlying-assets-stealing-in-autopxgmx-and-autopxglp-via-share-price-manipulation-code4rena-redacted-cartel-redacted-cartel-contest-git",
                             "https://solodit.xyz/issues/h-02-use-of-slot0-to-get-sqrtpricelimitx96-can-lead-to-price-manipulation-code4rena-maia-dao-ecosystem-maia-dao-ecosystem-git"
+                        ],
+                        "tags": []
+                    },
+                    {
+                        "id": "SOL-AM-PMA-2",
+                        "question": "Is the price calculated from DEX liquidity pool spot prices?",
+                        "description": "Spot price readings derived directly from DEX liquidity pools are vulnerable to manipulation through flash loans that can temporarily drain the pools.",
+                        "remediation": "Use TWAP (time-weighted average price) with appropriate time windows based on asset volatility and liquidity, or use reliable oracle solutions.",
+                        "references": [
+                            "https://solodit.cyfrin.io/issues/h-08-omooracle-getliquidityamounts-uses-spot-price-making-it-manipulatable-pashov-audit-group-none-omo_2025-01-25-markdown",
+                            "https://solodit.cyfrin.io/issues/h-03-the-use-of-spot-price-by-coresaltyfeed-can-lead-to-price-manipulation-and-undesired-liquidations-code4rena-saltyio-saltyio-git"
                         ],
                         "tags": []
                     }

@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beirao's Interactive Security Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-progress {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .section-content {
+            padding: 25px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .checklist-item:hover {
+            background: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .checklist-item.completed {
+            background: #d4edda;
+            border-color: #27ae60;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            accent-color: #27ae60;
+            cursor: pointer;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-id {
+            font-weight: bold;
+            color: #3498db;
+            margin-right: 10px;
+        }
+
+        .item-text {
+            color: #2c3e50;
+        }
+
+        .item-details {
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #3498db;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .item-details ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .controls {
+                padding: 15px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section-content {
+                padding: 20px;
+            }
+
+            .checklist-item {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Beirao's Security Checklist</h1>
+            <p>The Ultimate Smart Contract Security Audit Checklist</p>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number" id="totalItems">0</span>
+                    <span class="stat-label">Total Items</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="completedItems">0</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="progressPercent">0%</span>
+                    <span class="stat-label">Progress</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-success" onclick="checkAll()">
+                ✓ Check All
+            </button>
+            <button class="btn btn-warning" onclick="uncheckAll()">
+                ✗ Uncheck All
+            </button>
+            <button class="btn btn-primary" onclick="exportResults()">
+                📥 Export Results
+            </button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="content" id="content">
+            <!-- Content will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const checklistData = {
+            "External/Public Functions": [
+                { id: "F-01", text: "Should it be external/public?", details: "" },
+                {
+                    id: "F-02",
+                    text: "Does this function need to be restricted? (onlyOwner?)",
+                    details: "",
+                },
+                { id: "F-03", text: "Are the inputs checked?", details: "" },
+                {
+                    id: "F-04",
+                    text: "Is there any front run opportunities?",
+                    details:
+                        "• Beware of sandwich attack on Vaults and DEXes\n• Tx must not be order dependent\n• Auctions with a fixed endtime has the known vulnerability of being bid on at the last block\n• Pausing mechanisme can be frontrun",
+                },
+                {
+                    id: "F-05",
+                    text: "Is this function making a call() or transfering ERC20 tokens?",
+                    details: "• Is the call address white listed?\n• Reentrance?",
+                },
+                {
+                    id: "F-06",
+                    text: "Is that function payable or transfering funds?",
+                    details: "• Check if msg.value == amount",
+                },
+                {
+                    id: "F-07",
+                    text: "Is the code comments coherent with the implementation?",
+                    details: "",
+                },
+                {
+                    id: "F-08",
+                    text: "Can edge case inputs (0, max) result of an unexpected behaviour?",
+                    details: "",
+                },
+                {
+                    id: "F-09",
+                    text: "Requirement check for external call parameters can be to strong and not allowing all good possible inputs",
+                    details: "",
+                },
+                {
+                    id: "F-10",
+                    text: "When array of address/id in calldata: what happen if there are multiple time the same address in the array?",
+                    details: "",
+                },
+            ],
+            "External Calls": [
+                {
+                    id: "E-01",
+                    text: "Is an external contract call actually needed?",
+                    details: "",
+                },
+                {
+                    id: "E-02",
+                    text: "Is the address called whitelisted?",
+                    details: "",
+                },
+                {
+                    id: "E-03",
+                    text: "Mistrust when there is a fixed gas amount in a .call() and check if the gas left is enough",
+                    details: "",
+                },
+                {
+                    id: "E-04",
+                    text: "Grief attack is possible when calling a unknown address by passing huge amount of data into the call ⇒ use inline assembly.",
+                    details: "",
+                },
+                {
+                    id: "E-05",
+                    text: "A call to an address that do not exist return true : is the existence of the address checked?",
+                    details: "",
+                },
+                {
+                    id: "E-06",
+                    text: "Use the check, effect, interaction pattern. Only If necessary use a reentrancyGuard but beware of cross contract reentrancy",
+                    details: "",
+                },
+                {
+                    id: "E-07",
+                    text: "For sending ETH don't use transfer() or send() and instead use call()",
+                    details: "",
+                },
+                {
+                    id: "E-08",
+                    text: "msg.value not checked can have result in unexpected behaviour",
+                    details: "",
+                },
+                {
+                    id: "E-09",
+                    text: "Delegate calls that do not interact with stateless type of contract (library) should be triple check",
+                    details: "",
+                },
+                {
+                    id: "E-10",
+                    text: "Never delegate call to an untrusted contract",
+                    details: "",
+                },
+                {
+                    id: "E-11",
+                    text: "If the recipient of ETH had a fallback function that reverts, could it cause DoS?",
+                    details: "",
+                },
+                {
+                    id: "E-12",
+                    text: "Could it cause an out-of-gas in the calling contract if it returns a massive amount of data? Can the external call be manipulated to cause DoS?",
+                    details: "",
+                },
+                {
+                    id: "E-13",
+                    text: "Would it be harmful if the call reentered into the current function?",
+                    details: "",
+                },
+                {
+                    id: "E-14",
+                    text: "Would it be harmful if the call reentered into another function?",
+                    details: "",
+                },
+                {
+                    id: "E-15",
+                    text: "What if it uses all the gas provided?",
+                    details: "",
+                },
+                {
+                    id: "E-16",
+                    text: "Could it cause an out-of-gas in the calling contract if it returns a massive amount of data?",
+                    details: "",
+                },
+                {
+                    id: "E-17",
+                    text: "Care when using msg.value in a multi call.",
+                    details: "",
+                },
+            ],
+            Mathematics: [
+                { id: "M-01", text: "Is the calculation even correct?", details: "" },
+                {
+                    id: "M-02",
+                    text: "Are the fees correctly calculated?",
+                    details: "",
+                },
+                {
+                    id: "M-03",
+                    text: "Is there precision lost? (especially for year/month/day calculation)",
+                    details: "",
+                },
+                {
+                    id: "M-04",
+                    text: "Regular expression like 1 day is a uint24 meaning that operation with these expression will be cast on uint24 and potentially overflow",
+                    details: "",
+                },
+                { id: "M-05", text: "Always * before /", details: "" },
+                {
+                    id: "M-06",
+                    text: "Is a library use to round results?",
+                    details: "",
+                },
+                { id: "M-07", text: "Div by 0?", details: "" },
+                {
+                    id: "M-08",
+                    text: "Even in >0.8.0 take care that a variable can not find themselves in under or overflow that will cause revert",
+                    details: "",
+                },
+                {
+                    id: "M-09",
+                    text: "Assign a negative value to an uint reverts",
+                    details: "",
+                },
+                { id: "M-10", text: "unchecked{} need to be check", details: "" },
+                {
+                    id: "M-11",
+                    text: "When < or > check if it should not be ≤ or ≥",
+                    details: "",
+                },
+                {
+                    id: "M-12",
+                    text: "Inline assembly math considerations",
+                    details:
+                        "• div(x, 0) == 0\n• Operations can overflow/underflow. You should add checks if necessary.",
+                },
+            ],
+            Loops: [
+                {
+                    id: "L-01",
+                    text: "Is the first iteration a problem?",
+                    details: "",
+                },
+                {
+                    id: "L-02",
+                    text: "DOS",
+                    details:
+                        "• Is there a call inside the loop?\n• Is the number of iteration limited? ⇒ can an attacker add elements at no cost?",
+                },
+                { id: "L-03", text: "Don't use msg.value in a loop.", details: "" },
+            ],
+            "Access Control": [
+                {
+                    id: "A-01",
+                    text: "Centralization risk",
+                    details:
+                        "• Executors can perform token transfers on behalf of user?\n• Reclaiming / withdrawing any tokens?\n• Total upgradeability?\n• Instant parameters change (no timelock)?\n• Can pause freely?\n• Can rug user and steal assets?\n• Bugs that lead restricted function to steal all the assets is a centralization risk",
+                },
+                {
+                    id: "A-02",
+                    text: "Can corrupted owner destroy the protocol?",
+                    details: "",
+                },
+                {
+                    id: "A-03",
+                    text: "Is a features lacking access controls?",
+                    details: "",
+                },
+                { id: "A-04", text: "Some addresses need a whitelist?", details: "" },
+                {
+                    id: "A-05",
+                    text: "Is the owner change a two step process?",
+                    details: "",
+                },
+                {
+                    id: "A-06",
+                    text: "Are critical functions accesible? (like mint())",
+                    details: "",
+                },
+            ],
+            Vault: [
+                {
+                    id: "V-01",
+                    text: "Can transferring ERC20 or ETH directly break something?",
+                    details: "",
+                },
+                {
+                    id: "V-02",
+                    text: "Is the vault balance tracked internally?",
+                    details: "",
+                },
+                {
+                    id: "V-03",
+                    text: "Can the 1st deposit raise a problem?",
+                    details: "",
+                },
+                {
+                    id: "V-04",
+                    text: "Is this vault taking into consideration that some ERC20 token are not 18 decimals?",
+                    details: "",
+                },
+                { id: "V-05", text: "Is the fee calculation correct?", details: "" },
+                {
+                    id: "V-06",
+                    text: "What if only 1 wei remain in the pool?",
+                    details: "",
+                },
+                {
+                    id: "V-07",
+                    text: "On vault with strategies implemented",
+                    details:
+                        "• flash deposit-harvest-withdraw attacks are possible?\n• How the vault behave when locked fund are put in a strategy?\n• Are losses handled? (always should)\n• What happen in case of a black swan event? (protocol implemented in the strategy get hacked)\n• Look at token-specific/protocol risks implemented in strategies",
+                },
+                {
+                    id: "V-08",
+                    text: "Can we manipulate the conversion rate between shares and underlying?",
+                    details: "",
+                },
+            ],
+            ERC20: [
+                { id: "FT-01", text: "Using Safe functions?", details: "" },
+                {
+                    id: "FT-02",
+                    text: "Is the USDT approve race condition a problem? (especially on DEXes)",
+                    details: "",
+                },
+                {
+                    id: "FT-03",
+                    text: "Is the decimals difference between ERC20 a problem?",
+                    details: "",
+                },
+                {
+                    id: "FT-04",
+                    text: "The contract implement a white/blacklist? or some kind of addresses check?",
+                    details: "",
+                },
+                {
+                    id: "FT-05",
+                    text: "Multiple-address token can be a problem",
+                    details: "",
+                },
+                {
+                    id: "FT-06",
+                    text: "Are fees on transfer raising an issue?",
+                    details: "",
+                },
+                {
+                    id: "FT-07",
+                    text: "When their is a balanceOf(address(this)) check if manually sending tokens can break something?",
+                    details: "",
+                },
+                {
+                    id: "FT-08",
+                    text: "ERC777 tokens can hook bad things on transfers (before and after transfers)",
+                    details: "",
+                },
+                {
+                    id: "FT-09",
+                    text: "Solmate ERC20.safeTransferLib do not check the contract existence",
+                    details: "",
+                },
+                {
+                    id: "FT-10",
+                    text: "IERC20(address(0)).decimals() will revert and cause DOS",
+                    details: "",
+                },
+                {
+                    id: "FT-11",
+                    text: "Flash mint increase the token supply",
+                    details: "",
+                },
+                {
+                    id: "FT-12",
+                    text: "Some tokens revert on 0 transfers : can cause DoS",
+                    details: "",
+                },
+                {
+                    id: "FT-13",
+                    text: "A contract is a target for token approvals ? Do not make arbitrary calls from user input",
+                    details: "",
+                },
+                {
+                    id: "FT-14",
+                    text: "DOMAIN_SEPARATOR() function in ERC2612 missing?",
+                    details: "",
+                },
+                {
+                    id: "FT-15",
+                    text: "Some ERC20 reverts when sending tokens to certain addresses (LUSD)",
+                    details: "",
+                },
+            ],
+            ERC721: [
+                { id: "NFT-01", text: "Safe functions must be used", details: "" },
+                {
+                    id: "NFT-02",
+                    text: "SafeMint() and SafeTransfers() from the ERC721 OpenZepplin contract as a callback that can reenter",
+                    details: "",
+                },
+                {
+                    id: "NFT-03",
+                    text: "OpenZeppelin implementation of ERC721 and ERC1155 vulnerable to reentrancy attacks",
+                    details: "",
+                },
+                {
+                    id: "NFT-04",
+                    text: "Most of the time the 'from' parameter of nft.transferFrom() should be msg.sender",
+                    details: "",
+                },
+            ],
+            Proxies: [
+                {
+                    id: "P-01",
+                    text: "Is there a constructor? (should not have one)",
+                    details: "",
+                },
+                {
+                    id: "P-02",
+                    text: "Is the modifier initializer added on initialization() function",
+                    details: "",
+                },
+                {
+                    id: "P-03",
+                    text: "if any contract inheritance has a constructor (erc20, reentrancyGuard, Pausable...) is used : use the upgreadable version for initialize",
+                    details: "",
+                },
+                {
+                    id: "P-04",
+                    text: "Check that authorizeUpgrade() is properly secured if UUPS",
+                    details: "",
+                },
+                {
+                    id: "P-05",
+                    text: "Can the new implementation cause storage collision with the old one?",
+                    details: "",
+                },
+                {
+                    id: "P-06",
+                    text: "Was disableInitializers() called in the constructor?",
+                    details: "",
+                },
+                {
+                    id: "P-07",
+                    text: "selfdestruct and delegatecall should not be used inside implementation contracts",
+                    details: "",
+                },
+                {
+                    id: "P-08",
+                    text: "The values in immutable variables are not preserved between upgrades",
+                    details: "",
+                },
+                {
+                    id: "P-09",
+                    text: "The order of storage variables declared or their type cannot be changed in-between upgrades",
+                    details: "",
+                },
+                {
+                    id: "P-10",
+                    text: "Rugs",
+                    details:
+                        "• Beware of function clashing\n• Beware of metamorphic Contract Rug Vulnerability",
+                },
+            ],
+            Signatures: [
+                {
+                    id: "S-01",
+                    text: "Are signatures protected against replay with a nonce and block.chainid? And ensure all signatures use EIP-712",
+                    details: "",
+                },
+                {
+                    id: "S-02",
+                    text: "Signature Malleability: do not use escrevover() but use the openzepplin/ECDSA.sol",
+                    details: "",
+                },
+                {
+                    id: "S-03",
+                    text: "Check if the returned public key matches expected public key",
+                    details: "",
+                },
+                {
+                    id: "S-04",
+                    text: "Check if the Signature is used from the right person",
+                    details: "",
+                },
+                {
+                    id: "S-05",
+                    text: "Check if the deadline is not expired",
+                    details: "",
+                },
+            ],
+            "General Tips": [
+                {
+                    id: "G-01",
+                    text: "For logic implemented several times, see if there are any differences and then standardize the logic",
+                    details: "",
+                },
+                {
+                    id: "G-02",
+                    text: "Timelocks should be implemented for every protocol upgrade/change",
+                    details: "",
+                },
+                {
+                    id: "G-03",
+                    text: "Force-feeding a Smart Contract. Beware of miss use of .balanceOf(this)",
+                    details:
+                        "• Self-destruct\n• Deterministic address can be force feed before deployment\n• Coinbase Transactions",
+                },
+                {
+                    id: "G-04",
+                    text: "Beware of Dos",
+                    details:
+                        "• Never call() into for loop ⇒ pull payments\n• Sensible withdraw logic should be done externally by the user\n• Beware of Block Stuffing attack when the contract need to do an action within a certain time period\n• Maybe if there is a timelock a attacker can brick the logic at no cost",
+                },
+                {
+                    id: "G-05",
+                    text: "Beware of Oracle manipulation: Don't use spot price from an AMM as an oracle",
+                    details: "",
+                },
+                {
+                    id: "G-06",
+                    text: "When deleting a structure you should delete mapping inside first",
+                    details: "",
+                },
+                {
+                    id: "G-07",
+                    text: "Be careful of relying on the raw token balance of a contract to determine earnings",
+                    details: "",
+                },
+                {
+                    id: "G-08",
+                    text: "Take care if (receiver == caller) can have unexpected behaviour",
+                    details: "",
+                },
+                {
+                    id: "G-09",
+                    text: "When pause mechanism",
+                    details:
+                        "• can pause something that should not be pause (e.g liquidation)\n• Check can brick the contract\n• Check if whenNotPaused is well implemented on every functions where it needs to be",
+                },
+                {
+                    id: "G-10",
+                    text: "When seftdestruct beware of CREATE2 reinitialize trick",
+                    details: "",
+                },
+                {
+                    id: "G-11",
+                    text: "Semantic Overload need to be avoided or checked intensively",
+                    details: "",
+                },
+                {
+                    id: "G-12",
+                    text: "Check the doc and the code searching for inconsistencies",
+                    details: "",
+                },
+                {
+                    id: "G-13",
+                    text: "If available deployment script should be checked",
+                    details: "",
+                },
+                {
+                    id: "G-14",
+                    text: "It's possible to bypass contract size check by implementing the logic in the constructor",
+                    details: "",
+                },
+                {
+                    id: "G-15",
+                    text: "Hash collisions are possible with abi.encodePacked when using >2 dynamic types",
+                    details: "",
+                },
+                {
+                    id: "G-16",
+                    text: "Check if there is problematic bug in the version used",
+                    details: "",
+                },
+                {
+                    id: "G-17",
+                    text: "NoReentrance modifier should be placed before every other modifiers",
+                    details: "",
+                },
+                {
+                    id: "G-18",
+                    text: "try/catch block can always fail by not suppling enough gas",
+                    details: "",
+                },
+                {
+                    id: "G-19",
+                    text: "Reorg can create a loss of fund (use create2 instead of create)",
+                    details: "",
+                },
+                {
+                    id: "G-20",
+                    text: "Beware of cross contract reentrancy",
+                    details: "",
+                },
+                {
+                    id: "G-21",
+                    text: "Beware of read-only contract reentrancy",
+                    details: "",
+                },
+                {
+                    id: "G-22",
+                    text: "When there is a multi agent system: what if all agents are the same person? (Ex : self liquidation)",
+                    details: "",
+                },
+                { id: "G-23", text: "DoS with (Unexpected) revert", details: "" },
+                {
+                    id: "G-24",
+                    text: "msg.value multicall can hide a vulnerability",
+                    details: "",
+                },
+                {
+                    id: "G-25",
+                    text: "Check for correct inheritance, keep it simple and linear",
+                    details: "",
+                },
+                { id: "G-26", text: "Check for code asymmetries", details: "" },
+                {
+                    id: "G-27",
+                    text: "When a EIP is implemented. Are all EIP recommendations being followed?",
+                    details: "",
+                },
+                {
+                    id: "G-28",
+                    text: "Is block.timestamp only use for long intervals?",
+                    details: "",
+                },
+                {
+                    id: "G-29",
+                    text: "Are comparison operators used correctly (>, <, >=, <=)?",
+                    details: "",
+                },
+                {
+                    id: "G-30",
+                    text: "Are logical operators used correctly (==, !=, &&, ||, !)?",
+                    details: "",
+                },
+                {
+                    id: "G-31",
+                    text: "Unexpected addresses (provide a receiver address pointing to another contract in the system)",
+                    details: "",
+                },
+            ],
+            "DeFi Integrations": [
+                // Gnosis Safe Integration
+                {
+                    id: "GS-01",
+                    text: "Make sure your modules execute Guard's hooks (checkTransaction(), checkAfterExecution())",
+                    details: "",
+                },
+                {
+                    id: "GS-02",
+                    text: "execTransactionFromModule() does not increment the Safe nonce: if modules are used don't rely on it for signatures",
+                    details: "",
+                },
+
+                // LSD Integration - stETH
+                {
+                    id: "LSD-01",
+                    text: "stETH is a rebasing token: using wstETH is simpler for DeFi integration",
+                    details: "",
+                },
+                {
+                    id: "LSD-02",
+                    text: "Care if your app convert tokens for stETH to wstETH: the rebasing have to be handled",
+                    details: "",
+                },
+                {
+                    id: "LSD-03",
+                    text: "Withdraw stETH/wstETH bring overhead (queue time, receives a NFT, withdrawal amount limits)",
+                    details: "",
+                },
+
+                // LSD Integration - rETH
+                {
+                    id: "LSD-04",
+                    text: "burn() function can revert is there is not enough ether in the RocketDepositPool contract",
+                    details: "",
+                },
+                {
+                    id: "LSD-05",
+                    text: "The rate rETH/ETH can decrease in case of a slashing event",
+                    details: "",
+                },
+                {
+                    id: "LSD-06",
+                    text: "Remain vigilant about the risk of consensus attacks on RPL nodes, where nodes may submit incorrect exchange rate data",
+                    details: "",
+                },
+
+                // LSD Integration - cbETH
+                {
+                    id: "LSD-07",
+                    text: "Blacklisting feature on transfers, approvals, mints, and burns",
+                    details: "",
+                },
+                {
+                    id: "LSD-08",
+                    text: "The cbETH/ETH rate can be changed by few addresses thanks to the onlyOracle modifier",
+                    details: "",
+                },
+                {
+                    id: "LSD-09",
+                    text: "The cbETH/ETH rate can decrease",
+                    details: "",
+                },
+
+                // LSD Integration - sfrxETH
+                {
+                    id: "LSD-10",
+                    text: "sfrxETH may detach from frxETH during reward transfers by the Frax team's multi-sig contract",
+                    details: "",
+                },
+                {
+                    id: "LSD-11",
+                    text: "For now the sfrxETH/ETH rate can't decrease but this may change in the future",
+                    details: "",
+                },
+            ],
+            "LayerZero Integration": [
+                {
+                    id: "LZ-01",
+                    text: "What is used? Blocking or none blocking transactions? Blocking can result of a DoS",
+                    details: "",
+                },
+                {
+                    id: "LZ-02",
+                    text: "Gas should be estimated correctly, otherwise the cross-chain message will fail",
+                    details: "",
+                },
+                {
+                    id: "LZ-03",
+                    text: "The _debitFrom function in ONFT must verify whether the specified owner is the owner of the tokenId passed in the parameters and whether the sender is allowed to transfer this token",
+                    details: "",
+                },
+                {
+                    id: "LZ-04",
+                    text: "If LzApp inherited, remember to use _lzSend function instead of directly calling lzEndpoint.send function",
+                    details: "",
+                },
+                {
+                    id: "LZ-05",
+                    text: "The User Application should implement the ILayerZeroUserApplicationConfig interface, including the forceResumeReceive function",
+                    details: "",
+                },
+                {
+                    id: "LZ-06",
+                    text: "If you don't want to outsource your security, it is recommended to configure the applications to not use the default configuration",
+                    details: "",
+                },
+                {
+                    id: "LZ-07",
+                    text: "Choose the correct confirmations number. Depending on the chain and past reorg",
+                    details: "",
+                },
+            ],
+            "Chainlink Integration": [
+                // VRF
+                {
+                    id: "CL-01",
+                    text: "When chainlink VRF is call, make sure that all parameters passed are verified else fullfillRandomWord will not revert and return a bad value",
+                    details: "",
+                },
+                {
+                    id: "CL-02",
+                    text: "Chainlink vrf get in pending if there is not enough LINK in the subscription. Meaning that when the subscription operates again the tx can be frontrun",
+                    details: "",
+                },
+                {
+                    id: "CL-03",
+                    text: "Choose a high enough request confirmation number for chain re-orgs",
+                    details: "",
+                },
+                {
+                    id: "CL-04",
+                    text: "VFR calls are front-runnable: the betting phase must be closed before the VRF call",
+                    details: "",
+                },
+
+                // Pricefeed
+                {
+                    id: "CL-05",
+                    text: "Pricefeed may not be supported in the future. Check the last update timestamp",
+                    details: "require(block.timestamp - supplyUpdatedAt <= MAX_DELAY)",
+                },
+                {
+                    id: "CL-06",
+                    text: "Rollup sequencer can go offline as a result of an not updated response",
+                    details: "",
+                },
+                {
+                    id: "CL-07",
+                    text: "Check that the price feed for the desired pair is supported on all of the deployed chains",
+                    details: "",
+                },
+                {
+                    id: "CL-08",
+                    text: "Is the pricefeed heartbeat adapted for the use case? too slow?",
+                    details: "",
+                },
+                {
+                    id: "CL-09",
+                    text: "Are different price feeds used? Does the code handle different decimal precision?",
+                    details: "",
+                },
+                {
+                    id: "CL-10",
+                    text: "The pricefeed address is hardcoded?",
+                    details:
+                        "• Is this address even correct?\n• Beware that this pricefeed may become deprecated in the future?",
+                },
+                {
+                    id: "CL-11",
+                    text: "Oracle price updates can be front-run",
+                    details: "",
+                },
+                {
+                    id: "CL-12",
+                    text: "Are oracle revert DoS handled? (wrapping calls to Oracles in try/catch blocks and provide an alternative solution)",
+                    details: "",
+                },
+                {
+                    id: "CL-13",
+                    text: "Are ETH pricefeed use for stETH? or BTC pricefeed used for WBTC? The depeg risk must be addressed",
+                    details: "",
+                },
+                {
+                    id: "CL-14",
+                    text: "Oracle returns incorrect price during flash crashes: check that minAnswer < receivedAnswer < maxAnswer",
+                    details: "",
+                },
+            ],
+            "Uniswap Integration": [
+                { id: "U-01", text: "Hard coded slippage is forbidden", details: "" },
+                {
+                    id: "U-02",
+                    text: "Proper slippage strategy should be implemented",
+                    details:
+                        "• No Expiration Deadline?\n• Incorrect Slippage Calculation?\n• Mismatched Slippage Precision?\n• Is the slippage calculated on-chain?\n• Never hardcode slippage",
+                },
+                {
+                    id: "U-03",
+                    text: "Is there a refunds after a swaps?",
+                    details: "",
+                },
+                {
+                    id: "U-04",
+                    text: "AMM pools token0 and token1 order differ depending of the chain",
+                    details: "",
+                },
+                {
+                    id: "U-05",
+                    text: "Are pools called whitelisted? if not, check if the pool has the right factory address",
+                    details: "",
+                },
+                {
+                    id: "U-06",
+                    text: "Don't rely on pool reserve since they can be manipulated",
+                    details: "",
+                },
+                {
+                    id: "U-07",
+                    text: "Don't rely on pool.swap(): Always use the Router contract",
+                    details: "",
+                },
+            ],
+            "AAVE/Compound Integration": [
+                {
+                    id: "AC-01",
+                    text: "What happen if the utilisation rate is to high and collateral can't be retrieved?",
+                    details: "",
+                },
+                {
+                    id: "AC-02",
+                    text: "What happen if the protocol is paused?",
+                    details: "",
+                },
+                {
+                    id: "AC-03",
+                    text: "What happen if the pool become deprecated?",
+                    details: "",
+                },
+                {
+                    id: "AC-04",
+                    text: "What happen if assets you lend/borrow are within the same eMode category?",
+                    details: "",
+                },
+                {
+                    id: "AC-05",
+                    text: "Flashloans on Aave inflate the pool index (a maximum of 180 flashloans can be performed within a block)",
+                    details: "",
+                },
+                {
+                    id: "AC-06",
+                    text: "Does the protocol properly implement AAVE/COMP reward claims?",
+                    details: "",
+                },
+                {
+                    id: "AC-07",
+                    text: "The cETH token contract has no underlying()",
+                    details: "",
+                },
+                {
+                    id: "AC-08",
+                    text: "Borrowing a AAVE siloed asset will prohibits you from borrowing any other asset. Use getSiloedBorrowing(address asset) to know",
+                    details: "",
+                },
+                {
+                    id: "AC-09",
+                    text: "On AAVE, what happen if you reach to maximum debt on a isolated asset? (DOS?)",
+                    details: "",
+                },
+            ],
+        };
+
+        let totalItems = 0;
+        let completedItems = 0;
+
+        function generateContent() {
+            const content = document.getElementById("content");
+            content.innerHTML = "";
+
+            for (const [sectionName, items] of Object.entries(checklistData)) {
+                totalItems += items.length;
+
+                const section = document.createElement("div");
+                section.className = "section";
+
+                const sectionHeader = document.createElement("div");
+                sectionHeader.className = "section-header";
+                sectionHeader.innerHTML = `
+                    <span>${sectionName}</span>
+                    <span class="section-progress" id="progress-${sectionName.replace(
+                    /\s+/g,
+                    "-"
+                )}">0/${items.length}</span>
+                `;
+
+                const sectionContent = document.createElement("div");
+                sectionContent.className = "section-content";
+
+                items.forEach((item) => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.className = "checklist-item";
+
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="${item.id
+                        }" onchange="updateProgress()">
+                        <div class="item-content">
+                            <div>
+                                <span class="item-id">[${item.id}]</span>
+                                <span class="item-text">${item.text}</span>
+                            </div>
+                            ${item.details
+                            ? `<div class="item-details">${item.details
+                                .replace(/\n/g, "<br>")
+                                .replace(/•/g, "&bull;")}</div>`
+                            : ""
+                        }
+                        </div>
+                    `;
+
+                    sectionContent.appendChild(itemDiv);
+                });
+
+                section.appendChild(sectionHeader);
+                section.appendChild(sectionContent);
+                content.appendChild(section);
+            }
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            completedItems = 0;
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach((checkbox) => {
+                const item = checkbox.closest(".checklist-item");
+                if (checkbox.checked) {
+                    completedItems++;
+                    item.classList.add("completed");
+                } else {
+                    item.classList.remove("completed");
+                }
+            });
+
+            // Update section progress
+            for (const [sectionName, items] of Object.entries(checklistData)) {
+                const sectionId = sectionName.replace(/\s+/g, "-");
+                const progressElement = document.getElementById(
+                    `progress-${sectionId}`
+                );
+
+                let sectionCompleted = 0;
+                items.forEach((item) => {
+                    const checkbox = document.getElementById(item.id);
+                    if (checkbox && checkbox.checked) {
+                        sectionCompleted++;
+                    }
+                });
+
+                if (progressElement) {
+                    progressElement.textContent = `${sectionCompleted}/${items.length}`;
+                }
+            }
+
+            // Update main stats
+            document.getElementById("totalItems").textContent = totalItems;
+            document.getElementById("completedItems").textContent = completedItems;
+
+            const progressPercent =
+                totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+            document.getElementById(
+                "progressPercent"
+            ).textContent = `${progressPercent}%`;
+
+            // Update progress bar
+            document.getElementById(
+                "progressFill"
+            ).style.width = `${progressPercent}%`;
+        }
+
+        function checkAll() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = true;
+            });
+            updateProgress();
+        }
+
+        function uncheckAll() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox) => {
+                checkbox.checked = false;
+            });
+            updateProgress();
+        }
+
+        function exportResults() {
+            const results = {
+                timestamp: new Date().toISOString(),
+                totalItems: totalItems,
+                completedItems: completedItems,
+                progressPercent: Math.round((completedItems / totalItems) * 100),
+                items: {},
+            };
+
+            for (const [sectionName, items] of Object.entries(checklistData)) {
+                results.items[sectionName] = items.map((item) => ({
+                    id: item.id,
+                    text: item.text,
+                    checked: document.getElementById(item.id)?.checked || false,
+                }));
+            }
+
+            const blob = new Blob([JSON.stringify(results, null, 2)], {
+                type: "application/json",
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `security-checklist-results-${new Date().toISOString().split("T")[0]
+                }.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize the page
+        document.addEventListener("DOMContentLoaded", function () {
+            generateContent();
+        });
+    </script>
+</body>
+
+</html>

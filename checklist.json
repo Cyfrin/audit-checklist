@@ -3598,7 +3598,36 @@
                             "https://solodit.xyz/issues/m-2-transferfrom-uses-allowance-even-if-spender-from-sherlock-surge-surge-git"
                         ],
                         "tags": []
-                    }
+                    },
+                    {
+                       "id": "SOL-Token-FE-17",
+                       "question": "Does the permit implementation validate that the recovered signer is not the zero address?",
+                       "description": "Since the ecrecover precompile fails silently and returns the zero address as signer when given malformed messages, it is critical to ensure owner != address(0) to avoid permit from creating an approval to spend 'zombie funds' belonging to the zero address.",
+                       "remediation": "Always validate that the recovered signer address is not address(0) after ecrecover in permit implementations.",
+                        "references": [
+                            "https://eips.ethereum.org/EIPS/eip-2612"
+                        ],
+                        "tags": [
+                           "ERC2612",
+                            "Permit",
+                            "Signature"
+                    ]
+                 },
+                {
+                   "id": "SOL-Token-FE-18",
+                   "question": "Is the DOMAIN_SEPARATOR reconstructed for every signature or cached with chainId?",
+                   "description": "If the DOMAIN_SEPARATOR contains the chainId and is defined at contract deployment instead of reconstructed for every signature, there is a risk of possible replay attacks between chains in the event of a future chain split.",
+                    "remediation": "Implement DOMAIN_SEPARATOR to reconstruct the chainId on every call, or use a cached version with a fallback that detects chain splits by comparing block.chainid to the cached value.",
+                    "references": [
+                    "https://eips.ethereum.org/EIPS/eip-2612"
+                  ],
+                 "tags": [
+                   "ERC2612",
+                   "Permit",
+                   "Signature",
+                   "Replay Attack"
+                ]
+               }
                 ]
             },
             {

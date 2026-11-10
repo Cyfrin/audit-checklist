@@ -1,0 +1,15 @@
+{
+  "name": "audit-checklist",
+  "private": true,
+  "description": "Smart contract audit checklist consumed by Remix IDE's security audit",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs --base origin/main",
+    "format": "node scripts/format.mjs",
+    "sync:versions": "node --env-file-if-exists=.env scripts/sync-version-issues.mjs",
+    "sync:versions:write": "node --env-file-if-exists=.env scripts/sync-version-issues.mjs --write"
+  }
+}

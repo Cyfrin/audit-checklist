@@ -1,5 +1,113 @@
 [
     {
+        "uid": "SOL-2026-7",
+        "name": "YulOptimizerKnowledgeBaseStaleBookkeeping",
+        "summary": "The Yul optimizer could consider two memory or storage locations distinct even though their addresses were computed from different values of the same reassigned variable and coincided at runtime. This could lead to loads being replaced with outdated values and to needed stores being removed.",
+        "description": "The Yul optimizer steps ``LoadResolver`` and ``EqualStoreEliminator`` keep track of what was stored in memory and storage. ``LoadResolver`` uses this to replace loads and ``keccak256`` calls with known values, and ``EqualStoreEliminator`` uses it to remove stores of a value that the location already contains. Whenever a store is encountered whose exact location cannot be determined, the optimizer has to forget what it knows about every location the store might overwrite. To decide this, the optimizer represents an address symbolically as a constant offset either from zero or from another variable (its base variable). Two addresses with the same base can then be determined to be distinct if their offsets differ (for storage) or are at least 32 bytes apart (for memory). These representations were cached per variable. The base variable, however, may be reassigned afterwards. The optimizer did not always notice and then compared an address computed from the old value of the base with an address computed from the new value as if both used the same base. As a result, it could consider two locations distinct even though they coincided at runtime, keeping a stale entry for a location that had just been overwritten. A subsequent load from that location could then be replaced with an outdated value, a subsequent store of that value to the location could be removed, and ``keccak256`` over the location could be replaced with the hash of an outdated value. Whether the bug is triggered depends on the structure of the intermediate code these optimizer steps receive. It is therefore sensitive to the optimizer sequence and to the surrounding code, and the two locations additionally have to coincide at runtime. In optimized IR code generation, any code may be affected, including code without inline assembly. In optimized evmasm code generation, only inline assembly that does not refer to any Solidity variables or functions and compiler-generated Yul utility functions could be affected. Unoptimized code is unaffected.",
+        "link": "https://blog.soliditylang.org/2026/10/22/yul-optimizer-knowledge-base-stale-bookkeeping-bug/",
+        "introduced": "0.8.19",
+        "fixed": "0.8.38",
+        "severity": "low",
+        "conditions": {
+            "yulOptimizer": true
+        }
+    },
+    {
+        "uid": "SOL-2026-6",
+        "name": "MisorderedNamedParametersInRequireWithCustomErrors",
+        "summary": "Custom error arguments passed to ``require`` using named-parameter syntax are ABI-encoded in call-site order instead of declaration order when compiling via IR.",
+        "description": "When a custom error was passed into the second argument of ``require`` and instantiated using named parameter syntax (e.g., ``require(condition, MyError({b: 1, a: 2}))``), the IR-based code generator would pass the arguments to the ABI encoder in the order they appeared at the call site, without reordering them to match the error definition. The arguments were type-checked against the parameters with matching names, not the ones they were actually passed into by the codegen, so the bug would not result in a compilation error. Instead, the encoder would produce a structurally valid encoding matching the error signature but not reflecting the values used to instantiate the error. The arguments on the stack would be reordered and possibly reinterpreted as different types by the encoder. In case of reference types, the reinterpretation would result in the content being obtained from wrong offsets in memory, storage or calldata. In some cases large values misinterpreted as offsets or lengths would make the encoder revert due to running out of gas. Types that occupy more than one slot on the stack would further complicate the behavior by leading to not only reordering but also misalignment of argument boundaries. The only unaffected types were string literals, which are not being passed to the encoder through the stack. The bug was specific to custom errors passed as the second argument of ``require``. Standalone ``revert ErrorName({...})`` statements, event emissions, function calls, struct constructor invocations and other constructs supporting named parameters were not affected. The evmasm pipeline was also unaffected.",
+        "link": "https://blog.soliditylang.org/2026/09/10/misordered-named-parameters-in-require-with-custom-errors-bug/",
+        "introduced": "0.8.26",
+        "fixed": "0.8.37",
+        "severity": "very low",
+        "conditions": {
+            "viaIR": true
+        }
+    },
+    {
+        "uid": "SOL-2026-5",
+        "name": "MemoryByteArrayElementDeleteClearsWholeWord",
+        "summary": "Applying ``delete`` to a single element of a ``bytes`` array in memory clears not only that element but the whole 32-byte word starting at the element's location, zeroing up to 31 bytes beyond the element.",
+        "description": "Elements of ``bytes`` arrays in memory are packed, each occupying a single byte. When a value is assigned to such an element, the evmasm code generator correctly stores it with a single-byte ``MSTORE8`` instruction. The code path in the evmasm pipeline implementing ``delete`` on such an element, however, wrote the zero value with a full-word ``MSTORE``, clearing the 32 bytes starting at the element's location. The bytes following the element within the array were silently zeroed. If the element was within the last 31 bytes of the array's allocation, the write also extended past it into the area where the allocator places the next memory object, clearing the most significant bytes of that object's first word. How many elements are in reach depends on the size of the allocation: arrays created with ``new bytes(n)`` or from literals occupy their length rounded up to a multiple of 32 bytes, so only elements falling within the last 31 bytes of that rounded-up area, if any, could be affected. The results of ``bytes.concat``, ``string.concat``, and the ``abi.encode*`` functions, on the other hand, are placed by the evmasm pipeline in an allocation of exactly the size of their data, so the next object starts immediately after their last element and each of their last 31 elements is in reach. Assigning zero to an element (``b[i] = 0``) was not affected, only the ``delete`` operator, and neither were byte arrays in transient storage, storage, or calldata. The bug exists only in the evmasm pipeline. Code compiled via IR is unaffected. Optimizer settings have no influence. The defective code predates the first released version of the compiler.",
+        "link": "https://blog.soliditylang.org/2026/09/10/memory-byte-array-element-delete-clears-whole-word-bug/",
+        "fixed": "0.8.37",
+        "severity": "low/medium",
+        "conditions": {
+            "viaIR": false
+        }
+    },
+    {
+        "uid": "SOL-2026-4",
+        "name": "SpillSlotCollisionAcrossMutualRecursion",
+        "summary": "Local variables of two simultaneously active functions moved to fixed memory offsets by the stack limit evader may be assigned the same offset if the call graph contains mutual recursion, so that one variable is silently overwritten by the other.",
+        "description": "To work around the 16-slot stack access limit of the EVM, the IR-based code generator can, under some preconditions, move local variables to fixed memory offsets. Variables that can never be active at the same time may safely share an offset, so the reserved memory area is sized by a depth-first walk of the call graph that computes for every node the number of slots it and its callees need. To keep this walk from descending infinitely into recursive call chains, the slot count was initialized with zero upon entering it. This provisional zero was observable: a function reached again through a call graph cycle reported an empty footprint to its caller, the caller's count was finalized and cached on that basis, and the undercount propagated to every later caller, including functions outside the cycle. As a result, a function called by such a cycle and a function calling into it could be assigned the same memory slot even though both can be active at the same time. A relocated variable still needed after the call into the cycle returned had then been silently overwritten by the called function, producing wrong results. Triggering the bug requires the IR pipeline and a call graph in which a cycle of at least two mutually recursive functions both reaches a function needing relocation of variables to memory and is entered from a separate call chain whose own relocated variable is read again after the call towards the cycle returns. From 0.8.21 onward, it is independent of whether the optimizer is enabled.",
+        "link": "https://blog.soliditylang.org/2026/09/10/spill-slot-collision-across-mutual-recursion-bug/",
+        "introduced": "0.7.2",
+        "fixed": "0.8.37",
+        "severity": "low/medium",
+        "conditions": {
+            "viaIR": true
+        }
+    },
+    {
+        "uid": "SOL-2026-3",
+        "name": "InheritanceOrderReversalOnStorageEndWarning",
+        "summary": "Emitting a warning about storage base location being too close to the storage end unintentionally reversed the ``linearizedBaseContracts`` annotation, possibly leading to miscompilation due to reversing the order in which inheritance is resolved.",
+        "description": "When the compiler detects that a custom layout specifier puts contract's static storage area too close to the end of the address space, it emits a warning. To make the warning more useful, the compiler tries to point at the last storage variable in that area. For this reason it walks the linearized inheritance hierarchy in reverse (from the least to the most derived). The list is calculated once and stored in an AST annotation called ``linearizedBaseContracts``. The direct cause of the bug was the fact that the code that reverses the list was doing it in place rather than on a copy, modifying the annotation. This effectively reversed the order of base contracts seen by any component that runs after layout checks: later phases of analysis, AST export, code generator, SMTChecker, etc. The observable effect was a reversed order of state variable initialization, constructor invocation, virtual function/modifier resolution, leading either to miscompilations or internal compiler errors, depending on the specific usage. Since the source of the bug was in the analysis stage, it was independent of the codegen pipeline or optimizer settings. The main condition necessary to trigger the bug was the presence of the warning in the output. The other is presence of language constructs whose evaluation depends on the inheritance order. While potential effects are very serious, this requirement excludes the vast majority of contracts as intentionally placing the storage variables in the last 2**64 slots is highly discouraged, which was actually the main reason for adding this warning.",
+        "link": "https://blog.soliditylang.org/2026/07/09/inheritance-order-reversal-on-storage-end-warning-bug/",
+        "introduced": "0.8.29",
+        "fixed": "0.8.36",
+        "severity": "medium"
+    },
+    {
+        "uid": "SOL-2026-2",
+        "name": "UnsoundSpillInMutualRecursion",
+        "summary": "Local variables of a function involved in mutual recursion may spuriously be moved to fixed memory offsets and overwritten across recursive calls.",
+        "description": "To work around the 16-slot stack access limit of the EVM, the IR-based code generator can move local variables of stack-too-deep functions to fixed memory offsets. This relocation is unsound for recursive functions: a fixed offset would be shared by all activations of the function, so a recursive call would overwrite the caller's value. The stack limit evader therefore must not relocate variables of functions that are part of a recursive call chain. To this end, the call graph was searched for cycles using a path-based depth-first search that, once a function had been fully explored and popped from the search path, short-circuited on it on any later visit. As a result, a function shared between several intersecting cycles could be reached first through a path that did not yet close a cycle through it, get marked as finished, and then be skipped when a later path would have revealed that it does lie on a cycle. Such a function was misclassified as non-recursive. When a misclassified function was complex enough for the stack limit evader to relocate some of its variables, those variables were moved to fixed memory offsets and silently corrupted on recursion, producing wrong results rather than a compile-time error. Triggering the bug requires the IR pipeline, a set of mutually recursive functions whose call graph contains intersecting cycles, at least one of the functions in an undetected part of a cycle being complex enough to require relocation to memory, and an unfortunate processing order of the functions (which depends on the hashes of their Yul names). It is independent of whether the optimizer is enabled.",
+        "link": "https://blog.soliditylang.org/2026/07/09/unsound-spill-in-mutual-recursion-bug/",
+        "introduced": "0.7.2",
+        "fixed": "0.8.36",
+        "severity": "medium",
+        "conditions": {
+            "viaIR": true
+        }
+    },
+    {
+        "uid": "SOL-2026-1",
+        "name": "TransientStorageClearingHelperCollision",
+        "summary": "Clearing both storage and transient storage variables in the same contract may result in only one of these locations being cleared.",
+        "description": "The IR-based code generator provides a set of Yul helper functions for basic operations, such as clearing, copying, encoding or type conversions. Not all functions are used by every contract. The codegen appends them to the generated sources individually, only when an operation that would invoke one of them is encountered. Utility functions are often specialized for different types and locations. Since Yul does not support generic functions, specialization is done by generating multiple versions of the same function, with the information distinguishing the variants embedded in their names. However, if not all the necessary bits of distinguishing information are properly accounted for, two helpers may end up with the same name, causing a collision. In this situation the codegen includes only one of them, with calls to both variants invoking it. This happened with the ``set_to_zero`` helper used when an area of transient or persistent storage needs to be cleared. The helper name was missing the location information, which resulted in a collision between the persistent and transient storage variants for the same type. This meant that contracts clearing both locations would actually clear only one, leaving the other untouched. Which location ended up being cleared depended on the order in which the code generator processed the input. The necessary condition to trigger the bug was the use of ``delete`` operator on a transient storage variable. This was due to value types being the only types supported in transient storage and ``delete`` being the only operation invoking the helper allowed on such types. The other necessary condition was clearing of persistent storage and in this case the range of affected operations was wider: operator ``delete``, array ``pop()`` or assignment that resulted in a longer array being overwritten with a shorter one. The cleared variable itself also did not necessarily have to be of the same type. It was enough that a matching value type was nested in it. It also did not always have to be the exact same value type - clearing operations on reference types are usually performed at slot granularity, treating every slot as ``uint256`` rather than clearing every value packed into it individually. To trigger the bug both operations had to be present within the same piece of bytecode. Independent contracts, not related through inheritance, would not affect each other this way. The presence of one operation only in creation code and the other only in deployed code would not trigger the bug either.",
+        "link": "https://blog.soliditylang.org/2026/02/18/transient-storage-clearing-helper-collision-bug/",
+        "introduced": "0.8.28",
+        "fixed": "0.8.34",
+        "severity": "high",
+        "conditions": {
+            "viaIR": true,
+            "evmVersion": ">=cancun"
+        }
+    },
+    {
+        "uid": "SOL-2025-1",
+        "name": "LostStorageArrayWriteOnSlotOverflow",
+        "summary": "Operations that involve clearing or copying from arrays that straddle the end of storage could result in silent data retention.",
+        "description": "Solidity makes it possible to define variables that extend past the last (2**256-th) slot of storage, which results in wrap-around back to slot zero. Since EVM uses 256-bit integer arithmetic, most operations on such variables just work. The only situation which requires special attention is iteration against absolute slot addresses: the invariant that the last slot belonging to a variable has the highest address does not hold. When implemented incorrectly, a loop over an array will immediately terminate if the container spans the end of storage - due to the initial position already being greater than the end position. This affected storage array clearing loops generated by both evmasm and IR pipelines. Additionally, (only in the evmasm pipeline) copying operations whose source was an array straddling the end of storage were also affected. At the language level, the buggy code would be generated for array assignment, array initialization, delete operator, <array>.pop() and <array>.push(). Note that a clearing loop is inserted by the compiler not only for invocations of the delete operator, but also to zero storage when overwriting a longer array with a shorter one, popping an element or even pushing an empty element to a dynamic array. Since clearing is a separate loop, it is possible for the bug to only affect it and not the copy operation it follows (which is always the case in the IR pipeline). The bug is extremely unlikely to be triggered accidentally due to the probabilistic impossibility of a short dynamic array being allocated right at the storage boundary. On the other hand, scenarios in which a user may place a static array there intentionally do not seem realistic and are limited to unusual layouts, in which a contract does not place any storage variables at slot zero (otherwise they would overlap the array).",
+        "link": "https://blog.soliditylang.org/2025/12/18/lost-storage-array-write-on-slot-overflow-bug/",
+        "introduced": "0.1.0",
+        "fixed": "0.8.32",
+        "severity": "low"
+    },
+    {
+        "uid": "SOL-2023-3",
+        "name": "VerbatimInvalidDeduplication",
+        "summary": "All ``verbatim`` blocks are considered identical by deduplicator and can incorrectly be unified when surrounded by identical opcodes.",
+        "description": "The block deduplicator is a step of the opcode-based optimizer which identifies equivalent assembly blocks and merges them into a single one. However, when blocks contained ``verbatim``, their comparison was performed incorrectly, leading to the collapse of assembly blocks which are identical except for the contents of the ``verbatim`` items. Since ``verbatim`` is only available in Yul, compilation of Solidity sources is not affected.",
+        "link": "https://blog.soliditylang.org/2023/11/08/verbatim-invalid-deduplication-bug/",
+        "introduced": "0.8.5",
+        "fixed": "0.8.23",
+        "severity": "low"
+    },
+    {
         "uid": "SOL-2023-2",
         "name": "FullInlinerNonExpressionSplitArgumentEvaluationOrder",
         "summary": "Optimizer sequences containing FullInliner do not preserve the evaluation order of arguments of inlined function calls in code that is not in expression-split form.",
@@ -103,7 +211,6 @@
         "introduced": "0.8.11",
         "fixed": "0.8.13",
         "severity": "very low"
-
     },
     {
         "uid": "SOL-2021-4",
@@ -141,7 +248,7 @@
     {
         "uid": "SOL-2021-1",
         "name": "KeccakCaching",
-        "summary": "The bytecode optimizer incorrectly re-used previously evaluated Keccak-256 hashes. You are unlikely to be affected if you do not compute Keccak-256 hashes in inline assembly.",
+        "summary": "The bytecode optimizer incorrectly reused previously evaluated Keccak-256 hashes. You are unlikely to be affected if you do not compute Keccak-256 hashes in inline assembly.",
         "description": "Solidity's bytecode optimizer has a step that can compute Keccak-256 hashes, if the contents of the memory are known during compilation time. This step also has a mechanism to determine that two Keccak-256 hashes are equal even if the values in memory are not known during compile time. This mechanism had a bug where Keccak-256 of the same memory content, but different sizes were considered equal. More specifically, ``keccak256(mpos1, length1)`` and ``keccak256(mpos2, length2)`` in some cases were considered equal if ``length1`` and ``length2``, when rounded up to nearest multiple of 32 were the same, and when the memory contents at ``mpos1`` and ``mpos2`` can be deduced to be equal. You maybe affected if you compute multiple Keccak-256 hashes of the same content, but with different lengths inside inline assembly. You are unaffected if your code uses ``keccak256`` with a length that is not a compile-time constant or if it is always a multiple of 32.",
         "link": "https://blog.soliditylang.org/2021/03/23/keccak-optimizer-bug/",
         "fixed": "0.8.3",
@@ -190,7 +297,7 @@
         "uid": "SOL-2020-7",
         "name": "MissingEscapingInFormatting",
         "summary": "String literals containing double backslash characters passed directly to external or encoding function calls can lead to a different string being used when ABIEncoderV2 is enabled.",
-        "description": "When ABIEncoderV2 is enabled, string literals passed directly to encoding functions or external function calls are stored as strings in the intemediate code. Characters outside the printable range are handled correctly, but backslashes are not escaped in this procedure. This leads to double backslashes being reduced to single backslashes and consequently re-interpreted as escapes potentially resulting in a different string being encoded.",
+        "description": "When ABIEncoderV2 is enabled, string literals passed directly to encoding functions or external function calls are stored as strings in the intermediate code. Characters outside the printable range are handled correctly, but backslashes are not escaped in this procedure. This leads to double backslashes being reduced to single backslashes and consequently re-interpreted as escapes potentially resulting in a different string being encoded.",
         "introduced": "0.5.14",
         "fixed": "0.6.8",
         "severity": "very low",
@@ -429,7 +536,9 @@
         "link": "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/",
         "fixed": "0.4.25",
         "severity": "medium/high",
-        "check": {"regex-source": "[^/]\\*\\* *[^/0-9 ]"}
+        "check": {
+            "regex-source": "[^/]\\*\\* *[^/0-9 ]"
+        }
     },
     {
         "uid": "SOL-2018-3",
@@ -440,7 +549,9 @@
         "introduced": "0.4.17",
         "fixed": "0.4.25",
         "severity": "very low",
-        "check": {"ast-compact-json-path": "$..[?(@.nodeType === 'EventDefinition')]..[?(@.nodeType === 'UserDefinedTypeName' && @.typeDescriptions.typeString.startsWith('struct'))]"}
+        "check": {
+            "ast-compact-json-path": "$..[?(@.nodeType === 'EventDefinition')]..[?(@.nodeType === 'UserDefinedTypeName' && @.typeDescriptions.typeString.startsWith('struct'))]"
+        }
     },
     {
         "uid": "SOL-2018-2",
@@ -451,7 +562,9 @@
         "introduced": "0.1.4",
         "fixed": "0.4.22",
         "severity": "medium",
-        "check": {"regex-source": "returns[^;{]*\\[\\s*[^\\] \\t\\r\\n\\v\\f][^\\]]*\\]\\s*\\[\\s*[^\\] \\t\\r\\n\\v\\f][^\\]]*\\][^{;]*[;{]"}
+        "check": {
+            "regex-source": "returns[^;{]*\\[\\s*[^\\] \\t\\r\\n\\v\\f][^\\]]*\\]\\s*\\[\\s*[^\\] \\t\\r\\n\\v\\f][^\\]]*\\][^{;]*[;{]"
+        }
     },
     {
         "uid": "SOL-2018-1",

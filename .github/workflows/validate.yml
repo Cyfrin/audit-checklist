@@ -1,0 +1,25 @@
+name: Validate checklist
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # On PRs compare against the target branch; on main compare against the previous commit.
+      - name: Validate
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            node scripts/validate.mjs --base "origin/${{ github.base_ref }}"
+          else
+            node scripts/validate.mjs --base "${{ github.event.before }}"
+          fi

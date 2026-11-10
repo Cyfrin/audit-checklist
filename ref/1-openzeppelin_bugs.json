@@ -1,85 +1,246 @@
 {
-  "source": "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts",
+  "source": "https://github.com/advisories?query=ecosystem%3Anpm+%40openzeppelin%2Fcontracts",
+  "previousSource": "https://security.snyk.io/package/npm/@openzeppelin%2Fcontracts",
   "issues": [
     {
+      "ghsa": "GHSA-9rcw-c2f9-2j55",
+      "cve": "CVE-2025-54070",
+      "version": ">=5.2.0 <5.4.0",
+      "patched": "5.4.0",
+      "vulnerability": "OpenZeppelin Contracts Bytes's lastIndexOf function with position argument performs out-of-bound memory access on empty buffers",
+      "severity": "medium",
+      "published": "2025-07-17",
+      "url": "https://github.com/advisories/GHSA-9rcw-c2f9-2j55"
+    },
+    {
+      "ghsa": "GHSA-9vx6-7xxf-x967",
+      "cve": "CVE-2024-27094",
+      "version": ">=4.5.0 <4.9.6 || >=5.0.0-rc.0 <5.0.2",
+      "patched": "4.9.6 || 5.0.2",
+      "vulnerability": "OpenZeppelin Contracts base64 encoding may read from potentially dirty memory",
+      "severity": "medium",
+      "published": "2024-02-29",
+      "url": "https://github.com/advisories/GHSA-9vx6-7xxf-x967"
+    },
+    {
+      "ghsa": "GHSA-699g-q6qh-q4v8",
+      "cve": "CVE-2023-49798",
+      "version": "=4.9.4",
+      "patched": "4.9.5",
+      "vulnerability": "OpenZeppelin Contracts and Contracts Upgradeable duplicated execution of subcalls in v4.9.4",
+      "severity": "medium",
+      "published": "2023-12-12",
+      "url": "https://github.com/advisories/GHSA-699g-q6qh-q4v8"
+    },
+    {
+      "ghsa": "GHSA-g4vp-m682-qqmp",
+      "cve": "CVE-2023-40014",
       "version": ">=4.0.0 <4.9.3",
-      "vulnerability": "Improper Encoding or Escaping of Output"
+      "patched": "4.9.3",
+      "vulnerability": "OpenZeppelin Contracts vulnerable to Improper Escaping of Output",
+      "severity": "medium",
+      "published": "2023-08-11",
+      "url": "https://github.com/advisories/GHSA-g4vp-m682-qqmp"
     },
     {
+      "ghsa": "GHSA-wprv-93r4-jj2p",
+      "cve": "CVE-2023-34459",
       "version": ">=4.7.0 <4.9.2",
-      "vulnerability": "Improper Input Validation"
+      "patched": "4.9.2",
+      "vulnerability": "OpenZeppelin Contracts using MerkleProof multiproofs may allow proving arbitrary leaves for specific trees",
+      "severity": "medium",
+      "published": "2023-06-19",
+      "url": "https://github.com/advisories/GHSA-wprv-93r4-jj2p"
     },
     {
+      "ghsa": "GHSA-5h3x-9wvq-w4m2",
+      "cve": "CVE-2023-34234",
       "version": ">=4.3.0 <4.9.1",
-      "vulnerability": "Missing Authorization"
+      "patched": "4.9.1",
+      "vulnerability": "OpenZeppelin Contracts's governor proposal creation may be blocked by frontrunning",
+      "severity": "medium",
+      "published": "2023-06-08",
+      "url": "https://github.com/advisories/GHSA-5h3x-9wvq-w4m2"
     },
     {
-      "version": ">=3.2.0 <4.8.3",
-      "vulnerability": "Denial of Service (DoS)"
-    },
-    {
+      "ghsa": "GHSA-93hq-5wgc-jc82",
+      "cve": "CVE-2023-30542",
       "version": ">=4.3.0 <4.8.3",
-      "vulnerability": "Improper Input Validation"
+      "patched": "4.8.3",
+      "vulnerability": "GovernorCompatibilityBravo may trim proposal calldata",
+      "severity": "high",
+      "published": "2023-04-20",
+      "url": "https://github.com/advisories/GHSA-93hq-5wgc-jc82"
     },
     {
+      "ghsa": "GHSA-mx2q-35m2-x2rh",
+      "cve": "CVE-2023-30541",
+      "version": ">=3.2.0 <4.8.3",
+      "patched": "4.8.3",
+      "vulnerability": "OpenZeppelin Contracts TransparentUpgradeableProxy clashing selector calls may not be delegated",
+      "severity": "medium",
+      "published": "2023-04-17",
+      "url": "https://github.com/advisories/GHSA-mx2q-35m2-x2rh"
+    },
+    {
+      "ghsa": "GHSA-878m-3g6q-594q",
+      "cve": "CVE-2023-26488",
       "version": ">=4.8.0 <4.8.2",
-      "vulnerability": "Incorrect Calculation"
+      "patched": "4.8.2",
+      "vulnerability": "OpenZeppelin Contracts contains Incorrect Calculation",
+      "severity": "medium",
+      "published": "2023-03-03",
+      "url": "https://github.com/advisories/GHSA-878m-3g6q-594q"
     },
     {
-      "version": ">=4.8.0 <4.8.2",
-      "vulnerability": "Incorrect Calculation"
+      "ghsa": "GHSA-4h98-2769-gh6h",
+      "cve": "CVE-2022-35961",
+      "version": ">=4.1.0 <4.7.3",
+      "patched": "4.7.3",
+      "vulnerability": "OpenZeppelin Contracts vulnerable to ECDSA signature malleability",
+      "severity": "high",
+      "published": "2022-08-18",
+      "url": "https://github.com/advisories/GHSA-4h98-2769-gh6h"
     },
     {
-      "version": "<4.7.3",
-      "vulnerability": "Improper Verification of Cryptographic Signature"
-    },
-    {
-      "version": ">=2.3.0 <4.7.2",
-      "vulnerability": "Denial of Service (DoS)"
-    },
-    {
-      "version": ">=4.6.0 <4.7.2",
-      "vulnerability": "Incorrect Resource Transfer Between Spheres"
-    },
-    {
+      "ghsa": "GHSA-xrc4-737v-9q75",
+      "cve": "CVE-2022-31198",
       "version": ">=4.3.0 <4.7.2",
-      "vulnerability": "Incorrect Calculation"
+      "patched": "4.7.2",
+      "vulnerability": "OpenZeppelin Contracts's GovernorVotesQuorumFraction updates to quorum may affect past defeated proposals",
+      "severity": "high",
+      "published": "2022-08-18",
+      "url": "https://github.com/advisories/GHSA-xrc4-737v-9q75"
     },
     {
+      "ghsa": "GHSA-9j3m-g383-29qr",
+      "cve": "CVE-2022-35916",
+      "version": ">=4.6.0 <4.7.2",
+      "patched": "4.7.2",
+      "vulnerability": "OpenZeppelin Contracts's Cross chain utilities for Arbitrum L2 see EOA calls as cross chain calls",
+      "severity": "medium",
+      "published": "2022-08-14",
+      "url": "https://github.com/advisories/GHSA-9j3m-g383-29qr"
+    },
+    {
+      "ghsa": "GHSA-7grf-83vw-6f5x",
+      "cve": "CVE-2022-35915",
+      "version": ">=2.0.0 <4.7.2",
+      "patched": "4.7.2",
+      "vulnerability": "OpenZeppelin Contracts ERC165Checker unbounded gas consumption",
+      "severity": "medium",
+      "published": "2022-08-14",
+      "url": "https://github.com/advisories/GHSA-7grf-83vw-6f5x"
+    },
+    {
+      "ghsa": "GHSA-4g63-c64m-25w9",
+      "cve": "CVE-2022-31172",
       "version": ">=4.1.0 <4.7.1",
-      "vulnerability": "Information Exposure"
+      "patched": "4.7.1",
+      "vulnerability": "OpenZeppelin Contracts's SignatureChecker may revert on invalid EIP-1271 signers",
+      "severity": "high",
+      "published": "2022-07-21",
+      "url": "https://github.com/advisories/GHSA-4g63-c64m-25w9"
     },
     {
+      "ghsa": "GHSA-qh9x-gcfh-pcrw",
+      "cve": "CVE-2022-31170",
       "version": ">=4.0.0 <4.7.1",
-      "vulnerability": "Information Exposure"
+      "patched": "4.7.1",
+      "vulnerability": "OpenZeppelin Contracts's ERC165Checker may revert instead of returning false",
+      "severity": "high",
+      "published": "2022-07-21",
+      "url": "https://github.com/advisories/GHSA-qh9x-gcfh-pcrw"
     },
     {
+      "ghsa": "GHSA-7j52-6fjp-58gr",
+      "cve": null,
+      "version": ">=4.0.0 <4.3.0",
+      "patched": "4.3.0",
+      "vulnerability": "Inconsistent storage layout for ERC2771ContextUpgradeable",
+      "severity": "low",
+      "published": "2022-03-14",
+      "url": "https://github.com/advisories/GHSA-7j52-6fjp-58gr"
+    },
+    {
+      "ghsa": "GHSA-88g8-f5mf-f5rj",
+      "cve": "CVE-2021-46320",
+      "version": "<4.4.1",
+      "patched": "4.4.1",
+      "vulnerability": "Improper Initialization in OpenZeppelin",
+      "severity": "high",
+      "published": "2022-02-05",
+      "url": "https://github.com/advisories/GHSA-88g8-f5mf-f5rj"
+    },
+    {
+      "ghsa": "GHSA-m6w8-fq7v-ph4m",
+      "cve": null,
       "version": ">=4.3.0 <4.4.2",
-      "vulnerability": "Function Call With Incorrect Argument"
+      "patched": "4.4.2",
+      "vulnerability": "GovernorCompatibilityBravo incorrect ABI encoding may lead to unexpected behavior",
+      "severity": "medium",
+      "published": "2022-01-13",
+      "url": "https://github.com/advisories/GHSA-m6w8-fq7v-ph4m"
     },
     {
+      "ghsa": "GHSA-9c22-pwxw-p6hx",
+      "cve": "CVE-2022-39384",
       "version": ">=3.2.0 <4.4.1",
-      "vulnerability": "Deserialization of Untrusted Data"
+      "patched": "4.4.1",
+      "vulnerability": "OpenZeppelin Contracts initializer reentrancy may lead to double initialization",
+      "severity": "medium",
+      "published": "2021-12-14",
+      "url": "https://github.com/advisories/GHSA-9c22-pwxw-p6hx"
     },
     {
+      "ghsa": "GHSA-wmpv-c2jp-j2xg",
+      "cve": null,
       "version": ">=4.2.0 <4.3.3",
-      "vulnerability": "Numeric Errors"
+      "patched": "4.3.3",
+      "vulnerability": "ERC1155Supply vulnerability in OpenZeppelin Contracts",
+      "severity": "low",
+      "published": "2021-11-15",
+      "url": "https://github.com/advisories/GHSA-wmpv-c2jp-j2xg"
     },
     {
+      "ghsa": "GHSA-5vp3-v4hc-gx76",
+      "cve": "CVE-2021-41264",
       "version": ">=4.1.0 <4.3.2",
-      "vulnerability": "Improper Initialization"
+      "patched": "4.3.2",
+      "vulnerability": "UUPSUpgradeable vulnerability in @openzeppelin/contracts",
+      "severity": "critical",
+      "published": "2021-09-15",
+      "url": "https://github.com/advisories/GHSA-5vp3-v4hc-gx76"
     },
     {
+      "ghsa": "GHSA-q4h9-46xg-m3x9",
+      "cve": null,
       "version": ">=4.1.0 <4.3.2",
-      "vulnerability": "Improper Input Validation"
+      "patched": "4.3.2",
+      "vulnerability": "UUPSUpgradeable vulnerability in @openzeppelin/contracts-upgradeable",
+      "severity": "critical",
+      "published": "2021-09-15",
+      "url": "https://github.com/advisories/GHSA-q4h9-46xg-m3x9"
     },
     {
-      "version": ">=4.0.0-beta.0 <4.3.1<3.4.2",
-      "vulnerability": "Privilege Escalation"
+      "ghsa": "GHSA-vrw4-w73r-6mm8",
+      "cve": "CVE-2021-39168",
+      "version": ">=4.0.0 <4.3.1 || >=3.3.0 <3.4.2",
+      "patched": "4.3.1 || 3.4.2",
+      "vulnerability": "TimelockController vulnerability in OpenZeppelin Contracts",
+      "severity": "critical",
+      "published": "2021-08-30",
+      "url": "https://github.com/advisories/GHSA-vrw4-w73r-6mm8"
     },
     {
-      "version": "<3.4.0-rc.0",
-      "vulnerability": "Improper Synchronization"
+      "ghsa": "GHSA-fg47-3c2x-m2wr",
+      "cve": "CVE-2021-39167",
+      "version": ">=4.0.0 <4.3.1 || >=3.3.0 <3.4.2",
+      "patched": "4.3.1 || 3.4.2",
+      "vulnerability": "TimelockController vulnerability in OpenZeppelin Contracts",
+      "severity": "critical",
+      "published": "2021-08-30",
+      "url": "https://github.com/advisories/GHSA-fg47-3c2x-m2wr"
     }
   ]
 }

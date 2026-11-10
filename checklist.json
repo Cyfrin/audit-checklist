@@ -1056,7 +1056,9 @@
                                 "description": "`ERC2771Context._msgData()` reverts if `msg.data.length < 20`. The correct behavior is not specified in ERC-2771, but based on the specified behavior of `_msgSender` we assume the full `msg.data` should be returned in this case.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-g4vp-m682-qqmp"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-2",
@@ -1064,7 +1066,9 @@
                                 "description": "GovernorCompatibilityBravo may trim proposal calldata. The proposal creation entrypoint (propose) in GovernorCompatibilityBravo allows the creation of proposals with a signatures array shorter than the calldatas array. This causes the additional elements of the latter to be ignored, and if the proposal succeeds the corresponding actions would eventually execute without any calldata. The ProposalCreated event correctly represents what will eventually execute, but the proposal parameters as queried through getActions appear to respect the original intended calldata.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-93hq-5wgc-jc82"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-3",
@@ -1072,7 +1076,9 @@
                                 "description": "ECDSA signature malleability. The functions ECDSA.recover and ECDSA.tryRecover are vulnerable to a kind of signature malleability due to accepting EIP-2098 compact signatures in addition to the traditional 65 byte signature format. This is only an issue for the functions that take a single bytes argument, and not the functions that take r, v, s or r, vs as separate arguments. The potentially affected contracts are those that implement signature reuse or replay protection by marking the signature itself as used rather than the signed message or a nonce included in it. A user may take a signature that has already been submitted, submit it again in a different form, and bypass this protection.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-4h98-2769-gh6h"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-4",
@@ -1088,7 +1094,9 @@
                                 "description": "When the `verifyMultiProof`, `verifyMultiProofCalldata`, `processMultiProof`, or `processMultiProofCalldata` functions are in use, it is possible to construct merkle trees that allow forging a valid multiproof for an arbitrary set of leaves.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-wprv-93r4-jj2p"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-6",
@@ -1096,7 +1104,9 @@
                                 "description": "Governor proposal creation may be blocked by frontrunning. By frontrunning the creation of a proposal, an attacker can become the proposer and gain the ability to cancel it. The attacker can do this repeatedly to try to prevent a proposal from being proposed at all. This impacts the Governor contract in v4.9.0 only, and the GovernorCompatibilityBravo contract since v4.3.0.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-5h3x-9wvq-w4m2"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-7",
@@ -1104,7 +1114,9 @@
                                 "description": "Transparency is broken in case of selector clash with non-decodable calldata. The TransparentUpgradeableProxy uses the ifAdmin modifier to achieve transparency. If a non-admin address calls the proxy the call should be frowarded transparently. This works well in most cases, but the forwarding of some functions can fail if there is a selector conflict and decoding issue.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-mx2q-35m2-x2rh"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-8",
@@ -1112,7 +1124,9 @@
                                 "description": "The ERC721Consecutive contract designed for minting NFTs in batches does not update balances when a batch has size 1 and consists of a single token. Subsequent transfers from the receiver of that token may overflow the balance as reported by balanceOf. The issue exclusively presents with batches of size 1.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-878m-3g6q-594q"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-9",
@@ -1120,7 +1134,9 @@
                                 "description": "Denial of Service (DoS) in the `supportsERC165InterfaceUnchecked()` function in `ERC165Checker.sol` and `ERC165CheckerUpgradeable.sol`, which can consume excessive resources when processing a large amount of data via an EIP-165 supportsInterface query.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-7grf-83vw-6f5x"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-10",
@@ -1128,7 +1144,9 @@
                                 "description": "Incorrect resource transfer between spheres via contracts using the cross-chain utilities for Arbitrum L2: `CrossChainEnabledArbitrumL2` or `LibArbitrumL2`. Calls from EOAs would be classified as cross-chain calls. The vulnerability will classify direct interactions of externally owned accounts (EOAs) as cross-chain calls, even though they are not started on L1.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-9j3m-g383-29qr"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-11",
@@ -1136,7 +1154,9 @@
                                 "description": "Checkpointing quorum was missing and past proposals that failed due to lack of quorum could pass later. It is necessary to avoid quorum changes making old, failed because of quorum, proposals suddenly successful.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-xrc4-737v-9q75"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-12",
@@ -1144,7 +1164,9 @@
                                 "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. SignatureChecker.isValidSignatureNow is not expected to revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-1271 as expected. The contracts that may be affected are those that use SignatureChecker to check the validity of a signature and handle invalid signatures in a way other than reverting.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-4g63-c64m-25w9"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-13",
@@ -1152,7 +1174,9 @@
                                 "description": "Since 0.8.0, abi.decode reverts if the bytes raw data overflow the target type. ERC165Checker.supportsInterface is designed to always successfully return a boolean, and under no circumstance revert. However, an incorrect assumption about Solidity 0.8's abi.decode allows some cases to revert, given a target contract that doesn't implement EIP-165 as expected, specifically if it returns a value other than 0 or 1. The contracts that may be affected are those that use ERC165Checker to check for support for an interface and then handle the lack of support in a way other than reverting.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-qh9x-gcfh-pcrw"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-14",
@@ -1160,7 +1184,9 @@
                                 "description": "GovernorCompatibilityBravo incorrect ABI encoding may lead to unexpected behavior",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-m6w8-fq7v-ph4m"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-15",
@@ -1168,7 +1194,10 @@
                                 "description": "It is possible for `initializer()`-protected functions to be executed twice, if this happens in the same transaction. For this to happen, either one call has to be a subcall the other, or both call have to be subcalls of a common initializer()-protected function. This can particularly be dangerous is the initialization is not part of the proxy construction, and reentrancy is possible by executing an external call to an untrusted address.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-9c22-pwxw-p6hx",
+                                    "GHSA-88g8-f5mf-f5rj"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-16",
@@ -1176,7 +1205,9 @@
                                 "description": "Possible inconsistency in the value returned by totalSupply DURING a mint. If you mint a token, the receiver is a smart contract, and the receiver implements onERC1155Receive, then this receiver is called with the balance already updated, but with the totalsupply not yet updated.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-wmpv-c2jp-j2xg"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-17",
@@ -1184,7 +1215,10 @@
                                 "description": "Upgradeable contracts using UUPSUpgradeable may be vulnerable to an attack affecting uninitialized implementation contracts.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-q4h9-46xg-m3x9",
+                                    "GHSA-5vp3-v4hc-gx76"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-OVI-18",
@@ -1192,7 +1226,66 @@
                                 "description": "A vulnerability in TimelockController allowed an actor with the executor role to take immediate control of the timelock, by resetting the delay to 0 and escalating privileges, thus gaining unrestricted access to assets held in the contract. Instances with the executor role set to 'open' allow anyone to use the executor role, thus leaving the timelock at risk of being taken over by an attacker.",
                                 "remediation": "Use the latest stable OpenZeppelin version",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "GHSA-fg47-3c2x-m2wr",
+                                    "GHSA-vrw4-w73r-6mm8"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-OVI-19",
+                                "question": "Is the contract affected by \"Bytes's lastIndexOf function with position argument performs out-of-bound memory access on empty buffers\"? (version >=5.2.0 <5.4.0)",
+                                "description": "The `lastIndexOf(bytes,byte,uint256)` function of the `Bytes.sol` library may access uninitialized memory when the following two conditions hold: 1) the provided buffer length is empty (i.e. `buffer.length == 0`) and position is not `2**256 - 1` (i.e. `pos != type(uint256).max`). The `pos` argument could be used to access arbitrary data outside of the buffer bounds. This could lead to the operation running out of gas, or returning an invalid index (outside of the empty buffer). Processing this invalid result for accessing the `buffer` would cause a revert under normal conditions. When triggered, the function reads memory at offset `buffer + 0x20 + pos`. If memory at that location...",
+                                "remediation": "Upgrade OpenZeppelin Contracts to 5.4.0 or later.",
+                                "references": [
+                                    "https://github.com/advisories/GHSA-9rcw-c2f9-2j55"
+                                ],
+                                "tags": [
+                                    "GHSA-9rcw-c2f9-2j55",
+                                    "severity:medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-OVI-20",
+                                "question": "Is the contract affected by \"base64 encoding may read from potentially dirty memory\"? (version >=4.5.0 <4.9.6 / >=5.0.0-rc.0 <5.0.2)",
+                                "description": "The `Base64.encode` function encodes a `bytes` input by iterating over it in chunks of 3 bytes. When this input is not a multiple of 3, the last iteration may read parts of the memory that are beyond the input buffer. Although the `encode` function pads the output for these cases, up to 4 bits of data are kept between the encoding and padding, corrupting the output if these bits were dirty (i.e. memory after the input is not 0). These conditions are more frequent in the following scenarios: - A `bytes memory` struct is allocated just after the input and the first bytes of it are non-zero. - The memory pointer is set to a non-empty memory location before allocating the input. Developers...",
+                                "remediation": "Upgrade OpenZeppelin Contracts to 4.9.6 / 5.0.2 or later.",
+                                "references": [
+                                    "https://github.com/advisories/GHSA-9vx6-7xxf-x967"
+                                ],
+                                "tags": [
+                                    "GHSA-9vx6-7xxf-x967",
+                                    "severity:medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-OVI-21",
+                                "question": "Is the contract affected by \"duplicated execution of subcalls in v4.9.4\"? (version =4.9.4)",
+                                "description": "Merge conflict resolution issue when porting the v5.0.1 `Multicall` update to the v4.9 branch caused a duplicated line. Versions using `Multicall` from `@openzeppelin/contracts@4.9.4` and `@openzeppelin/contracts-upgradeable@4.9.4` will execute each subcall twice. Concretely, this exposes a user to unintentionally duplicate operations like asset transfers. The duplicated `delegatecall` was removed in 4.9.5. The 4.9.4 version is marked as deprecated.",
+                                "remediation": "Upgrade OpenZeppelin Contracts to 4.9.5 or later.",
+                                "references": [
+                                    "https://github.com/advisories/GHSA-699g-q6qh-q4v8"
+                                ],
+                                "tags": [
+                                    "GHSA-699g-q6qh-q4v8",
+                                    "severity:medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-OVI-22",
+                                "question": "Is the contract affected by \"Inconsistent storage layout for ERC2771ContextUpgradeable\"? (version >=4.0.0 <4.3.0)",
+                                "description": "The storage layout of the ERC2771ContextUpgradeable is not constant between versions. - versions `4.0.0`, `4.1.0` and `4.2.0`, the contract has a length of 51 slots. - since `4.3.0`, the contract has a length of 50 slots - future versions will continue using 50 slots. This difference in layout could result in breaking upgrades if someone upgrades from an affected version to a non-affected version. It is thus recommended to be extremely careful when upgrading from a contract that uses ERC2771ContextUpgradeable `<4.3.0` to a newer version that uses `>=4.3.0`. We've assessed the instances of this contract found on chain (with publicly verified source code) and notified the corresponding...",
+                                "remediation": "Upgrade OpenZeppelin Contracts to 4.3.0 or later.",
+                                "references": [
+                                    "https://github.com/advisories/GHSA-7j52-6fjp-58gr"
+                                ],
+                                "tags": [
+                                    "GHSA-7j52-6fjp-58gr",
+                                    "severity:low",
+                                    "needs-review"
+                                ]
                             }
                         ]
                     },
@@ -1208,7 +1301,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-3",
+                                    "solc:ABIEncoderV2PackedStorage"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-2",
@@ -1216,7 +1312,10 @@
                                 "description": "If an empty string is used in a function call, the following function arguments will not be correctly passed to the function.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2017-2",
+                                    "solc:SkipEmptyStringLiteral"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-3",
@@ -1226,7 +1325,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2017/05/03/solidity-optimizer-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2017-1",
+                                    "solc:ConstantOptimizerSubtraction"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-4",
@@ -1247,7 +1349,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2023/07/19/full-inliner-non-expression-split-argument-evaluation-order-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2023-2",
+                                    "solc:FullInlinerNonExpressionSplitArgumentEvaluationOrder"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-6",
@@ -1257,7 +1362,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/09/08/storage-write-removal-before-conditional-termination/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-7",
+                                    "solc:StorageWriteRemovalBeforeConditionalTermination"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-7",
@@ -1267,7 +1375,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/08/08/calldata-tuple-reencoding-head-overflow-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-6",
+                                    "solc:AbiReencodingHeadOverflowWithStaticArrayCleanup"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-8",
@@ -1277,7 +1388,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/06/15/dirty-bytes-array-to-storage-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-5",
+                                    "solc:DirtyBytesArrayToStorage"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-9",
@@ -1287,7 +1401,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/06/15/inline-assembly-memory-side-effects-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-4",
+                                    "solc:InlineAssemblyMemorySideEffects"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-10",
@@ -1297,7 +1414,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/05/17/calldata-reencode-size-check-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-2",
+                                    "solc:NestedCalldataArrayAbiReencodingSizeValidation"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-11",
@@ -1307,7 +1427,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/03/16/encodecall-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-1",
+                                    "solc:AbiEncodeCallLiteralAsFixedBytesBug"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-12",
@@ -1317,7 +1440,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2021/09/29/user-defined-value-types-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2021-4",
+                                    "solc:UserDefinedValueTypesBug"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-13",
@@ -1327,7 +1453,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2021/09/29/signed-immutables-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2021-3",
+                                    "solc:SignedImmutables"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-14",
@@ -1337,7 +1466,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2021/04/21/decoding-from-memory-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2021-2",
+                                    "solc:ABIDecodeTwoDimensionalArrayMemory"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-15",
@@ -1347,7 +1479,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2021/03/23/keccak-optimizer-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2021-1",
+                                    "solc:KeccakCaching"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-16",
@@ -1357,7 +1492,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2020/10/19/empty-byte-array-copy-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-11",
+                                    "solc:EmptyByteArrayCopy"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-17",
@@ -1367,7 +1505,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2020/10/07/solidity-dynamic-array-cleanup-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-10",
+                                    "solc:DynamicArrayCleanup"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-18",
@@ -1375,7 +1516,10 @@
                                 "description": "Contract types used in events in libraries cause an incorrect event signature hash",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-4",
+                                    "solc:IncorrectEventSignatureInLibraries"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-19",
@@ -1383,7 +1527,10 @@
                                 "description": "Function calls to internal library functions with calldata parameters called via ``using for`` can result in invalid data being read.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-8",
+                                    "solc:UsingForCalldata"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-20",
@@ -1391,7 +1538,10 @@
                                 "description": "String literals containing double backslash characters passed directly to external or encoding function calls can lead to a different string being used when ABIEncoderV2 is enabled.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-7",
+                                    "solc:MissingEscapingInFormatting"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-21",
@@ -1399,7 +1549,10 @@
                                 "description": "Accessing array slices of arrays with dynamically encoded base types (e.g. multi-dimensional arrays) can result in invalid data being read.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-6",
+                                    "solc:ArraySliceDynamicallyEncodedBaseType"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-22",
@@ -1407,7 +1560,10 @@
                                 "description": "The creation code of a contract that does not define a constructor but has a base that does define a constructor did not revert for calls with non-zero value.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-5",
+                                    "solc:ImplicitConstructorCallvalueCheck"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-23",
@@ -1417,7 +1573,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2020/04/06/memory-creation-overflow-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-3",
+                                    "solc:MemoryArrayCreationOverflow"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-24",
@@ -1425,7 +1584,10 @@
                                 "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-1",
+                                    "solc:YulOptimizerRedundantAssignmentBreakContinue"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-25",
@@ -1433,7 +1595,10 @@
                                 "description": "Private methods can be overridden by inheriting contracts.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-2",
+                                    "solc:privateCanBeOverridden"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-26",
@@ -1441,7 +1606,10 @@
                                 "description": "The Yul optimizer can remove essential assignments to variables declared inside for loops when Yul's continue or break statement is used. You are unlikely to be affected if you do not use inline assembly with for loops and continue and break statements.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-1",
+                                    "solc:YulOptimizerRedundantAssignmentBreakContinue0.5"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-27",
@@ -1449,7 +1617,10 @@
                                 "description": "If both the experimental ABIEncoderV2 and the experimental Yul optimizer are activated, one component of the Yul optimizer may reuse data in memory that has been changed in the meantime.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-10",
+                                    "solc:ABIEncoderV2LoopYulOptimizer"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-28",
@@ -1457,7 +1628,10 @@
                                 "description": "Reading from calldata structs that contain dynamically encoded, but statically-sized members can result in incorrect values.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-9",
+                                    "solc:ABIEncoderV2CalldataStructsWithStaticallySizedAndDynamicallyEncodedMembers"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-29",
@@ -1467,7 +1641,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2019/06/25/solidity-storage-array-bugs/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-8",
+                                    "solc:SignedArrayStorageCopy"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-30",
@@ -1477,7 +1654,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2019/06/25/solidity-storage-array-bugs/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-7",
+                                    "solc:ABIEncoderV2StorageArrayWithMultiSlotElement"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-31",
@@ -1485,7 +1665,10 @@
                                 "description": "A contract's constructor that takes structs or arrays that contain dynamically-sized arrays reverts or decodes to invalid data.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-6",
+                                    "solc:DynamicConstructorArgumentsClippedABIV2"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-32",
@@ -1493,7 +1676,10 @@
                                 "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behavior.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-5",
+                                    "solc:UninitializedFunctionPointerInConstructor"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-33",
@@ -1501,7 +1687,10 @@
                                 "description": "Calling uninitialized internal function pointers created in the constructor does not always revert and can cause unexpected behavior.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-5",
+                                    "solc:UninitializedFunctionPointerInConstructor_0.4.x"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-34",
@@ -1509,7 +1698,10 @@
                                 "description": "Contract types used in events in libraries cause an incorrect event signature hash",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-4",
+                                    "solc:IncorrectEventSignatureInLibraries_0.4.x"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-35",
@@ -1519,7 +1711,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-3",
+                                    "solc:ABIEncoderV2PackedStorage_0.4.x"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-36",
@@ -1529,7 +1724,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-2",
+                                    "solc:IncorrectByteInstructionOptimization"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-37",
@@ -1539,7 +1737,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2019/03/26/solidity-optimizer-and-abiencoderv2-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2019-1",
+                                    "solc:DoubleShiftSizeOverflow"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-38",
@@ -1549,7 +1750,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2018-4",
+                                    "solc:ExpExponentCleanup"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-39",
@@ -1559,7 +1763,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2018-3",
+                                    "solc:EventStructWrongData"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-40",
@@ -1569,7 +1776,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2018/09/13/solidity-bugfix-release/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2018-2",
+                                    "solc:NestedArrayFunctionCallDecoder"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-41",
@@ -1577,7 +1787,10 @@
                                 "description": "If a contract has both a new-style constructor (using the constructor keyword) and an old-style constructor (a function with the same name as the contract) at the same time, one of them will be ignored.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2018-1",
+                                    "solc:OneOfTwoConstructorsSkipped"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-42",
@@ -1585,7 +1798,10 @@
                                 "description": "It is possible to craft the name of a function such that it is executed instead of the fallback function in very specific circumstances.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2017-5",
+                                    "solc:ZeroFunctionSelector"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-43",
@@ -1593,7 +1809,10 @@
                                 "description": "The low-level .delegatecall() does not return the execution outcome, but converts the value returned by the functioned called to a boolean instead.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2017-4",
+                                    "solc:DelegateCallReturnValue"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-44",
@@ -1601,7 +1820,10 @@
                                 "description": "The ecrecover() builtin can return garbage for malformed input.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2017-3",
+                                    "solc:ECRecoverMalformedInput"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-45",
@@ -1611,7 +1833,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2023/07/19/missing-side-effects-on-selector-access-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2023-1",
+                                    "solc:MissingSideEffectsOnSelectorAccess"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-46",
@@ -1621,7 +1846,10 @@
                                 "references": [
                                     "https://blog.soliditylang.org/2022/05/17/data-location-inheritance-bug/"
                                 ],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2022-3",
+                                    "solc:DataLocationChangeInInternalOverride"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-47",
@@ -1629,7 +1857,10 @@
                                 "description": "The compiler does not flag an error when two or more free functions with the same name and parameter types are defined in a source unit or when an imported free function alias shadows another free function with a different name but identical parameter types.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-9",
+                                    "solc:FreeFunctionRedefinition"
+                                ]
                             },
                             {
                                 "id": "SOL-Basics-VI-SVI-48",
@@ -1637,7 +1868,145 @@
                                 "description": "Tuple assignments with components that occupy several stack slots, i.e. nested tuples, pointers to external functions or references to dynamically sized calldata arrays, can result in invalid values.",
                                 "remediation": "Use the latest Solidity version.",
                                 "references": [],
-                                "tags": []
+                                "tags": [
+                                    "SOL-2020-4",
+                                    "solc:TupleAssignmentMultiStackSlotComponents"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-49",
+                                "question": "Does the contract hit the compiler bug where the Yul optimizer could consider two memory or storage locations distinct even though their addresses were computed from different values of the same reassigned variable and coincided at runtime? (version 0.8.19~0.8.37)",
+                                "description": "The Yul optimizer could consider two memory or storage locations distinct even though their addresses were computed from different values of the same reassigned variable and coincided at runtime. This could lead to loads being replaced with outdated values and to needed stores being removed. Only affects builds where the Yul optimizer is enabled.",
+                                "remediation": "Compile with solc 0.8.38 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/10/22/yul-optimizer-knowledge-base-stale-bookkeeping-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-7",
+                                    "solc:YulOptimizerKnowledgeBaseStaleBookkeeping",
+                                    "severity:low",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-50",
+                                "question": "Does the contract hit the compiler bug where custom error arguments passed to `require` using named-parameter syntax are ABI-encoded in call-site order instead of declaration order when compiling via IR? (version 0.8.26~0.8.36)",
+                                "description": "Custom error arguments passed to `require` using named-parameter syntax are ABI-encoded in call-site order instead of declaration order when compiling via IR. Only affects builds where compiling via IR (`viaIR: true`).",
+                                "remediation": "Compile with solc 0.8.37 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/09/10/misordered-named-parameters-in-require-with-custom-errors-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-6",
+                                    "solc:MisorderedNamedParametersInRequireWithCustomErrors",
+                                    "severity:very low",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-51",
+                                "question": "Does the contract hit the compiler bug where applying `delete` to a single element of a `bytes` array in memory clears not only that element but the whole 32-byte word starting at the element's location, zeroing up to 31 bytes beyond the element? (version ~0.8.36)",
+                                "description": "Applying `delete` to a single element of a `bytes` array in memory clears not only that element but the whole 32-byte word starting at the element's location, zeroing up to 31 bytes beyond the element. Only affects builds where using the legacy (non-IR) pipeline.",
+                                "remediation": "Compile with solc 0.8.37 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/09/10/memory-byte-array-element-delete-clears-whole-word-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-5",
+                                    "solc:MemoryByteArrayElementDeleteClearsWholeWord",
+                                    "severity:low/medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-52",
+                                "question": "Does the contract hit the compiler bug where local variables of two simultaneously active functions moved to fixed memory offsets by the stack limit evader may be assigned the same offset if the call graph contains mutual recursion, so that one variable is silently overwritten by the other? (version 0.7.2~0.8.36)",
+                                "description": "Local variables of two simultaneously active functions moved to fixed memory offsets by the stack limit evader may be assigned the same offset if the call graph contains mutual recursion, so that one variable is silently overwritten by the other. Only affects builds where compiling via IR (`viaIR: true`).",
+                                "remediation": "Compile with solc 0.8.37 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/09/10/spill-slot-collision-across-mutual-recursion-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-4",
+                                    "solc:SpillSlotCollisionAcrossMutualRecursion",
+                                    "severity:low/medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-53",
+                                "question": "Does the contract hit the compiler bug where emitting a warning about storage base location being too close to the storage end unintentionally reversed the `linearizedBaseContracts` annotation, possibly leading to miscompilation due to reversing the order in which inheritance is resolved? (version 0.8.29~0.8.35)",
+                                "description": "Emitting a warning about storage base location being too close to the storage end unintentionally reversed the `linearizedBaseContracts` annotation, possibly leading to miscompilation due to reversing the order in which inheritance is resolved.",
+                                "remediation": "Compile with solc 0.8.36 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/07/09/inheritance-order-reversal-on-storage-end-warning-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-3",
+                                    "solc:InheritanceOrderReversalOnStorageEndWarning",
+                                    "severity:medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-54",
+                                "question": "Does the contract hit the compiler bug where local variables of a function involved in mutual recursion may spuriously be moved to fixed memory offsets and overwritten across recursive calls? (version 0.7.2~0.8.35)",
+                                "description": "Local variables of a function involved in mutual recursion may spuriously be moved to fixed memory offsets and overwritten across recursive calls. Only affects builds where compiling via IR (`viaIR: true`).",
+                                "remediation": "Compile with solc 0.8.36 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/07/09/unsound-spill-in-mutual-recursion-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-2",
+                                    "solc:UnsoundSpillInMutualRecursion",
+                                    "severity:medium",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-55",
+                                "question": "Does the contract hit the compiler bug where clearing both storage and transient storage variables in the same contract may result in only one of these locations being cleared? (version 0.8.28~0.8.33)",
+                                "description": "Clearing both storage and transient storage variables in the same contract may result in only one of these locations being cleared. Only affects builds where compiling via IR (`viaIR: true`) and the target EVM version is >=cancun.",
+                                "remediation": "Compile with solc 0.8.34 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2026/02/18/transient-storage-clearing-helper-collision-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2026-1",
+                                    "solc:TransientStorageClearingHelperCollision",
+                                    "severity:high",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-56",
+                                "question": "Does the contract hit the compiler bug where operations that involve clearing or copying from arrays that straddle the end of storage could result in silent data retention? (version 0.1.0~0.8.31)",
+                                "description": "Operations that involve clearing or copying from arrays that straddle the end of storage could result in silent data retention.",
+                                "remediation": "Compile with solc 0.8.32 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2025/12/18/lost-storage-array-write-on-slot-overflow-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2025-1",
+                                    "solc:LostStorageArrayWriteOnSlotOverflow",
+                                    "severity:low",
+                                    "needs-review"
+                                ]
+                            },
+                            {
+                                "id": "SOL-Basics-VI-SVI-57",
+                                "question": "Does the contract hit the compiler bug where all `verbatim` blocks are considered identical by deduplicator and can incorrectly be unified when surrounded by identical opcodes? (version 0.8.5~0.8.22)",
+                                "description": "All `verbatim` blocks are considered identical by deduplicator and can incorrectly be unified when surrounded by identical opcodes.",
+                                "remediation": "Compile with solc 0.8.23 or later.",
+                                "references": [
+                                    "https://blog.soliditylang.org/2023/11/08/verbatim-invalid-deduplication-bug/"
+                                ],
+                                "tags": [
+                                    "SOL-2023-3",
+                                    "solc:VerbatimInvalidDeduplication",
+                                    "severity:low",
+                                    "needs-review"
+                                ]
                             }
                         ]
                     }
